@@ -8,7 +8,9 @@
         "php": "^8.0",
         "darkaonline/swagger-lume": "*",
         "flipbox/lumen-generator": "^9.2",
+        "illuminate/redis": "^9.52",
         "laravel/lumen-framework": "^9.0",
+        "predis/predis": "^2.2",
         "thedevsaddam/lumen-route-list": "^2.0",
         "tymon/jwt-auth": "dev-develop"
     },

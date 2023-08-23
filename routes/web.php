@@ -22,3 +22,5 @@ use App\Libraries\Core;
 $router->group(['prefix' => 'v1', 'as' => 'v1'], function () use ($router) {
     Core::renderRoutes('v1', $router);
 });
+
+
