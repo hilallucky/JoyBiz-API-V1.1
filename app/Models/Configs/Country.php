@@ -29,7 +29,10 @@ class Country extends Model
         'alpha_3_isp',
         'alpha_2_isp',
         'corrency_code_iso',
-        'currency_minro_unit_iso'
+        'currency_minro_unit_iso',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     public $incrementing = false;

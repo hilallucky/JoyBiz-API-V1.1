@@ -22,6 +22,9 @@ class Client extends Model
         'description',
         'phone',
         'country_id',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     public $incrementing = false;

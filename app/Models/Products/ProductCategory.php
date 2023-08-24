@@ -1,28 +1,27 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Products;
 
+use App\Traits\Uuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Nonstandard\Uuid;
 use Ramsey\Uuid\Provider\Node\RandomNodeProvider;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Movie extends Model
+class ProductCategory extends Model
 {
-    use HasFactory, SoftDeletes;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    use HasFactory, SoftDeletes, Uuids;
+
+    protected $table = 'product_categories';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
+        'id',
         'uuid',
-        'title',
+        'name',
+        'status',
         'description',
-        'embed_url',
-        'viewed',
-        'genres',
         'created_by',
         'updated_by',
         'deleted_by',

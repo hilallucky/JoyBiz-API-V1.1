@@ -30,6 +30,9 @@ return new class extends Migration {
             $table->string('corrency_code_iso', 100)->nullable()->comment('corrency ode ISO');
             $table->string('currency_minor_unit_iso', 100)->nullable()->comment('Geoname ID');
             $table->integer('status')->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(0);
+            $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
+            $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
+            $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

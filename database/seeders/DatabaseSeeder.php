@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             MovieSeeder::class,
             CountrySeeder::class,
             ClientSeeder::class,
+            ProductCategorySeeder::class,
         ]);
     }
 }

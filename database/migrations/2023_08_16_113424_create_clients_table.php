@@ -22,6 +22,9 @@ return new class extends Migration {
             $table->string('description')->comment('Description')->nullable();
             $table->string('phone', 100)->comment('Phone Number')->nullable();
             $table->uuid('country_id')->comment('Country ID (get from table countries')->nullable();
+            $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
+            $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
+            $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

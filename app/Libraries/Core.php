@@ -1,4 +1,5 @@
 <?php
+
 namespace app\Libraries;
 
 use Illuminate\Support\Facades\Log;
@@ -37,21 +38,15 @@ class Core
                 $message = $message;
                 $body = $data;
                 $code = 404;
-
         }
 
         $response = [$status => $message, $body => $data];
 
-
         if ($is_array) {
-
             return $response;
-
         }
 
-
         return response()->json($response, $code);
-
     }
 
     /**
@@ -73,16 +68,12 @@ class Core
 
                 Log::{$type}("[$error_ref] $message");
             }
-
         } catch (\Exception $e) {
 
             Log::warning("[$error_ref]::log($type, $message) : " . $e->getMessage());
-
         }
 
         return $error_ref;
-
-
     }
 
 
@@ -119,10 +110,8 @@ class Core
         for ($i = 0; $i < $length; $i++) {
 
             $randomString .= $characters[rand(0, $charactersLength - 1)];
-
         }
 
         return $randomString;
     }
-
 }

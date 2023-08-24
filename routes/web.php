@@ -23,4 +23,10 @@ $router->group(['prefix' => 'v1', 'as' => 'v1'], function () use ($router) {
     Core::renderRoutes('v1', $router);
 });
 
+// \DB::listen(function($sql) {
+//     \Log::info($sql->sql);
+//     \Log::info($sql->bindings);
+//     \Log::info($sql->time);
+// });
+
 

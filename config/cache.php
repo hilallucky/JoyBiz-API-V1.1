@@ -11,5 +11,12 @@ return [
         'array' => [
             'driver' => 'array',
         ],
+        'redis' => [
+            'driver' => 'redis',
+            'client' => 'predis',
+            'connection' => 'default',
+        ],
     ],
+
+
 ];

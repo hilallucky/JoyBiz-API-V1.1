@@ -21,7 +21,10 @@ class Member extends Model
         'phone',
         'sponsor_id',
         'user_uuid',
-        'status'
+        'status',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
     protected $hidden = [
         'password',
