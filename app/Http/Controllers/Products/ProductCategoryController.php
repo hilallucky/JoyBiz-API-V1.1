@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Products\ProductCategory;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -61,6 +62,11 @@ class ProductCategoryController extends Controller
         try {
             DB::beginTransaction();
 
+            // // Check Auth & update user uuid to deleted_by
+            // if (Auth::check()) {
+            //     $user = Auth::user();
+            // }
+
             foreach ($categories as $categoryData) {
                 if (isset($categoryData['status'])) {
                     $status = $categoryData['status'];
@@ -71,7 +77,7 @@ class ProductCategoryController extends Controller
                     'name' => $categoryData['name'],
                     'description' => $categoryData['description'],
                     'status' => $status,
-                    'created_by' => $categoryData['created_by'],
+                    // 'created_by' => $user->uuid,
                 ]);
 
                 $newCategories[] = $categories->toArray();
@@ -113,7 +119,7 @@ class ProductCategoryController extends Controller
     //UpdateBulk product category information
     public function updateBulk(Request $request)
     {
-        $categories =  $request->all();
+        $categories = $request->all();
 
         $validator = $this->validation('create', $request);
 
@@ -127,6 +133,11 @@ class ProductCategoryController extends Controller
         try {
             DB::beginTransaction();
 
+            // // Check Auth & update user uuid to deleted_by
+            // if (Auth::check()) {
+            //     $user = Auth::user();
+            // }
+
             foreach ($categories as $categoryData) {
                 if (isset($categoryData['status'])) {
                     $status = $categoryData['status'];
@@ -137,9 +148,8 @@ class ProductCategoryController extends Controller
                     'name' => $categoryData['name'],
                     'description' => $categoryData['description'],
                     'status' => $status,
-                    'created_by' => $categoryData['created_by'],
+                    // 'updated_by' => $user->uuid,
                 ]);
-
 
                 $updatedCategories[] = $category->toArray();
             }
@@ -150,7 +160,7 @@ class ProductCategoryController extends Controller
             return $this->core->setResponse('error', 'Product Category fail to updated.', NULL, FALSE, 500);
         } catch (\Exception $ex) {
             DB::rollback();
-            return $this->core->setResponse('error', "Product Category fail to updated. $ex", NULL, FALSE, 500);
+            return $this->core->setResponse('error', "Product Category fail to updated.", NULL, FALSE, 500);
         }
 
         return $this->core->setResponse('success', 'Product Category updated', $updatedCategories);
@@ -165,24 +175,37 @@ class ProductCategoryController extends Controller
 
     public function destroyBulk(Request $request)
     {
-        print_r($request->all());
-        return $request->all;
-        // $validator = $this->validation('delete', $request);
 
-        // if ($validator->fails()) {
+        $validator = $this->validation('delete', $request);
 
-        //     return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
-        // }
+        if ($validator->fails()) {
+            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+        }
 
-        // $uuids = $request->input('uuids');
+        $uuids = $request->input('uuids');
+        $categories = null;
+        try {
+            $categories = ProductCategory::lockForUpdate()->whereIn('uuid', $uuids);
 
-        // try {
-        //     $deletedCategories = ProductCategory::whereIn('uuid', $uuids)->delete();
-        // } catch (\Exception $e) {
-        //     return response()->json(['message' => 'Error during bulk deletion'], 500);
-        // }
+            // Compare the count of found UUIDs with the count from the request array
+            if (!$categories || (count($categories->get()) !== count($uuids))) {
+                return response()->json(['message' => 'Product Categories fail to deleted, because invalid uuid(s)'], 400);
+            }
 
-        // return $this->core->setResponse('success', 'Product Categories deleted', $deletedCategories);
+            //Check Auth & update user uuid to deleted_by
+            // if (Auth::check()) {
+            //     $user = Auth::user();
+            // $categories->deleted_by = $user->uuid;
+            // $categories->save();
+            // }
+
+            $categories->delete();
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error during bulk deletion ' . $e->getMessage()], 500);
+        }
+
+        return $this->core->setResponse('success', "Product Categories deleted", null, 200);
     }
 
 
@@ -191,6 +214,16 @@ class ProductCategoryController extends Controller
 
         switch ($type) {
 
+            case 'delete':
+
+                $validator = [
+                    'uuids' => 'required|array',
+                    'uuids.*' => 'required|uuid',
+                    // 'uuids.*' => 'required|exists:product_categories,uuid',
+                ];
+
+                break;
+
             case 'create' || 'update':
 
                 $validator = [
@@ -198,14 +231,6 @@ class ProductCategoryController extends Controller
                     '*.description' => 'required|max:140|min:5',
                     '*.status' => 'in:1,2,3',
                     '*.created_by' => 'required|string|min:4',
-                ];
-
-                break;
-
-            case 'delete':
-
-                $validator = [
-                    '*.uuids' => 'required|exists:product_categories,uuid',
                 ];
 
                 break;

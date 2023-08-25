@@ -21,7 +21,8 @@ return new class extends Migration
             $table->integer('status')->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated');
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
-            $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+            $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+            $table->foreign('deleted_by')->references('uuid')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });
