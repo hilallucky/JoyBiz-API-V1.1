@@ -9,16 +9,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Nonstandard\Uuid;
 use Ramsey\Uuid\Provider\Node\RandomNodeProvider;
 
-class ProductCategory extends Model
+class Product extends Model
 {
     use HasFactory, SoftDeletes, Uuids;
 
-    protected $table = 'product_categories';
+    protected $table = 'products';
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id',
         'uuid',
+        'product_category_uuid',
         'name',
         'description',
         'status',
@@ -44,7 +44,6 @@ class ProductCategory extends Model
 
             /* validate duplicate UUID */
             do {
-
                 $uuid = Uuid::uuid1($nodeProvider->getNode());
 
                 $uuid_exist = self::where('uuid', $uuid)->exists();
@@ -54,8 +53,8 @@ class ProductCategory extends Model
         });
     }
 
-    public function products()
+    public function category()
     {
-        return $this->hasMany(Product::class, 'product_category_uuid', 'uuid');
+        return $this->belongsTo(ProductCategory::class, 'product_category_uuid', 'uuid');
     }
 }
