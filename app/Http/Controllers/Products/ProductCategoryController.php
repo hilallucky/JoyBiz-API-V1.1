@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductCategoryResource;
 use App\Models\Products\ProductCategory;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -42,7 +43,9 @@ class ProductCategoryController extends Controller
 
         $categories = $query->get();
 
-        return $this->core->setResponse('success', 'Product Category Found', $categories);
+        $categoryList = ProductCategoryResource::collection($categories);
+
+        return $this->core->setResponse('success', 'Product Category Found', $categoryList);
     }
 
     //Create new product information
@@ -57,31 +60,37 @@ class ProductCategoryController extends Controller
 
         $status = 1;
 
-        $categories = $request->all();
-
         try {
             DB::beginTransaction();
 
-            // // Check Auth & update user uuid to deleted_by
-            // if (Auth::check()) {
-            //     $user = Auth::user();
-            // }
+            // Check Auth & update user uuid to deleted_by
+            if (Auth::check()) {
+                $user = Auth::user();
+            }
 
-            foreach ($categories as $categoryData) {
-                if (isset($categoryData['status'])) {
-                    $status = $categoryData['status'];
+            $categories = $request->all();
+            foreach ($categories as $category) {
+                if (isset($category['status'])) {
+                    $status = $category['status'];
                 }
 
-                $categories = ProductCategory::create([
-                    'uuid' => Str::uuid(),
-                    'name' => $categoryData['name'],
-                    'description' => $categoryData['description'],
+                $newCategory = [
+                    'uuid' => Str::uuid()->toString(),
+                    'name' => $category['name'],
+                    'description' => $category['description'],
                     'status' => $status,
                     // 'created_by' => $user->uuid,
-                ]);
+                ];
 
-                $newCategories[] = $categories->toArray();
+                $newCategoryAdd = new ProductCategory($newCategory);
+                $newCategoryAdd->save();
+
+                $newCategories[] = $newCategoryAdd->uuid;
             }
+
+            $categoryList = ProductCategory::whereIn('uuid', $newCategories)->get();
+
+            $categoryList = ProductCategoryResource::collection($categoryList);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -89,7 +98,7 @@ class ProductCategoryController extends Controller
             return $this->core->setResponse('error', 'Product Category fail to created.', NULL, FALSE, 500);
         }
 
-        return $this->core->setResponse('success', 'Product Category created', $newCategories, false, 201);
+        return $this->core->setResponse('success', 'Product Category created', $categoryList, false, 201);
     }
 
     //Get product category information by ids
@@ -101,19 +110,15 @@ class ProductCategoryController extends Controller
 
         $status = $request->input('status', 1);
 
-        if (!$category = ProductCategory::where(['uuid' => $uuid, 'status' => $status])->firstOrFail()) {
+        $category = ProductCategory::where(['uuid' => $uuid, 'status' => $status])->get();
+        // print_r($category);
+        if (!isset($category)) {
             return $this->core->setResponse('error', 'Product Category Not Found', NULL, FALSE, 400);
         }
 
-        return $this->core->setResponse('success', 'Product Category Found', $category);
-    }
+        $categoryList = ProductCategoryResource::collection($category);
 
-    //Update product category information by ids
-    public function update(Request $request, $uuid)
-    {
-        $category = ProductCategory::where('uuid', $uuid)->first();
-        $category->update($request->all());
-        return response()->json($category);
+        return $this->core->setResponse('success', 'Product Category Found', $categoryList);
     }
 
     //UpdateBulk product category information
@@ -124,7 +129,6 @@ class ProductCategoryController extends Controller
         $validator = $this->validation('update', $request);
 
         if ($validator->fails()) {
-
             return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
         }
 
@@ -133,17 +137,17 @@ class ProductCategoryController extends Controller
         try {
             DB::beginTransaction();
 
-            // // Check Auth & update user uuid to deleted_by
-            // if (Auth::check()) {
-            //     $user = Auth::user();
-            // }
+            // Check Auth & update user uuid to deleted_by
+            if (Auth::check()) {
+                $user = Auth::user();
+            }
 
             foreach ($categories as $categoryData) {
                 if (isset($categoryData['status'])) {
                     $status = $categoryData['status'];
                 }
 
-                $category = ProductCategory::where('uuid', $categoryData['uuid'])->firstOrFail();
+                $category = ProductCategory::lockForUpdate()->where('uuid', $categoryData['uuid'])->firstOrFail();
                 $category->update([
                     'name' => $categoryData['name'],
                     'description' => $categoryData['description'],
@@ -154,6 +158,10 @@ class ProductCategoryController extends Controller
                 $updatedCategories[] = $category->toArray();
             }
 
+            $categoryList = ProductCategory::whereIn('uuid', array_column($updatedCategories, 'uuid'))->get();
+
+            $categoryList = ProductCategoryResource::collection($categoryList);
+
             DB::commit();
         } catch (QueryException $e) {
             DB::rollback();
@@ -163,16 +171,10 @@ class ProductCategoryController extends Controller
             return $this->core->setResponse('error', "Product Category fail to updated.", NULL, FALSE, 500);
         }
 
-        return $this->core->setResponse('success', 'Product Category updated', $updatedCategories);
+        return $this->core->setResponse('success', 'Product Category updated', $categoryList);
     }
 
     //Delete product information by ids
-    public function destroy($uuid)
-    {
-        ProductCategory::find($uuid)->delete();
-        return response()->json(['message' => 'Category deleted']);
-    }
-
     public function destroyBulk(Request $request)
     {
 
@@ -229,7 +231,7 @@ class ProductCategoryController extends Controller
                     '*.name' => 'required|string|max:255|min:2',
                     '*.description' => 'required|max:140|min:5',
                     '*.status' => 'in:1,2,3',
-                    '*.created_by' => 'required|string|min:4',
+                    // '*.created_by' => 'required|string|min:4',
                 ];
 
                 break;

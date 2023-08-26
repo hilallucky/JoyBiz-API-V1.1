@@ -11,7 +11,7 @@ use Ramsey\Uuid\Provider\Node\RandomNodeProvider;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes, Uuids;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'products';
     protected $primaryKey = 'id';
@@ -27,31 +27,27 @@ class Product extends Model
         'deleted_by',
     ];
 
+    protected $visible = [
+        'id',
+        'product_category_uuid',
+        'uuid',
+        'name',
+        'description',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
+
+
     /**
      * Indicates if the IDs are UUID's.
      *
      * @var bool
      */
     public $incrementing = false;
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-
-            $nodeProvider = new RandomNodeProvider();
-
-            /* validate duplicate UUID */
-            do {
-                $uuid = Uuid::uuid1($nodeProvider->getNode());
-
-                $uuid_exist = self::where('uuid', $uuid)->exists();
-            } while ($uuid_exist);
-
-            $model->uuid = $uuid;
-        });
-    }
 
     public function category()
     {

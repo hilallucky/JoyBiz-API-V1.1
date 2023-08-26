@@ -11,23 +11,17 @@ $router->group(['prefix' => 'products', 'as' => 'products'], function () use ($r
     $router->get('/', ['as' => 'all', 'uses' => 'Products\ProductController@index']);
 
     /* Show Product by uuid can add request param status=0 or 1*/
-    $router->get('/{uuid}', ['as' => 'show', 'uses' => 'Products\ProductController@show']);
-
-    /* Update Product by uuid */
-    $router->put('/{uuid}', ['as' => 'update', 'uses' => 'Products\ProductController@update']);
-
-    /* Update Bulk Product by uuid */
-    $router->put('/', ['as' => 'update', 'uses' => 'Products\ProductController@updateBulk']);
+    $router->get('/{uuid}/details', ['as' => 'show', 'uses' => 'Products\ProductController@show']);
 
     /* create Product */
     $router->post('/', ['as' => 'create', 'uses' => 'Products\ProductController@store']);
 
-    /* Single delete Product */
-    $router->delete('/{uuid}/delete', ['as' => 'delete', 'uses' => 'Products\ProductController@destroy']);
+    /* Update Bulk Product by uuid */
+    $router->put('/', ['as' => 'update', 'uses' => 'Products\ProductController@updateBulk']);
 
     /* Bulk delete Product */
     $router->delete('/delete', ['as' => 'show', 'uses' => 'Products\ProductController@destroyBulk']);
 
-
     // });
+
 });
