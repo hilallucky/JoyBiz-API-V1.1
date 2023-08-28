@@ -174,18 +174,16 @@ class ProductController extends Controller
                 }
             }
 
-            DB::enableQueryLog();
-            // $productList = Product::with('category')->whereIn('uuid', array_column($newProducts, 'uuid'))->get();
+            // DB::enableQueryLog();
             $productList = Product::with('category')
-                ->withWhereHas('prices', function ($queryAtt) use ($status) {
+                ->withWhereHas('prices.priceCode', function ($queryAtt) use ($status) {
                     $queryAtt->where('status', $status);
                 })
                 ->whereIn('uuid', array_column($newProducts, 'uuid'))
                 ->get();
 
-            $query = DB::getQueryLog();
+            // $query = DB::getQueryLog();
             // dd($query);
-            print_r(array_column($newProducts, 'uuid'));
 
             $productList = ProductResource::collection($productList);
 

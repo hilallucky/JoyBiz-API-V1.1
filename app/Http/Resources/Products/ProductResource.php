@@ -29,7 +29,14 @@ class ProductResource extends JsonResource
             "updated_at" => $this->updated_at,
             "deleted_by" => $this->deleted_by,
             "deleted_at" => $this->deleted_at,
-            "product_category" => new ProductCategoryResource($this->when($this->relationLoaded('category'), $this->category)),
+            // "product_category" => new ProductCategoryResource($this->when($this->relationLoaded('category'), $this->category)),
+            'product_category' => $this->whenLoaded('category', function () {
+                return [
+                    "uuid" => $this->category->uuid,
+                    "name" => $this->category->name,
+                    "description" => $this->category->description,
+                ];
+            }),
         ];
     }
 }
