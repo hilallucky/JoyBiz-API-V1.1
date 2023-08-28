@@ -16,6 +16,9 @@ $router->group(['prefix' => 'products', 'as' => 'products'], function () use ($r
     /* create Product */
     $router->post('/', ['as' => 'create', 'uses' => 'Products\ProductController@store']);
 
+    /* create Product with Prices*/
+    $router->post('/prices', ['as' => 'create-prices', 'uses' => 'Products\ProductController@storeIncludePrices']);
+
     /* Update Bulk Product by uuid */
     $router->put('/', ['as' => 'update', 'uses' => 'Products\ProductController@updateBulk']);
 

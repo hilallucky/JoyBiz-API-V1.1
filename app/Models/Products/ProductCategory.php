@@ -22,6 +22,7 @@ class ProductCategory extends Model
         'name',
         'description',
         'status',
+        'remarks',
         'created_by',
         'updated_by',
         'deleted_by',

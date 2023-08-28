@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->dateTime('email_verified_at')->nullable()->description('Member email verification date');
             $table->string('password')->description('Member password');
             $table->timestamp('last_logged_in')->nullable()->description('Member latest login');
+            $table->text('remarks')->comment('Notes of product code')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

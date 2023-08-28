@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             ClientSeeder::class,
             ProductCategorySeeder::class,
+            // PriceCodeSeeder::class,
             ProductSeeder::class,
         ]);
     }

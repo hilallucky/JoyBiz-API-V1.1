@@ -53,4 +53,14 @@ class Product extends Model
     {
         return $this->belongsTo(ProductCategory::class, 'product_category_uuid', 'uuid');
     }
+
+    public function attributes()
+    {
+        return $this->hasMany(ProductAttribute::class, 'product_uuid', 'uuid');
+    }
+
+    public function prices()
+    {
+        return $this->hasMany(ProductPrice::class, 'product_uuid', 'uuid');
+    }
 }

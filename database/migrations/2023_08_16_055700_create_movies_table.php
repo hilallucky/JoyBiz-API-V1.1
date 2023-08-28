@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('embed_url')->unique();
             $table->integer('viewed')->default(0);
             $table->json('genres')->nullable();
+            $table->text('remarks')->comment('Notes of product code')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

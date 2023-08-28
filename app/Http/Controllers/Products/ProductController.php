@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProductResource;
+use App\Http\Resources\Products\ProductResource;
 use App\Models\Products\Product;
+use App\Models\Products\ProductPrice;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,14 +18,16 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
+        // DB::enableQueryLog();
+
         $query = Product::with('category');
 
         // Apply filters based on request parameters
+        $status = 1;
         if ($request->has('status')) {
-            $query->where('status', $request->input('status'));
-        } else {
-            $query->where('status', 1);
+            $status = $request->input('status');
         }
+        $query->where('status', $status);
 
         if ($request->has('name')) {
             $query->where('name', 'ilike', '%' . $request->input('name') . '%');
@@ -45,7 +48,12 @@ class ProductController extends Controller
             }
         }
 
-        $products = $query->get();
+        $products = $query->withWhereHas('attributes', function ($queryAtt) use ($status) {
+            $queryAtt->where('status', $status);
+        })->get();
+
+        // $query = DB::getQueryLog();
+        // dd($query);
 
         $productList = ProductResource::collection($products);
 
@@ -71,6 +79,7 @@ class ProductController extends Controller
             }
 
             $products = $request->all();
+
             foreach ($products as $product) {
 
                 $newProduct = [
@@ -89,6 +98,94 @@ class ProductController extends Controller
             }
 
             $productList = Product::with('category')->whereIn('uuid', array_column($newProducts, 'uuid'))->get();
+
+            $productList = ProductResource::collection($productList);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->core->setResponse('error', 'Product fail to created.' . $e->getMessage(), NULL, FALSE, 500);
+        }
+
+        return $this->core->setResponse('success', 'Product created', $productList, false, 201);
+
+    }
+
+    //Strore data product with prices and variants
+    public function storeIncludePrices(Request $request)
+    {
+        $validator = $this->validation('createWithPrices', $request);
+
+        if ($validator->fails()) {
+            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+        }
+
+        $status = 1;
+
+        try {
+            DB::beginTransaction();
+
+            // Check Auth & update user uuid to deleted_by
+            if (Auth::check()) {
+                $user = Auth::user();
+            }
+
+            $products = $request->all();
+
+            foreach ($products as $product) {
+                $newProduct = [
+                    'uuid' => Str::uuid()->toString(),
+                    'product_category_uuid' => $product['product_category_uuid'],
+                    'name' => $product['name'],
+                    'description' => $product['description'],
+                    'status' => $status,
+                    // 'created_by' => $user->uuid,
+                ];
+
+                $newProductAdd = new Product($newProduct);
+                $newProductAdd->save();
+
+                $newProducts[] = $newProduct;
+
+                // Price
+                $prices = $product['prices'];
+                foreach ($prices as $price) {
+                    $newPrice = [
+                        'uuid' => Str::uuid()->toString(),
+                        'product_uuid' => $newProduct['uuid'],
+                        'price_code_uuid' => $price['price_code_uuid'],
+                        'price' => $price['price'],
+                        'discount_type' => $price['discount_type'],
+                        'discount_value' => $price['discount_value'],
+                        'discount_value_amount' => $price['discount_value_amount'],
+                        'price_after_discount' => $price['price_after_discount'],
+                        'pv' => $price['pv'],
+                        'xv' => $price['xv'],
+                        'bv' => $price['bv'],
+                        'rv' => $price['rv'],
+                        // 'created_by' => $user->uuid,
+                    ];
+
+                    $newPriceAdd = new ProductPrice($newPrice);
+                    $newPriceAdd->save();
+
+                    $newPrices[] = $newPrice;
+
+                }
+            }
+
+            DB::enableQueryLog();
+            // $productList = Product::with('category')->whereIn('uuid', array_column($newProducts, 'uuid'))->get();
+            $productList = Product::with('category')
+                ->withWhereHas('prices', function ($queryAtt) use ($status) {
+                    $queryAtt->where('status', $status);
+                })
+                ->whereIn('uuid', array_column($newProducts, 'uuid'))
+                ->get();
+
+            $query = DB::getQueryLog();
+            // dd($query);
+            print_r(array_column($newProducts, 'uuid'));
 
             $productList = ProductResource::collection($productList);
 
@@ -239,6 +336,29 @@ class ProductController extends Controller
                     '*.status' => 'in:1,2,3',
                     // '*.created_by' => 'required|string|min:4',
                     '*.product_category_uuid' => 'required|uuid',
+                ];
+
+                break;
+
+            case 'createWithPrices':
+
+                $validator = [
+                    '*.name' => 'required|string|max:255|min:2',
+                    '*.description' => 'required|max:140|min:5',
+                    '*.status' => 'in:1,2,3',
+                    // '*.created_by' => 'required|string|min:4',
+                    '*.product_category_uuid' => 'required|uuid',
+                    '*.prices' => 'required|array',
+                    'prices.price_code_uuid' => 'required|uuid',
+                    'prices.price' => 'required|numeric',
+                    'prices.discount_type' => 'required|in:percentage,amount',
+                    'prices.discount_value' => 'required|numeric',
+                    'prices.discount_value_amount' => 'required|numeric',
+                    'prices.price_after_discount' => 'required|numeric',
+                    'prices.pv' => 'required|numeric',
+                    'prices.xv' => 'required|numeric',
+                    'prices.bv' => 'required|numeric',
+                    'prices.rv' => 'required|numeric',
                 ];
 
                 break;

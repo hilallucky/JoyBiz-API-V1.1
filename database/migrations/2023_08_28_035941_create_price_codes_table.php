@@ -12,21 +12,22 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('members', function (Blueprint $table) {
+        Schema::create('price_codes', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->string('first_name', 100)->comment('First Name');
-            $table->string('last_name', 100)->comment('Last Name')->nullable();
-            $table->integer('user_id')->unique(false)->nullable()->comment('User ID for login in users table');
-            $table->string('phone', 100)->comment('Phone Number')->nullable();
-            $table->integer('sponsor_id')->comment('Sponsor ID')->nullable();
-            $table->integer('user_uuid')->comment('User uuid (get from table users)')->nullable();
-            $table->uuid('country_id')->comment('Country ID (get from table countries')->nullable();
+            $table->string('code')->comment('Short code of price code')->unique();
+            $table->string('name')->comment('Name of price code');
+            $table->string('description')->comment('Description of product code')->nullable();
             $table->integer('status')->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated');
             $table->text('remarks')->comment('Notes of product code')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
-            $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+            $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+
+            // $table->foreign('created_by')->references('uuid')->on('users');
+            // $table->foreign('updated_by')->references('uuid')->on('users');
+            // $table->foreign('deleted_by')->references('uuid')->on('users');
+
             $table->timestamps();
             $table->softDeletes();
         });
@@ -39,6 +40,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('members');
+        Schema::dropIfExists('price_codes');
     }
 };

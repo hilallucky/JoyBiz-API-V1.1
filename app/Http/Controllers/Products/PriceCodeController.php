@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Products\ProductCategoryResource;
-use App\Models\Products\ProductCategory;
+use App\Http\Resources\Products\PriceCodeResource;
+use App\Models\Products\PriceCode;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,18 +12,23 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class ProductCategoryController extends Controller
+class PriceCodeController extends Controller
 {
+
     //Get all product informations
     public function index(Request $request)
     {
-        $query = ProductCategory::query();
+        $query = PriceCode::query();
 
         // Apply filters based on request parameters
         if ($request->has('status')) {
             $query->where('status', $request->input('status'));
         } else {
             $query->where('status', 1);
+        }
+
+        if ($request->has('code')) {
+            $query->where('code', 'ilike', '%' . $request->input('code') . '%');
         }
 
         if ($request->has('name')) {
@@ -41,19 +46,20 @@ class ProductCategoryController extends Controller
             }
         }
 
-        $categories = $query->get();
+        $priceCodes = $query->get();
 
-        $categoryList = ProductCategoryResource::collection($categories);
+        $priceCodeList = PriceCodeResource::collection($priceCodes);
 
-        return $this->core->setResponse('success', 'Product Category Found', $categoryList);
+        return $this->core->setResponse('success', 'Price Code Found', $priceCodeList);
     }
 
-    //Create new product information
+    //Create new product price information
     public function store(Request $request)
     {
         $validator = $this->validation('create', $request);
 
         if ($validator->fails()) {
+
             return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
         }
 
@@ -67,40 +73,41 @@ class ProductCategoryController extends Controller
                 $user = Auth::user();
             }
 
-            $categories = $request->all();
-            foreach ($categories as $category) {
-                if (isset($category['status'])) {
-                    $status = $category['status'];
+            $priceCodes = $request->all();
+            foreach ($priceCodes as $priceCode) {
+                if (isset($priceCode['status'])) {
+                    $status = $priceCode['status'];
                 }
 
-                $newCategory = [
+                $newPriceCode = [
                     'uuid' => Str::uuid()->toString(),
-                    'name' => $category['name'],
-                    'description' => $category['description'],
+                    'code' => $priceCode['code'],
+                    'name' => $priceCode['name'],
+                    'description' => $priceCode['description'],
                     'status' => $status,
                     // 'created_by' => $user->uuid,
                 ];
 
-                $newCategoryAdd = new ProductCategory($newCategory);
-                $newCategoryAdd->save();
+                $newPriceCodeAdd = new PriceCode($newPriceCode);
+                $newPriceCodeAdd->save();
 
-                $newCategories[] = $newCategoryAdd->uuid;
+                $newPriceCodes[] = $newPriceCodeAdd->uuid;
             }
 
-            $categoryList = ProductCategory::whereIn('uuid', $newCategories)->get();
+            $priceCodeList = PriceCode::whereIn('uuid', $newPriceCodes)->get();
 
-            $categoryList = ProductCategoryResource::collection($categoryList);
+            $priceCodeList = PriceCodeResource::collection($priceCodeList);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return $this->core->setResponse('error', 'Product Category fail to created.', NULL, FALSE, 500);
+            return $this->core->setResponse('error', 'Price Code fail to created. ' . $e->getMessage(), NULL, FALSE, 500);
         }
 
-        return $this->core->setResponse('success', 'Product Category created', $categoryList, false, 201);
+        return $this->core->setResponse('success', 'Price Code created', $priceCodeList, false, 201);
     }
 
-    //Get product category information by ids
+    //Get product price information by ids
     public function show(Request $request, $uuid)
     {
         if (!Str::isUuid($uuid)) {
@@ -109,21 +116,21 @@ class ProductCategoryController extends Controller
 
         $status = $request->input('status', 1);
 
-        $category = ProductCategory::where(['uuid' => $uuid, 'status' => $status])->get();
-        // print_r($category);
-        if (!isset($category)) {
-            return $this->core->setResponse('error', 'Product Category Not Found', NULL, FALSE, 400);
+        $priceCode = PriceCode::where(['uuid' => $uuid, 'status' => $status])->get();
+        // print_r($priceCode);
+        if (!isset($priceCode)) {
+            return $this->core->setResponse('error', 'Price Code Not Found', NULL, FALSE, 400);
         }
 
-        $categoryList = ProductCategoryResource::collection($category);
+        $priceCodeList = PriceCodeResource::collection($priceCode);
 
-        return $this->core->setResponse('success', 'Product Category Found', $categoryList);
+        return $this->core->setResponse('success', 'Price Code Found', $priceCodeList);
     }
 
-    //UpdateBulk product category information
+    //UpdateBulk product price information
     public function updateBulk(Request $request)
     {
-        $categories = $request->all();
+        $priceCodes = $request->all();
 
         $validator = $this->validation('update', $request);
 
@@ -141,39 +148,39 @@ class ProductCategoryController extends Controller
                 $user = Auth::user();
             }
 
-            foreach ($categories as $categoryData) {
-                if (isset($categoryData['status'])) {
-                    $status = $categoryData['status'];
+            foreach ($priceCodes as $priceCodeData) {
+                if (isset($priceCodeData['status'])) {
+                    $status = $priceCodeData['status'];
                 }
 
-                $category = ProductCategory::lockForUpdate()->where('uuid', $categoryData['uuid'])->firstOrFail();
-                $category->update([
-                    'name' => $categoryData['name'],
-                    'description' => $categoryData['description'],
+                $priceCode = PriceCode::lockForUpdate()->where('uuid', $priceCodeData['uuid'])->firstOrFail();
+                $priceCode->update([
+                    'name' => $priceCodeData['name'],
+                    'description' => $priceCodeData['description'],
                     'status' => $status,
                     // 'updated_by' => $user->uuid,
                 ]);
 
-                $updatedCategories[] = $category->toArray();
+                $updatedPriceCodes[] = $priceCode->toArray();
             }
 
-            $categoryList = ProductCategory::whereIn('uuid', array_column($updatedCategories, 'uuid'))->get();
+            $priceCodeList = PriceCode::whereIn('uuid', array_column($updatedPriceCodes, 'uuid'))->get();
 
-            $categoryList = ProductCategoryResource::collection($categoryList);
+            $priceCodeList = PriceCodeResource::collection($priceCodeList);
 
             DB::commit();
         } catch (QueryException $e) {
             DB::rollback();
-            return $this->core->setResponse('error', 'Product Category fail to updated.', NULL, FALSE, 500);
+            return $this->core->setResponse('error', 'Price Code fail to updated. ' . $e->getMessage(), NULL, FALSE, 500);
         } catch (\Exception $ex) {
             DB::rollback();
-            return $this->core->setResponse('error', "Product Category fail to updated.", NULL, FALSE, 500);
+            return $this->core->setResponse('error', "Price Code fail to updated. " . $ex->getMessage(), NULL, FALSE, 500);
         }
 
-        return $this->core->setResponse('success', 'Product Category updated', $categoryList);
+        return $this->core->setResponse('success', 'Price Code updated', $priceCodeList);
     }
 
-    //Delete product information by ids
+    //Delete product price information by ids
     public function destroyBulk(Request $request)
     {
 
@@ -184,29 +191,29 @@ class ProductCategoryController extends Controller
         }
 
         $uuids = $request->input('uuids');
-        $categories = null;
+        $priceCodes = null;
         try {
-            $categories = ProductCategory::lockForUpdate()->whereIn('uuid', $uuids);
+            $priceCodes = PriceCode::lockForUpdate()->whereIn('uuid', $uuids);
 
             // Compare the count of found UUIDs with the count from the request array
-            if (!$categories || (count($categories->get()) !== count($uuids))) {
-                return response()->json(['message' => 'Product Categories fail to deleted, because invalid uuid(s)'], 400);
+            if (!$priceCodes || (count($priceCodes->get()) !== count($uuids))) {
+                return response()->json(['message' => 'Price Codes fail to deleted, because invalid uuid(s)'], 400);
             }
 
             //Check Auth & update user uuid to deleted_by
             // if (Auth::check()) {
             //     $user = Auth::user();
-            // $categories->deleted_by = $user->uuid;
-            // $categories->save();
+            // $priceCodes->deleted_by = $user->uuid;
+            // $priceCodes->save();
             // }
 
-            $categories->delete();
+            $priceCodes->delete();
 
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error during bulk deletion ' . $e->getMessage()], 500);
         }
 
-        return $this->core->setResponse('success', "Product Categories deleted", null, 200);
+        return $this->core->setResponse('success', "Price Codes deleted", null, 200);
     }
 
     private function validation($type = null, $request)
@@ -219,7 +226,7 @@ class ProductCategoryController extends Controller
                 $validator = [
                     'uuids' => 'required|array',
                     'uuids.*' => 'required|uuid',
-                    // 'uuids.*' => 'required|exists:product_categories,uuid',
+                    // 'uuids.*' => 'required|exists:price_codes,uuid',
                 ];
 
                 break;
@@ -227,9 +234,11 @@ class ProductCategoryController extends Controller
             case 'create' || 'update':
 
                 $validator = [
+                    '*.code' => 'required|string|max:255|min:2',
                     '*.name' => 'required|string|max:255|min:2',
                     '*.description' => 'required|max:140|min:5',
                     '*.status' => 'in:1,2,3',
+                    '*.remarks' => 'string|min:4',
                     // '*.created_by' => 'required|string|min:4',
                 ];
 
