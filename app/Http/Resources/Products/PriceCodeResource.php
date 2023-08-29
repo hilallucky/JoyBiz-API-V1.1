@@ -16,7 +16,7 @@ class PriceCodeResource extends JsonResource
     {
 
         return [
-            "id" => $this->id,
+            // "id" => $this->id,
             "uuid" => $this->uuid,
             "code" => $this->code,
             "name" => $this->name,

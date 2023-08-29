@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->uuid('uuid')->unique();
             $table->uuid('product_uuid');
             $table->uuid('price_code_uuid');
-            $table->enum('status', [0, 1, 2])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
+            $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
             $table->decimal('price', 10, 2)->default(0);
             $table->enum('discount_type', ['percentage', 'amount'])->nullable();
             $table->decimal('discount_value', 10, 2)->nullable()->default(0);
@@ -27,7 +27,7 @@ return new class extends Migration {
             $table->decimal('xv', 10, 2)->default(0);
             $table->decimal('bv', 10, 2)->default(0);
             $table->decimal('rv', 10, 2)->default(0);
-            $table->text('remarks')->comment('Notes of product code')->nullable();
+            $table->text('remarks')->comment('Notes of product prices')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

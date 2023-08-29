@@ -95,6 +95,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     //One user id has one or more member id's
     public function members()
     {
-        return $this->hasMany(Member::class, 'user_uuid', 'uuid');
+        return $this->hasMany(
+            Member::class,
+            'user_uuid',
+            'uuid'
+        );
     }
 }

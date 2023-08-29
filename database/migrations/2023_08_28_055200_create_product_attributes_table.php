@@ -18,8 +18,8 @@ return new class extends Migration {
             $table->uuid('product_uuid')->comment('Product uuid (get from table products')->nullable();
             $table->string('name')->comment('Name of product attribute')->nullable();
             $table->string('description')->comment('Description of product attribute')->nullable();
-            $table->enum('status', [0, 1, 2])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
-            $table->text('remarks')->comment('Notes of product code')->nullable();
+            $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
+            $table->text('remarks')->comment('Notes of product attributes')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

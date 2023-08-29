@@ -34,6 +34,10 @@ class MemberController extends Controller
         //     'message' => 'Member registered successfully',
         //     'data' => $member
         // ], 201);
-        return $this->core->setResponse('success', 'Member registered successfully', $member);
+        return $this->core->setResponse(
+            'success',
+            'Member registered successfully',
+            $member
+        );
     }
 }

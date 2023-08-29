@@ -18,8 +18,8 @@ return new class extends Migration {
             $table->string('code')->comment('Short code of price code')->unique();
             $table->string('name')->comment('Name of price code');
             $table->string('description')->comment('Description of product code')->nullable();
-            $table->integer('status')->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated');
-            $table->text('remarks')->comment('Notes of product code')->nullable();
+            $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
+            $table->text('remarks')->comment('Notes of price code')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

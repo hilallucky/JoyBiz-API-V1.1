@@ -43,11 +43,19 @@ class ProductPrice extends Model
 
     public function priceCode()
     {
-        return $this->belongsTo(PriceCode::class, 'price_code_uuid', 'uuid');
+        return $this->belongsTo(
+            PriceCode::class,
+            'price_code_uuid',
+            'uuid'
+        );
     }
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_uuid', 'uuid');
+        return $this->belongsTo(
+            Product::class,
+            'product_uuid',
+            'uuid'
+        );
     }
 }

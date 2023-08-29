@@ -6,16 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductAttribute extends Model
+class ProductGroupHeader extends Model
 {
 
-    use HasFactory, SoftDeletes; //, Uuids;
+    use HasFactory, SoftDeletes;
 
-    protected $table = 'product_attributes';
+    protected $table = 'product_group_headers';
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id',
         'uuid',
         'product_uuid',
         'name',
@@ -27,6 +26,23 @@ class ProductAttribute extends Model
         'deleted_by',
     ];
 
+    protected $visible = [
+        'id',
+        'uuid',
+        'product_uuid',
+        'name',
+        'description',
+        'status',
+        'remarks',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
+
+
     /**
      * Indicates if the IDs are UUID's.
      *
@@ -34,12 +50,22 @@ class ProductAttribute extends Model
      */
     public $incrementing = false;
 
-    public function products()
+    public function product()
     {
-        return $this->belongsTo(
+        return $this->hasOne(
             Product::class,
             'product_uuid',
             'uuid'
         );
     }
+
+    public function compositions()
+    {
+        return $this->hasMany(
+            ProductGroupComposition::class,
+            'product_group_header_uuid',
+            'uuid'
+        );
+    }
+
 }

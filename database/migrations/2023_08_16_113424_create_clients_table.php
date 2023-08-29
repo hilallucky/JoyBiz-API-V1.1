@@ -18,11 +18,11 @@ return new class extends Migration {
             $table->string('ip', 100)->comment('Client IP')->nullable();
             $table->string('domain_name', 100)->comment('Client Domaian Name')->nullable();
             $table->string('client_key')->comment('Client Key');
-            $table->integer('status')->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated');
+            $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
             $table->string('description')->comment('Description')->nullable();
             $table->string('phone', 100)->comment('Phone Number')->nullable();
             $table->uuid('country_id')->comment('Country ID (get from table countries')->nullable();
-            $table->text('remarks')->comment('Notes of product code')->nullable();
+            $table->text('remarks')->comment('Notes of clients')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

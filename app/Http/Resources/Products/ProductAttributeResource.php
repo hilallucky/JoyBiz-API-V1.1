@@ -15,9 +15,14 @@ class ProductAttributeResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "id" => $this->id,
+            // "id" => $this->id,
             "uuid" => $this->uuid,
-            "product" => new ProductResource($this->when($this->relationLoaded('product'), $this->product)),
+            "product" => new ProductResource(
+                $this->when(
+                    $this->relationLoaded('product'),
+                    $this->product
+                )
+            ),
             "name" => $this->name,
             "description" => $this->description,
             "status" => $this->status,

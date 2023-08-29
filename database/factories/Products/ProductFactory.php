@@ -26,7 +26,7 @@ class ProductFactory extends Factory
         return [
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
-                "product_category_uuid" => $electronic_uuid,
+                "category_uuid" => $electronic_uuid,
                 "name" => "Laptop",
                 "description" => "Laptop Desc",
                 "status" => 1,
@@ -36,7 +36,7 @@ class ProductFactory extends Factory
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
-                "product_category_uuid" => $cloth_uuid,
+                "category_uuid" => $cloth_uuid,
                 "name" => "Laptop",
                 "description" => "Laptop Desc",
                 "status" => 1,
@@ -46,7 +46,7 @@ class ProductFactory extends Factory
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
-                "product_category_uuid" => $book_uuid,
+                "category_uuid" => $book_uuid,
                 "name" => "Laptop",
                 "description" => "Laptop Desc",
                 "status" => 1,

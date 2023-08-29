@@ -12,20 +12,23 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('product_group_compositions', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->string('first_name', 100)->description('Member first name');
-            $table->string('last_name', 100)->description('Member last name')->nullable();
-            $table->string('email')->unique()->description('Member email')->nullable();
-            $table->dateTime('email_verified_at')->nullable()->description('Member email verification date');
-            $table->string('password')->description('Member password');
-            $table->timestamp('last_logged_in')->nullable()->description('Member latest login');
+            $table->uuid('product_group_header_uuid')->comment('Product uuid (get from table product_group_headers')->nullable();
+            $table->uuid('product_uuid')->comment('Product uuid (get from table products')->nullable();
+            $table->decimal('qty', 10, 2)->default(1);
             $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
-            $table->text('remarks')->comment('Notes of users')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
-            $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+            $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+
+            // $table->foreign('created_by')->references('uuid')->on('users');
+            // $table->foreign('updated_by')->references('uuid')->on('users');
+            // $table->foreign('deleted_by')->references('uuid')->on('users');
+
+            $table->foreign('product_uuid')->references('uuid')->on('products')->onDelete('cascade');
+
             $table->timestamps();
             $table->softDeletes();
         });
@@ -38,6 +41,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('product_group_compositions');
     }
 };

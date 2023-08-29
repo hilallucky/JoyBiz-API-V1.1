@@ -18,7 +18,8 @@ class Product extends Model
 
     protected $fillable = [
         'uuid',
-        'product_category_uuid',
+        'category_uuid',
+        'is_product_group',
         'name',
         'description',
         'status',
@@ -29,7 +30,8 @@ class Product extends Model
 
     protected $visible = [
         'id',
-        'product_category_uuid',
+        'category_uuid',
+        'is_product_group',
         'uuid',
         'name',
         'description',
@@ -51,16 +53,61 @@ class Product extends Model
 
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class, 'product_category_uuid', 'uuid');
+        return $this->belongsTo(
+            ProductCategory::class,
+            'category_uuid',
+            'uuid'
+        );
     }
 
     public function attributes()
     {
-        return $this->hasMany(ProductAttribute::class, 'product_uuid', 'uuid');
+        return $this->hasMany(
+            ProductAttribute::class,
+            'product_uuid',
+            'uuid'
+        );
     }
 
     public function prices()
     {
-        return $this->hasMany(ProductPrice::class, 'product_uuid', 'uuid');
+        return $this->hasMany(
+            ProductPrice::class,
+            'product_uuid',
+            'uuid'
+        );
+    }
+
+    public function compositions()
+    {
+        return $this->belongsToMany(
+            ProductGroupComposition::class,
+            'product_uuid',
+            'uuid'
+        );
+    }
+
+    public function composition_by_header()
+    {
+        return $this->hasMany(
+            ProductGroupComposition::class,
+            'product_group_header_uuid',
+            'uuid'
+        );
+    }
+
+    // public function composition()
+    // {
+    //     return $this->hasMany(ProductGroupComposition::class, 'product_uuid', 'uuid');
+    // }
+
+    public function group()
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'product_group_compositions',
+            'product_group_header_uuid',
+            'product_uuid'
+        )->withPivot('qty');
     }
 }

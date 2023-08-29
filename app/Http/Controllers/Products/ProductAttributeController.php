@@ -21,27 +21,44 @@ class ProductAttributeController extends Controller
 
         // Apply filters based on request parameters
         if ($request->has('status')) {
-            $query->where('status', $request->input('status'));
+            $query->where(
+                'status',
+                $request->input('status')
+            );
         } else {
             $query->where('status', 1);
         }
 
         if ($request->has('product_uuid')) {
-            $query->where('product_uuid', $request->input('product_uuid'));
+            $query->where(
+                'product_uuid',
+                $request->input('product_uuid')
+            );
         }
 
         if ($request->has('name')) {
-            $query->where('name', 'ilike', '%' . $request->input('name') . '%');
+            $query->where(
+                'name',
+                'ilike',
+                '%' . $request->input('name') . '%'
+            );
         }
 
         if ($request->has('description')) {
-            $query->where('description', 'ilike', '%' . $request->input('desc') . '%');
+            $query->where(
+                'description',
+                'ilike',
+                '%' . $request->input('desc') . '%'
+            );
         }
 
         if ($request->has('created_at')) {
             $dateRange = explode(',', $request->input('created_at'));
             if (count($dateRange) === 2) {
-                $query->whereBetween('created_at', $dateRange);
+                $query->whereBetween(
+                    'created_at',
+                    $dateRange
+                );
             }
         }
 
@@ -49,7 +66,11 @@ class ProductAttributeController extends Controller
 
         $productAttributeList = ProductAttributeResource::collection($productAttributes);
 
-        return $this->core->setResponse('success', 'Product Attribute Found', $productAttributeList);
+        return $this->core->setResponse(
+            'success',
+            'Product Attribute Found',
+            $productAttributeList
+        );
     }
 
     //Create new product attribute information
@@ -58,8 +79,13 @@ class ProductAttributeController extends Controller
         $validator = $this->validation('create', $request);
 
         if ($validator->fails()) {
-
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
         $status = 1;
@@ -93,37 +119,73 @@ class ProductAttributeController extends Controller
                 $newProductAttributes[] = $newProductAttributeAdd->uuid;
             }
 
-            $productAttributeList = ProductAttribute::whereIn('uuid', $newProductAttributes)->get();
+            $productAttributeList = ProductAttribute::whereIn(
+                'uuid',
+                $newProductAttributes
+            )->get();
 
-            $productAttributeList = ProductAttributeResource::collection($productAttributeList);
+            $productAttributeList = ProductAttributeResource::collection(
+                $productAttributeList
+            );
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return $this->core->setResponse('error', 'Product Attribute fail to created. ' . $e->getMessage(), NULL, FALSE, 500);
+            return $this->core->setResponse(
+                'error',
+                'Product Attribute fail to created. ' . $e->getMessage(),
+                NULL,
+                FALSE,
+                500
+            );
         }
 
-        return $this->core->setResponse('success', 'Product Attribute created', $productAttributeList, false, 201);
+        return $this->core->setResponse(
+            'success',
+            'Product Attribute created',
+            $productAttributeList,
+            false,
+            201
+        );
     }
 
     //Get product attribute information by ids
     public function show(Request $request, $uuid)
     {
         if (!Str::isUuid($uuid)) {
-            return $this->core->setResponse('error', 'Invalid UUID format', NULL, FALSE, 400);
+            return $this->core->setResponse(
+                'error',
+                'Invalid UUID format',
+                NULL,
+                FALSE,
+                400
+            );
         }
 
         $status = $request->input('status', 1);
 
-        $productAttribute = ProductAttribute::where(['uuid' => $uuid, 'status' => $status])->get();
-        // print_r($productAttribute);
+        $productAttribute = ProductAttribute::where([
+            'uuid' => $uuid,
+            'status' => $status
+        ])->get();
+
         if (!isset($productAttribute)) {
-            return $this->core->setResponse('error', 'Product Attribute Not Found', NULL, FALSE, 400);
+            return $this->core->setResponse(
+                'error',
+                'Product Attribute Not Found',
+                NULL,
+                FALSE,
+                400
+            );
         }
 
         $productAttributeList = ProductAttributeResource::collection($productAttribute);
 
-        return $this->core->setResponse('success', 'Product Attribute Found', $productAttributeList);
+        return $this->core->setResponse(
+            'success',
+            'Product Attribute Found',
+            $productAttributeList
+        );
     }
 
     //UpdateBulk product attribute information
@@ -134,7 +196,13 @@ class ProductAttributeController extends Controller
         $validator = $this->validation('update', $request);
 
         if ($validator->fails()) {
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
         $status = 1;
@@ -152,7 +220,10 @@ class ProductAttributeController extends Controller
                     $status = $productAttributeData['status'];
                 }
 
-                $productAttribute = ProductAttribute::lockForUpdate()->where('uuid', $productAttributeData['uuid'])->firstOrFail();
+                $productAttribute = ProductAttribute::lockForUpdate()
+                    ->where('uuid', $productAttributeData['uuid'])
+                    ->firstOrFail();
+
                 $productAttribute->update([
                     'name' => $productAttributeData['name'],
                     'product_uuid' => $productAttribute['product_uuid'],
@@ -164,20 +235,41 @@ class ProductAttributeController extends Controller
                 $updatedProductAttributes[] = $productAttribute->toArray();
             }
 
-            $productAttributeList = ProductAttribute::whereIn('uuid', array_column($updatedProductAttributes, 'uuid'))->get();
+            $productAttributeList = ProductAttribute::whereIn(
+                'uuid',
+                array_column($updatedProductAttributes, 'uuid')
+            )->get();
 
-            $productAttributeList = ProductAttributeResource::collection($productAttributeList);
+            $productAttributeList = ProductAttributeResource::collection(
+                $productAttributeList
+            );
 
             DB::commit();
         } catch (QueryException $e) {
             DB::rollback();
-            return $this->core->setResponse('error', 'Product Attribute fail to updated. ' . $e->getMessage(), NULL, FALSE, 500);
+            return $this->core->setResponse(
+                'error',
+                'Product Attribute fail to updated. ' . $e->getMessage(),
+                NULL,
+                FALSE,
+                500
+            );
         } catch (\Exception $ex) {
             DB::rollback();
-            return $this->core->setResponse('error', "Product Attribute fail to updated. " . $ex->getMessage(), NULL, FALSE, 500);
+            return $this->core->setResponse(
+                'error',
+                "Product Attribute fail to updated. " . $ex->getMessage(),
+                NULL,
+                FALSE,
+                500
+            );
         }
 
-        return $this->core->setResponse('success', 'Product Attribute updated', $productAttributeList);
+        return $this->core->setResponse(
+            'success',
+            'Product Attribute updated',
+            $productAttributeList
+        );
     }
 
     //Delete product attribute information by ids
@@ -187,17 +279,33 @@ class ProductAttributeController extends Controller
         $validator = $this->validation('delete', $request);
 
         if ($validator->fails()) {
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
         $uuids = $request->input('uuids');
         $productAttributes = null;
         try {
-            $productAttributes = ProductAttribute::lockForUpdate()->whereIn('uuid', $uuids);
+            $productAttributes = ProductAttribute::lockForUpdate()
+                ->whereIn(
+                    'uuid',
+                    $uuids
+                );
 
             // Compare the count of found UUIDs with the count from the request array
-            if (!$productAttributes || (count($productAttributes->get()) !== count($uuids))) {
-                return response()->json(['message' => 'Product Attributes fail to deleted, because invalid uuid(s)'], 400);
+            if (
+                !$productAttributes ||
+                (count($productAttributes->get()) !== count($uuids))
+            ) {
+                return response()->json(
+                    ['message' => 'Product Attributes fail to deleted, because invalid uuid(s)'],
+                    400
+                );
             }
 
             //Check Auth & update user uuid to deleted_by
@@ -210,10 +318,18 @@ class ProductAttributeController extends Controller
             $productAttributes->delete();
 
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error during bulk deletion ' . $e->getMessage()], 500);
+            return response()->json(
+                ['message' => 'Error during bulk deletion ' . $e->getMessage()],
+                500
+            );
         }
 
-        return $this->core->setResponse('success', "Product Attributes deleted", null, 200);
+        return $this->core->setResponse(
+            'success',
+            "Product Attributes deleted",
+            null,
+            200
+        );
     }
 
     private function validation($type = null, $request)
@@ -237,7 +353,7 @@ class ProductAttributeController extends Controller
                     '*.product_uuid' => 'required|uuid',
                     '*.name' => 'required|string|max:255|min:2',
                     '*.description' => 'required|max:140|min:3',
-                    '*.status' => 'in:1,2,3',
+                    '*.status' => 'in:0,1,2,3',
                     '*.remarks' => 'string|min:4',
                     // '*.created_by' => 'required|string|min:4',
                 ];

@@ -29,8 +29,8 @@ return new class extends Migration {
             $table->string('alpha_3_iso', 100)->nullable()->comment('ISO 3 Char');
             $table->string('corrency_code_iso', 100)->nullable()->comment('corrency ode ISO');
             $table->string('currency_minor_unit_iso', 100)->nullable()->comment('Geoname ID');
-            $table->integer('status')->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(0);
-            $table->text('remarks')->comment('Notes of product code')->nullable();
+            $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
+            $table->text('remarks')->comment('Notes of countries')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

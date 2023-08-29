@@ -22,27 +22,48 @@ class PriceCodeController extends Controller
 
         // Apply filters based on request parameters
         if ($request->has('status')) {
-            $query->where('status', $request->input('status'));
+            $query->where(
+                'status',
+                $request->input('status')
+            );
         } else {
-            $query->where('status', 1);
+            $query->where(
+                'status',
+                1
+            );
         }
 
         if ($request->has('code')) {
-            $query->where('code', 'ilike', '%' . $request->input('code') . '%');
+            $query->where(
+                'code',
+                'ilike',
+                '%' . $request->input('code') . '%'
+            );
         }
 
         if ($request->has('name')) {
-            $query->where('name', 'ilike', '%' . $request->input('name') . '%');
+            $query->where(
+                'name',
+                'ilike',
+                '%' . $request->input('name') . '%'
+            );
         }
 
         if ($request->has('description')) {
-            $query->where('description', 'ilike', '%' . $request->input('desc') . '%');
+            $query->where(
+                'description',
+                'ilike',
+                '%' . $request->input('desc') . '%'
+            );
         }
 
         if ($request->has('created_at')) {
             $dateRange = explode(',', $request->input('created_at'));
             if (count($dateRange) === 2) {
-                $query->whereBetween('created_at', $dateRange);
+                $query->whereBetween(
+                    'created_at',
+                    $dateRange
+                );
             }
         }
 
@@ -50,7 +71,11 @@ class PriceCodeController extends Controller
 
         $priceCodeList = PriceCodeResource::collection($priceCodes);
 
-        return $this->core->setResponse('success', 'Price Code Found', $priceCodeList);
+        return $this->core->setResponse(
+            'success',
+            'Price Code Found',
+            $priceCodeList
+        );
     }
 
     //Create new product price information
@@ -60,7 +85,13 @@ class PriceCodeController extends Controller
 
         if ($validator->fails()) {
 
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
         $status = 1;
@@ -94,37 +125,71 @@ class PriceCodeController extends Controller
                 $newPriceCodes[] = $newPriceCodeAdd->uuid;
             }
 
-            $priceCodeList = PriceCode::whereIn('uuid', $newPriceCodes)->get();
+            $priceCodeList = PriceCode::whereIn(
+                'uuid',
+                $newPriceCodes
+            )->get();
 
             $priceCodeList = PriceCodeResource::collection($priceCodeList);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return $this->core->setResponse('error', 'Price Code fail to created. ' . $e->getMessage(), NULL, FALSE, 500);
+            return $this->core->setResponse(
+                'error',
+                'Price Code fail to created. ' . $e->getMessage(),
+                NULL,
+                FALSE,
+                500
+            );
         }
 
-        return $this->core->setResponse('success', 'Price Code created', $priceCodeList, false, 201);
+        return $this->core->setResponse(
+            'success',
+            'Price Code created',
+            $priceCodeList,
+            false,
+            201
+        );
     }
 
     //Get product price information by ids
     public function show(Request $request, $uuid)
     {
         if (!Str::isUuid($uuid)) {
-            return $this->core->setResponse('error', 'Invalid UUID format', NULL, FALSE, 400);
+            return $this->core->setResponse(
+                'error',
+                'Invalid UUID format',
+                NULL,
+                FALSE,
+                400
+            );
         }
 
         $status = $request->input('status', 1);
 
-        $priceCode = PriceCode::where(['uuid' => $uuid, 'status' => $status])->get();
-        // print_r($priceCode);
+        $priceCode = PriceCode::where([
+            'uuid' => $uuid,
+            'status' => $status
+        ])->get();
+
         if (!isset($priceCode)) {
-            return $this->core->setResponse('error', 'Price Code Not Found', NULL, FALSE, 400);
+            return $this->core->setResponse(
+                'error',
+                'Price Code Not Found',
+                NULL,
+                FALSE,
+                400
+            );
         }
 
         $priceCodeList = PriceCodeResource::collection($priceCode);
 
-        return $this->core->setResponse('success', 'Price Code Found', $priceCodeList);
+        return $this->core->setResponse(
+            'success',
+            'Price Code Found',
+            $priceCodeList
+        );
     }
 
     //UpdateBulk product price information
@@ -135,7 +200,13 @@ class PriceCodeController extends Controller
         $validator = $this->validation('update', $request);
 
         if ($validator->fails()) {
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
         $status = 1;
@@ -153,7 +224,12 @@ class PriceCodeController extends Controller
                     $status = $priceCodeData['status'];
                 }
 
-                $priceCode = PriceCode::lockForUpdate()->where('uuid', $priceCodeData['uuid'])->firstOrFail();
+                $priceCode = PriceCode::lockForUpdate()
+                    ->where(
+                        'uuid',
+                        $priceCodeData['uuid']
+                    )->firstOrFail();
+
                 $priceCode->update([
                     'name' => $priceCodeData['name'],
                     'description' => $priceCodeData['description'],
@@ -164,20 +240,39 @@ class PriceCodeController extends Controller
                 $updatedPriceCodes[] = $priceCode->toArray();
             }
 
-            $priceCodeList = PriceCode::whereIn('uuid', array_column($updatedPriceCodes, 'uuid'))->get();
+            $priceCodeList = PriceCode::whereIn(
+                'uuid',
+                array_column($updatedPriceCodes, 'uuid')
+            )->get();
 
             $priceCodeList = PriceCodeResource::collection($priceCodeList);
 
             DB::commit();
         } catch (QueryException $e) {
             DB::rollback();
-            return $this->core->setResponse('error', 'Price Code fail to updated. ' . $e->getMessage(), NULL, FALSE, 500);
+            return $this->core->setResponse(
+                'error',
+                'Price Code fail to updated. ' . $e->getMessage(),
+                NULL,
+                FALSE,
+                500
+            );
         } catch (\Exception $ex) {
             DB::rollback();
-            return $this->core->setResponse('error', "Price Code fail to updated. " . $ex->getMessage(), NULL, FALSE, 500);
+            return $this->core->setResponse(
+                'error',
+                "Price Code fail to updated. " . $ex->getMessage(),
+                NULL,
+                FALSE,
+                500
+            );
         }
 
-        return $this->core->setResponse('success', 'Price Code updated', $priceCodeList);
+        return $this->core->setResponse(
+            'success',
+            'Price Code updated',
+            $priceCodeList
+        );
     }
 
     //Delete product price information by ids
@@ -187,17 +282,33 @@ class PriceCodeController extends Controller
         $validator = $this->validation('delete', $request);
 
         if ($validator->fails()) {
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
         $uuids = $request->input('uuids');
         $priceCodes = null;
         try {
-            $priceCodes = PriceCode::lockForUpdate()->whereIn('uuid', $uuids);
+            $priceCodes = PriceCode::lockForUpdate()
+                ->whereIn(
+                    'uuid',
+                    $uuids
+                );
 
             // Compare the count of found UUIDs with the count from the request array
-            if (!$priceCodes || (count($priceCodes->get()) !== count($uuids))) {
-                return response()->json(['message' => 'Price Codes fail to deleted, because invalid uuid(s)'], 400);
+            if (
+                !$priceCodes ||
+                (count($priceCodes->get()) !== count($uuids))
+            ) {
+                return response()->json(
+                    ['message' => 'Price Codes fail to deleted, because invalid uuid(s)'],
+                    400
+                );
             }
 
             //Check Auth & update user uuid to deleted_by
@@ -210,10 +321,18 @@ class PriceCodeController extends Controller
             $priceCodes->delete();
 
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error during bulk deletion ' . $e->getMessage()], 500);
+            return response()->json(
+                ['message' => 'Error during bulk deletion ' . $e->getMessage()],
+                500
+            );
         }
 
-        return $this->core->setResponse('success', "Price Codes deleted", null, 200);
+        return $this->core->setResponse(
+            'success',
+            "Price Codes deleted",
+            null,
+            200
+        );
     }
 
     private function validation($type = null, $request)
@@ -237,7 +356,7 @@ class PriceCodeController extends Controller
                     '*.code' => 'required|string|max:255|min:2',
                     '*.name' => 'required|string|max:255|min:2',
                     '*.description' => 'required|max:140|min:5',
-                    '*.status' => 'in:1,2,3',
+                    '*.status' => 'in:0,1,2,3',
                     '*.remarks' => 'string|min:4',
                     // '*.created_by' => 'required|string|min:4',
                 ];

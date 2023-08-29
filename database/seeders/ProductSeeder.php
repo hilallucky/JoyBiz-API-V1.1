@@ -75,7 +75,7 @@ class ProductSeeder extends Seeder
         // Product
         $product = new Product();
         $product->uuid = Uuid::uuid1($nodeProvider->getNode())->toString();
-        $product->product_category_uuid = $electronic_uuid;
+        $product->category_uuid = $electronic_uuid;
         $product->name = "Laptop";
         $product->description = "Laptop Desc";
         $product->status = 1;
@@ -139,7 +139,7 @@ class ProductSeeder extends Seeder
 
         $product = new Product();
         $product->uuid = Uuid::uuid1($nodeProvider->getNode())->toString();
-        $product->product_category_uuid = $cloth_uuid;
+        $product->category_uuid = $cloth_uuid;
         $product->name = "T-Shirt";
         $product->description = "T-Shirt Desc";
         $product->status = 1;
@@ -257,7 +257,7 @@ class ProductSeeder extends Seeder
 
         $product = new Product();
         $product->uuid = Uuid::uuid1($nodeProvider->getNode())->toString();
-        $product->product_category_uuid = $book_uuid;
+        $product->category_uuid = $book_uuid;
         $product->name = "Runaway";
         $product->description = "Runaway Desc";
         $product->status = 1;
