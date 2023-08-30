@@ -11,7 +11,19 @@ class ProductPrice extends Model
     use HasFactory, SoftDeletes; //, Uuids;
 
     protected $table = 'product_prices';
+
     protected $primaryKey = 'id';
+
+    protected $casts = [
+        'price' => 'float',
+        'discount_value' => 'float',
+        'discount_value_amount' => 'float',
+        'price_after_discount' => 'float',
+        'pv' => 'float',
+        'xv' => 'float',
+        'bv' => 'float',
+        'rv' => 'float',
+    ];
 
     protected $fillable = [
         'id',

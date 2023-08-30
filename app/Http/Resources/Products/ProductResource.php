@@ -47,6 +47,22 @@ class ProductResource extends JsonResource
                     'composition_by_header'
                 )
             ),
+            "images" => $this->whenLoaded(
+                'images',
+                function () {
+                    return $this->images->map(
+                        function ($image) {
+                            return [
+                                "uuid" => $image->uuid,
+                                "path_file" => $image->path_file,
+                                "url" => $image->url,
+                            ];
+                        }
+                    );
+
+
+                }
+            ),
             "created_by" => $this->created_by,
             "created_at" => $this->created_at,
             "updated_by" => $this->updated_by,

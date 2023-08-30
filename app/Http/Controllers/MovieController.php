@@ -59,11 +59,20 @@ class MovieController extends Controller
     {
 
         /* validation requirement */
-        $validator = $this->validation('create', $request);
+        $validator = $this->validation(
+            'create',
+            $request
+        );
 
         if ($validator->fails()) {
 
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
         $movie = Movie::create($request->all());

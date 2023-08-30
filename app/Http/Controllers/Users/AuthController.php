@@ -40,11 +40,20 @@ class AuthController extends Controller
     {
 
         /* validation requirement */
-        $validator = $this->validation('registration', $request);
+        $validator = $this->validation(
+            'registration',
+            $request
+        );
 
         if ($validator->fails()) {
 
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
         $input = $request->all();
@@ -53,7 +62,11 @@ class AuthController extends Controller
 
         $user = User::create($input);
 
-        return $this->core->setResponse('success', 'Account created successfully!', $user);
+        return $this->core->setResponse(
+            'success',
+            'Account created successfully!',
+            $user
+        );
     }
 
     /**
@@ -64,20 +77,38 @@ class AuthController extends Controller
     public function login()
     {
         /* validation requirement */
-        $validator = $this->validation('login', request());
+        $validator = $this->validation(
+            'login',
+            request()
+        );
 
         if ($validator->fails()) {
 
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                400
+            );
         }
 
-        $credentials = request(['email', 'password']);
+        $credentials = request([
+            'email',
+            'password'
+        ]);
 
         // return $credentials;
 
         if (!$token = auth()->attempt($credentials)) {
 
-            return $this->core->setResponse('error', 'Please check your email or password !', NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                'Please check your email or password !',
+                NULL,
+                false,
+                400
+            );
         }
 
         return $this->respondWithToken($token, 'login');
@@ -92,7 +123,10 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return $this->core->setResponse('success', 'Successfully logged out');
+        return $this->core->setResponse(
+            'success',
+            'Successfully logged out'
+        );
     }
 
     /**
@@ -102,7 +136,10 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh(), 'refresh token');
+        return $this->respondWithToken(
+            auth()->refresh(),
+            'refresh token'
+        );
     }
 
     /**
@@ -113,7 +150,11 @@ class AuthController extends Controller
     public function profile()
     {
 
-        return $this->core->setResponse('success', 'User Profile', auth()->user());
+        return $this->core->setResponse(
+            'success',
+            'User Profile',
+            auth()->user()
+        );
     }
 
 
@@ -192,10 +233,16 @@ class AuthController extends Controller
         $data = [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * config('auth.jwt.expires_in', 60),
+            'expires_in' => auth()
+                ->factory()
+                ->getTTL() * config('auth.jwt.expires_in', 60),
         ];
 
-        return $this->core->setResponse('success', "Successfully $action", $data);
+        return $this->core->setResponse(
+            'success',
+            "Successfully $action",
+            $data
+        );
     }
 
 }

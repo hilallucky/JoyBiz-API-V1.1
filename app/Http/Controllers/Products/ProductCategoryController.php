@@ -69,7 +69,10 @@ class ProductCategoryController extends Controller
     //Create new product information
     public function store(Request $request)
     {
-        $validator = $this->validation('create', $request);
+        $validator = $this->validation(
+            'create',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -77,7 +80,7 @@ class ProductCategoryController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 
@@ -183,10 +186,19 @@ class ProductCategoryController extends Controller
     {
         $categories = $request->all();
 
-        $validator = $this->validation('update', $request);
+        $validator = $this->validation(
+            'update',
+            $request
+        );
 
         if ($validator->fails()) {
-            return $this->core->setResponse('error', $validator->messages()->first(), NULL, false, 400);
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                422
+            );
         }
 
         $status = 1;
@@ -258,7 +270,10 @@ class ProductCategoryController extends Controller
     public function destroyBulk(Request $request)
     {
 
-        $validator = $this->validation('delete', $request);
+        $validator = $this->validation(
+            'delete',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -266,7 +281,7 @@ class ProductCategoryController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 

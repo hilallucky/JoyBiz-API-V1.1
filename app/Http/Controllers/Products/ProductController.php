@@ -25,6 +25,7 @@ class ProductController extends Controller
             'category',
             'prices.priceCode',
             'composition_by_header.product_source',
+            'images',
         ]);
 
         // Apply filters based on request parameters
@@ -104,7 +105,7 @@ class ProductController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 
@@ -201,6 +202,7 @@ class ProductController extends Controller
                 'category',
                 'prices.priceCode',
                 'composition_by_header.product_source',
+                'images',
             ])
                 ->whereIn('uuid', array_column($newProducts, 'uuid'))
                 ->get();
@@ -253,6 +255,7 @@ class ProductController extends Controller
                 'category',
                 'prices.priceCode',
                 'composition_by_header.product_source',
+                'images',
             ]);
 
             if ($request->has('is_product_group')) {
@@ -302,7 +305,10 @@ class ProductController extends Controller
     //UpdateBulk product information
     public function updateBulk(Request $request)
     {
-        $validator = $this->validation('update', $request);
+        $validator = $this->validation(
+            'update',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -310,7 +316,7 @@ class ProductController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 
@@ -482,6 +488,7 @@ class ProductController extends Controller
                 'category',
                 'prices.priceCode',
                 'composition_by_header.product_source',
+                'images',
             ])
                 ->whereIn(
                     'uuid',
@@ -522,7 +529,10 @@ class ProductController extends Controller
 
     public function destroyBulk(Request $request)
     {
-        $validator = $this->validation('delete', $request);
+        $validator = $this->validation(
+            'delete',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -530,7 +540,7 @@ class ProductController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 

@@ -110,4 +110,13 @@ class Product extends Model
             'product_uuid'
         )->withPivot('qty');
     }
+
+    public function images()
+    {
+        return $this->hasMany(
+            ProductFileAndImage::class,
+            'product_uuid',
+            'uuid'
+        );
+    }
 }

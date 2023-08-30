@@ -76,7 +76,10 @@ class ProductAttributeController extends Controller
     //Create new product attribute information
     public function store(Request $request)
     {
-        $validator = $this->validation('create', $request);
+        $validator = $this->validation(
+            'create',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -84,7 +87,7 @@ class ProductAttributeController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 
@@ -193,7 +196,10 @@ class ProductAttributeController extends Controller
     {
         $productAttributes = $request->all();
 
-        $validator = $this->validation('update', $request);
+        $validator = $this->validation(
+            'update',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -201,7 +207,7 @@ class ProductAttributeController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 
@@ -276,7 +282,10 @@ class ProductAttributeController extends Controller
     public function destroyBulk(Request $request)
     {
 
-        $validator = $this->validation('delete', $request);
+        $validator = $this->validation(
+            'delete',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -284,7 +293,7 @@ class ProductAttributeController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 

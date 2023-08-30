@@ -81,7 +81,10 @@ class PriceCodeController extends Controller
     //Create new product price information
     public function store(Request $request)
     {
-        $validator = $this->validation('create', $request);
+        $validator = $this->validation(
+            'create',
+            $request
+        );
 
         if ($validator->fails()) {
 
@@ -90,7 +93,7 @@ class PriceCodeController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 
@@ -197,7 +200,10 @@ class PriceCodeController extends Controller
     {
         $priceCodes = $request->all();
 
-        $validator = $this->validation('update', $request);
+        $validator = $this->validation(
+            'update',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -205,7 +211,7 @@ class PriceCodeController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 
@@ -279,7 +285,10 @@ class PriceCodeController extends Controller
     public function destroyBulk(Request $request)
     {
 
-        $validator = $this->validation('delete', $request);
+        $validator = $this->validation(
+            'delete',
+            $request
+        );
 
         if ($validator->fails()) {
             return $this->core->setResponse(
@@ -287,7 +296,7 @@ class PriceCodeController extends Controller
                 $validator->messages()->first(),
                 NULL,
                 false,
-                400
+                422
             );
         }
 

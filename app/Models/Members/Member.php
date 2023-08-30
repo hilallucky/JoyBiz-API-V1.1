@@ -14,6 +14,7 @@ class Member extends Model
     protected $table = 'members';
     protected $primaryKey = 'id';
     protected $fillable = [
+        'id',
         'uuid',
         'first_name',
         'last_name',
@@ -25,6 +26,7 @@ class Member extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'position',
     ];
     protected $hidden = [
         'password',
@@ -35,5 +37,20 @@ class Member extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'uuid', 'user_uuid');
+    }
+
+    public function sponsor()
+    {
+        return $this->belongsTo(Member::class, 'sponsor_id');
+    }
+
+    public function leftLegMembers()
+    {
+        return $this->hasMany(Member::class, 'sponsor_id', 'id')->where('position', 'left');
+    }
+
+    public function rightLegMembers()
+    {
+        return $this->hasMany(Member::class, 'sponsor_id', 'id')->where('position', 'right');
     }
 }

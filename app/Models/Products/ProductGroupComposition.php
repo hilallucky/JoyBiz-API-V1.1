@@ -14,6 +14,10 @@ class ProductGroupComposition extends Model
     protected $table = 'product_group_compositions';
     protected $primaryKey = 'id';
 
+    protected $casts = [
+        'qty' => 'integer',
+    ];
+
     protected $fillable = [
         'uuid',
         'product_group_header_uuid',
