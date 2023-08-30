@@ -41,6 +41,7 @@ class ProductResource extends JsonResource
                     ];
                 }
             ),
+            "is_product_group" => $this->is_product_group,
             "composition" => ProductCompositionResource::collection(
                 $this->whenLoaded(
                     'composition_by_header'
