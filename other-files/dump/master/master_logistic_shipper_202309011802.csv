@@ -1,0 +1,15 @@
+"shipper_id";"shipper_code";"shipper_name";"shortnm";"remarks";"shipper_status";"open";"close";"info_html";"logo_url";"allow_cod";"charge_cod_type";"charge_cod";"url_tracking"
+1;JNE;JNE;jne;;"1";;;;assets/jne-logo.jpg;"0";PRC;0.040;http://bit.ly/jnetracking
+2;KGP;KGP;;;"0";;;;"0";"0";PRC;0.000;http://bit.ly/kgptracking
+3;SPL;SPL;;;"0";;;;"0";"0";PRC;0.000;
+4;GOSEND;GOSEND;gosend;;"1";09:00:00;17:00:00;https://www.k-net.co.id/sk_gosend;assets/go-send-by-go-jek-logo.png;"0";PRC;0.000;http://bit.ly/gosendtrack
+5;SICEPAT;Sicepat;sicepat;;"0";;;;assets/sicepat-logo.jpg;"0";PRC;0.000;http://bit.ly/sicepattrack
+6;J&T;J&T;jnt;;"0";;;;assets/jnt-logo.jpg;"0";PRC;0.400;http://bit.ly/jnttrack
+7;RPX;RPX;rpx;;"0";;;;assets/rpx-logo.jpg;"1";PRC;0.400;http://bit.ly/rpxtrack
+8;POS;PT. POS Indonesia;pos;;"0";;;;assets/pos-logo.jpg;"0";PRC;0.400;http://bit.ly/pos-track
+9;LION;Lion Parcel;lion_parcel;;"0";;;;assets/lion_parcel-logo.jpg;"0";PRC;0.400;http://bit.ly/liontrack
+10;KLINK;Express;klink_express;;"0";;;;assets/rpx-logo.jpg;"0";PRC;0.400;
+11;SAP;SAP;sap;;"0";;;;assets/sap-logo.jpeg;"1";PRC;0.400;http://bit.ly/sapexpress
+12;NINJA-XPRESS;Ninja Xpress;ninja;;;;;;assets/ninja_logo.jpg;"0";;;
+13;KLINK;K-Link Express;klink-driver;;"0";;;;assets/klink_logo.jpeg;"1";PRC;0.400;
+14;KLINK;Stockist Express;stockist_express;;"0";;;;assets/klink_logo.jpeg;"1";PRC;0.400;
