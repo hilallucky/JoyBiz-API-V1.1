@@ -23,6 +23,11 @@ return new class extends Migration {
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+
+            // $table->foreign('created_by')->references('uuid')->on('users');
+            // $table->foreign('updated_by')->references('uuid')->on('users');
+            // $table->foreign('deleted_by')->references('uuid')->on('users');
+
             $table->timestamps();
             $table->softDeletes();
         });

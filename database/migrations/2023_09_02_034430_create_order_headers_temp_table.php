@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->uuid('details_uuid')->comment('Get from table order_details_temp');
             $table->uuid('payments_uuid')->comment('Get from table order_payments_temp');
             $table->uuid('shipping_uuid')->comment('Get from table order_shipping_temp');
-            $table->uuid('shipping_uuid')->comment('Get from table order_shipping_temp');
             $table->uuid('price_code_uuid')->comment('Get from table price_codes');
             $table->uuid('user_uuid')->comment('Get from table users');
             $table->uuid('member_uuid')->comment('Get from table members');
@@ -36,13 +35,19 @@ return new class extends Migration {
             $table->decimal('total_bv', 10, 2)->default(0);
             $table->decimal('total_rv', 10, 2)->default(0);
             $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Pending, 1 = Paid, 2 = Posted, 3 = Rejected')->default(0);
+            $table->string('airway_bill_no')->comment('AWB/Resi No')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
 
+            // $table->foreign('created_by')->references('uuid')->on('users');
+            // $table->foreign('updated_by')->references('uuid')->on('users');
+            // $table->foreign('deleted_by')->references('uuid')->on('users');
+
             $table->foreign('user_uuid')->references('uuid')->on('users')->onDelete('cascade');
             $table->foreign('member_uuid')->references('uuid')->on('members')->onDelete('cascade');
             $table->foreign('price_code_uuid')->references('uuid')->on('price_codes')->onDelete('cascade');
+            $table->foreign('shipping_uuid')->references('uuid')->on('couriers');
 
             $table->softDeletes();
             $table->timestamps();
