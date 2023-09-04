@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create('order_details_temp', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->uuid('order_header_temp_uuid')->comment('Get from table order_headers_temp');
             $table->uuid('product_price_uuid')->comment('Get from table product_prices');
             $table->integer('qty')->default(1);
             $table->decimal('price', 10, 2)->default(0);
@@ -34,7 +35,8 @@ return new class extends Migration {
             // $table->foreign('updated_by')->references('uuid')->on('users');
             // $table->foreign('deleted_by')->references('uuid')->on('users');
 
-            $table->foreign('product_price_uuid')->references('uuid')->on('product_prices')->onDelete('cascade');
+            // $table->foreign('order_header_temp_uuid')->references('uuid')->on('order_headers_temp')->onDelete('cascade');
+            // $table->foreign('product_price_uuid')->references('uuid')->on('product_prices')->onDelete('cascade');
 
             $table->softDeletes();
             $table->timestamps();

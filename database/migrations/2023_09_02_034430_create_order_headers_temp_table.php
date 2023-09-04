@@ -15,11 +15,6 @@ return new class extends Migration {
         Schema::create('order_headers_temp', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->uuid('details_uuid')->comment('Get from table order_details_temp');
-            $table->uuid('payments_uuid')->comment('Get from table order_payments_temp');
-            $table->uuid('shipping_uuid')->comment('Get from table order_shipping_temp');
-            $table->uuid('price_code_uuid')->comment('Get from table price_codes');
-            $table->uuid('user_uuid')->comment('Get from table users');
             $table->uuid('member_uuid')->comment('Get from table members');
             $table->uuid('price_code_uuid')->comment('Get from table price_codes');
             $table->text('remarks')->comment('Notes of product prices')->nullable();
@@ -44,10 +39,9 @@ return new class extends Migration {
             // $table->foreign('updated_by')->references('uuid')->on('users');
             // $table->foreign('deleted_by')->references('uuid')->on('users');
 
-            $table->foreign('user_uuid')->references('uuid')->on('users')->onDelete('cascade');
-            $table->foreign('member_uuid')->references('uuid')->on('members')->onDelete('cascade');
-            $table->foreign('price_code_uuid')->references('uuid')->on('price_codes')->onDelete('cascade');
-            $table->foreign('shipping_uuid')->references('uuid')->on('couriers');
+            // $table->foreign('user_uuid')->references('uuid')->on('users')->onDelete('cascade');
+            // $table->foreign('member_uuid')->references('uuid')->on('members')->onDelete('cascade');
+            // $table->foreign('price_code_uuid')->references('uuid')->on('price_codes')->onDelete('cascade');
 
             $table->softDeletes();
             $table->timestamps();
