@@ -27,7 +27,7 @@ class ProductCategorySeeder extends Seeder
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
                 "name" => "Electronics",
                 "description" => "Electronics Desc",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -36,7 +36,7 @@ class ProductCategorySeeder extends Seeder
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
                 "name" => "Clothing",
                 "description" => "Clothing Desc",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -45,7 +45,7 @@ class ProductCategorySeeder extends Seeder
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
                 "name" => "Books",
                 "description" => "Books Desc",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')

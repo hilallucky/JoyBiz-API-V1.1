@@ -32,6 +32,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'last_name',
         'email',
         'email_verified_at',
+        'validation_code',
         'password',
     ];
 

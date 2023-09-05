@@ -29,7 +29,7 @@ class ProductFactory extends Factory
                 "category_uuid" => $electronic_uuid,
                 "name" => "Laptop",
                 "description" => "Laptop Desc",
-                "status" => 1,
+                "status" => "1",
                 "created_by" => $user_uuid,
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -39,7 +39,7 @@ class ProductFactory extends Factory
                 "category_uuid" => $cloth_uuid,
                 "name" => "Laptop",
                 "description" => "Laptop Desc",
-                "status" => 1,
+                "status" => "1",
                 "created_by" => $user_uuid,
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -49,7 +49,7 @@ class ProductFactory extends Factory
                 "category_uuid" => $book_uuid,
                 "name" => "Laptop",
                 "description" => "Laptop Desc",
-                "status" => 1,
+                "status" => "1",
                 "created_by" => $user_uuid,
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')

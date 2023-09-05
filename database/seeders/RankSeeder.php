@@ -26,7 +26,7 @@ class RankSeeder extends Seeder
                 "name" => "Civilian",
                 "short_name" => "C",
                 "description" => "Civilian",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -36,7 +36,7 @@ class RankSeeder extends Seeder
                 "name" => "Joykeeper",
                 "short_name" => "JK",
                 "description" => "Joykeeper",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -46,7 +46,7 @@ class RankSeeder extends Seeder
                 "name" => "Joypriser",
                 "short_name" => "JPS",
                 "description" => "Joypriser",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -56,7 +56,7 @@ class RankSeeder extends Seeder
                 "name" => "Joypreneur",
                 "short_name" => "JP",
                 "description" => "Joypreneur",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -66,7 +66,7 @@ class RankSeeder extends Seeder
                 "name" => "JoyBizPreneur",
                 "short_name" => "JBP",
                 "description" => "JoyBizPreneur",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -76,7 +76,7 @@ class RankSeeder extends Seeder
                 "name" => "Baron JBpreneur",
                 "short_name" => "BJ",
                 "description" => "Baron JBpreneur",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -86,7 +86,7 @@ class RankSeeder extends Seeder
                 "name" => "Viscount JBpreneur",
                 "short_name" => "VJ",
                 "description" => "Viscount JBpreneur",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -96,7 +96,7 @@ class RankSeeder extends Seeder
                 "name" => "Earl JBpreneur",
                 "short_name" => "EJ",
                 "description" => "Earl JBpreneur",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -106,7 +106,7 @@ class RankSeeder extends Seeder
                 "name" => "Marquis JBpreneur",
                 "short_name" => "MJ",
                 "description" => "Marquis JBpreneur",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -116,7 +116,7 @@ class RankSeeder extends Seeder
                 "name" => "Duke JBpreneur",
                 "short_name" => "DJ",
                 "description" => "Duke JBpreneur",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -126,7 +126,7 @@ class RankSeeder extends Seeder
                 "name" => "Crown Ambassador",
                 "short_name" => "CA",
                 "description" => "Crown Ambassador",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -136,7 +136,7 @@ class RankSeeder extends Seeder
                 "name" => "Royal Crown Ambassador",
                 "short_name" => "RCA",
                 "description" => "Royal Crown Ambassador",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')

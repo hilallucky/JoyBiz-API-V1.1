@@ -10,6 +10,10 @@ class City extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $casts = [
+        'elevation' => 'integer',
+    ];
+
     protected $table = 'cities';
     protected $primaryKey = 'id';
     protected $fillable = [

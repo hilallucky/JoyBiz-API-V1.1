@@ -28,7 +28,7 @@ class CourierSeeder extends Seeder
                 "code" => "JNE",
                 "name" => "JNE",
                 "short_name" => "JNE",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -39,7 +39,7 @@ class CourierSeeder extends Seeder
                 "code" => "J&T",
                 "name" => "J&T",
                 "short_name" => "J&T",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -50,7 +50,7 @@ class CourierSeeder extends Seeder
                 "code" => "Sicepat",
                 "name" => "Sicepat",
                 "short_name" => "Sicepat",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -61,7 +61,7 @@ class CourierSeeder extends Seeder
                 "code" => "POS",
                 "name" => "PT. POS Indonesia",
                 "short_name" => "POS",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
@@ -72,7 +72,7 @@ class CourierSeeder extends Seeder
                 "code" => "Gosend",
                 "name" => "Gosend",
                 "short_name" => "Gosend",
-                "status" => 1,
+                "status" => "1",
                 "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
                 "created_by" => 'admin',
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')

@@ -22,11 +22,6 @@ class OrderService
         $this->core = new Core();
     }
 
-    // public function missingMethod()
-    // {
-    //     return $this->core->setResponse();
-    // }
-
     public function store($request)
     {
         $validator = $this->validation(
@@ -44,7 +39,7 @@ class OrderService
             );
         }
 
-        $status = 1;
+        $status = "1";
 
         try {
             DB::beginTransaction();
@@ -76,7 +71,7 @@ class OrderService
                     'total_xv' => $orderHeader['total_xv'],
                     'total_bv' => $orderHeader['total_bv'],
                     'total_rv' => $orderHeader['total_rv'],
-                    'status' => 0,
+                    'status' => "0",
                     'airway_bill_no' => $orderHeader['airway_bill_no'],
                     // 'created_by' => $user->uuid,
                 ];
@@ -204,7 +199,7 @@ class OrderService
                 $newOrderStatus = [
                     'uuid' => Str::uuid()->toString(),
                     'order_header_uuid' => $newOrderHeaderAdd['uuid'],
-                    'status' => 0,
+                    'status' => "0",
                     'reference_uuid' => $newOrderHeaderAdd['uuid'],
                     'description' => 'Pending',
                     'remarks' => 'New transaction, incomplete payment',
