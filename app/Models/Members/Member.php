@@ -21,6 +21,9 @@ class Member extends Model
         'password',
         'phone',
         'sponsor_id',
+        'sponsor_uuid',
+        'upline_id',
+        'upline_uuid',
         'user_uuid',
         'status',
         'created_by',
@@ -52,5 +55,10 @@ class Member extends Model
     public function rightLegMembers()
     {
         return $this->hasMany(Member::class, 'sponsor_id', 'id')->where('position', 'right');
+    }
+
+    public function members()
+    {
+        return $this->hasMany(Member::class, 'sponsor_id');
     }
 }

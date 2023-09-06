@@ -109,7 +109,7 @@ or to display in reverse order use
 php artisan route:list --filter=name:user --reverse
 
 Docker
-docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=hilal12 -d postgres
+docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=hilal123 -d postgres
 docker run --name redis -d -p 6379:6379 redis redis-server --requirepass "redis_hilal123"
 redis-cli -h 127.0.0.1 -p 6379 -a 'redis_hilal123'
 

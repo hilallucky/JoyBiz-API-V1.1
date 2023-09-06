@@ -20,6 +20,9 @@ return new class extends Migration {
             $table->integer('user_id')->unique(false)->nullable()->comment('User ID for login in users table');
             $table->string('phone', 100)->comment('Phone Number')->nullable();
             $table->integer('sponsor_id')->comment('Sponsor ID')->nullable();
+            $table->string('sponsor_uuid')->nullable()->comment('Direct Sponsor uuid')->after('sponsor_id');
+            $table->string('upline_id')->nullable()->comment('Upline id')->after('sponsor_uuid');
+            $table->string('upline_uuid')->nullable()->comment('Upline uuid')->after('upline_id');
             $table->integer('user_uuid')->comment('User uuid (get from table users)')->nullable();
             $table->uuid('country_id')->comment('Country ID (get from table countries')->nullable();
             $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);

@@ -19,4 +19,9 @@ class MemberController extends Controller
     {
         return $this->memberService->register($request);
     }
+
+    public function getGenealogy($uuid, $type)
+    {
+        return $this->memberService->getGenealogy($uuid, $type);
+    }
 }
