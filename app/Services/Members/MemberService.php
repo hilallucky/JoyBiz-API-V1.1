@@ -268,14 +268,17 @@ class MemberService
                 400
             );
         }
+
+        $member->level = 0;
+
         $genealogy = $genealogy->concat(
-            $this->getGenealogyRecursive($member, $type)
+            $this->getGenealogyRecursive($member, $type, 0)
         );
 
         return $genealogy;
     }
 
-    private function getGenealogyRecursive($member, $type)
+    private function getGenealogyRecursive($member, $type, $level)
     {
         $result = collect([$member]);
 
@@ -288,8 +291,9 @@ class MemberService
         $children = Member::where($up_id, $member->id)->get();
 
         foreach ($children as $child) {
+            $child->level = $level + 1;
             $result = $result->concat(
-                $this->getGenealogyRecursive($child, $type)
+                $this->getGenealogyRecursive($child, $type, $level + 1)
             );
         }
 
