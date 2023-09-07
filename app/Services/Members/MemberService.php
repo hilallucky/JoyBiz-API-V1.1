@@ -49,6 +49,9 @@ class MemberService
             DB::beginTransaction();
             DB::enableQueryLog();
 
+            // Add User
+            $newUser = $this->createUser($request, $status);
+
             // Add 1st Level Member
             $member = new Member;
             $member->uuid = Str::uuid()->toString();
@@ -56,17 +59,17 @@ class MemberService
             $member->last_name = $request->last_name;
             $member->sponsor_id = $request->sponsor_id;
             $member->sponsor_uuid = $request->sponsor_uuid;
-            $member->upline_id = $request->upline_id;
-            $member->upline_uuid = $request->upline_uuid;
+            $member->placement_id = $request->placement_id;
+            $member->placement_uuid = $request->placement_uuid;
+            $member->user_uuid = $newUser->uuid;
             $member->phone = $request->last_name;
             $member->status = $status;
             $member->save();
 
-            // Add User
-            $this->createUser($request, $status);
 
             $this->generateDownlines(
-                $member, $request->auto_leg_to_generate,
+                $member,
+                $request->auto_leg_to_generate,
                 $request->type
             );
 
@@ -75,7 +78,7 @@ class MemberService
             DB::rollback();
             return $this->core->setResponse(
                 'error',
-                'Member fail to created.' . $e->getMessage(),
+                'Member fail to created. == ' . $e->getMessage(),
                 NULL,
                 FALSE,
                 500
@@ -96,7 +99,7 @@ class MemberService
             $no = 1;
             for ($i = 0; $i < 2; $i++) { // 2 (right & left)
                 $currentSponsorId = $member->id;
-                $currentSponsorUUID = $member->sponsor_uuid;
+                $currentSponsorUUID = $member->uuid;
                 for ($j = 0; $j < $legs; $j++) {
                     // Add New downline
                     $downline = Member::create([
@@ -104,12 +107,13 @@ class MemberService
                         'first_name' => 'Downline ' . ($no++),
                         'sponsor_id' => $currentSponsorId,
                         'sponsor_uuid' => $currentSponsorUUID,
-                        'upline_id' => $member->upline_id,
-                        'upline_uuid' => $member->upline_uuid,
+                        'placement_id' => $member->placement_id,
+                        'placement_uuid' => $member->placement_uuid,
+                        'user_uuid' => $member->uuid,
                     ]);
 
                     $currentSponsorId = $downline->id;
-                    $currentSponsorUUID = $downline->sponsor_uuid;
+                    $currentSponsorUUID = $downline->uuid;
                 }
             }
         } else if ($type == "branch") {
@@ -117,7 +121,7 @@ class MemberService
             $no = 1;
 
             $currentSponsorId = $member->id;
-            $currentSponsorUUID = $member->sponsor_uuid;
+            $currentSponsorUUID = $member->uuid;
 
             for ($i = 0; $i < $numLegs; $i++) { // 2 (right & left)
                 if ($i <= 1) {
@@ -126,18 +130,19 @@ class MemberService
                         'first_name' => 'Downline ' . ($no++),
                         'sponsor_id' => $currentSponsorId,
                         'sponsor_uuid' => $currentSponsorUUID,
-                        'upline_id' => $member->upline_id,
-                        'upline_uuid' => $member->upline_uuid,
+                        'placement_id' => $member->placement_id,
+                        'placement_uuid' => $member->placement_uuid,
+                        'user_uuid' => $member->uuid,
                     ]);
 
                     if ($i == 0) {
                         $leftSponsorId = $downline->id; //left
-                        $leftSponsorUUID = $downline->sponsor_uuid; //left
+                        $leftSponsorUUID = $downline->uuid; //left
                     }
 
                     if ($i == 1) {
                         $rightSponsorId = $downline->id; //right
-                        $rightSponsorUUID = $downline->sponsor_uuid; //left
+                        $rightSponsorUUID = $downline->uuid; //left
                     }
                 }
 
@@ -149,8 +154,9 @@ class MemberService
                             'first_name' => 'Downline ' . ($no++),
                             'sponsor_id' => $leftSponsorId,
                             'sponsor_uuid' => $leftSponsorUUID,
-                            'upline_id' => $member->upline_id,
-                            'upline_uuid' => $member->upline_uuid,
+                            'placement_id' => $member->placement_id,
+                            'placement_uuid' => $member->placement_uuid,
+                            'user_uuid' => $member->uuid,
                         ]);
                     } else {
                         $downline = Member::create([
@@ -158,14 +164,14 @@ class MemberService
                             'first_name' => 'Downline ' . ($no++),
                             'sponsor_id' => $rightSponsorId,
                             'sponsor_uuid' => $rightSponsorUUID,
-                            'upline_id' => $member->upline_id,
-                            'upline_uuid' => $member->upline_uuid,
+                            'placement_id' => $member->placement_id,
+                            'placement_uuid' => $member->placement_uuid,
+                            'user_uuid' => $member->uuid,
                         ]);
                     }
                 }
             }
         }
-
     }
 
     public function createUser($request, $status)
@@ -183,11 +189,12 @@ class MemberService
         $user->validation_code = Hash::make($uuid);
         $user->status = $status;
         $user->save();
+
+        return $user;
     }
 
     private function validation($type = null, $request)
     {
-
         switch ($type) {
 
             case 'delete':
@@ -216,7 +223,10 @@ class MemberService
                     'last_name' => 'required',
                     //  'email' => 'required|email|unique:members',
                     // 'country_id' => 'required',
-                    'sponsor_id' => 'required',
+                    'sponsor_id' => 'required|numeric',
+                    'sponsor_uuid' => 'required|uuid',
+                    'placement_id' => 'required|numeric',
+                    'placement_uuid' => 'required|uuid',
                     'phone' => 'required|string',
                     'auto_leg_to_generate' => 'required|numeric|min:2|max:6',
                     'status' => 'in:0,1,2,3',
@@ -233,8 +243,18 @@ class MemberService
         return Validator::make($request->all(), $validator);
     }
 
-    public function getGenealogy($uuid, $type = 'sponsor')
+    public function getGenealogy($uuid, $type = 'placement')
     {
+        if (!in_array($type, ['placement', 'sponsor'])) {
+            return $this->core->setResponse(
+                'error',
+                'Type only placement or sponsor.',
+                NULL,
+                FALSE,
+                400
+            );
+        }
+
         // Get member based on uuid
         $member = Member::where('uuid', $uuid)->first();
 
@@ -259,10 +279,10 @@ class MemberService
     {
         $result = collect([$member]);
 
-        if ($type == 'sponsor') {
+        if ($type == 'placement') {
+            $up_id = 'placement_id';
+        } else if ($type == 'sponsor') {
             $up_id = 'sponsor_id';
-        } else if ($type == 'upline') {
-            $up_id = 'upline_id';
         }
 
         $children = Member::where($up_id, $member->id)->get();

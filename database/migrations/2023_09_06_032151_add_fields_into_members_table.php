@@ -13,9 +13,9 @@ return new class extends Migration {
     public function up()
     {
         Schema::table('members', function (Blueprint $table) {
-            $table->string('sponsor_uuid')->nullable()->comment('Direct Sponsor uuid')->after('sponsor_id');
-            $table->integer('upline_id')->nullable()->comment('Upline id')->after('sponsor_uuid');
-            $table->string('upline_uuid')->nullable()->comment('Upline uuid')->after('upline_id');
+            // $table->string('sponsor_uuid')->nullable()->comment('Direct Sponsor uuid')->after('sponsor_id');
+            // $table->integer('placement_id')->nullable()->comment('Upline id')->after('sponsor_uuid');
+            // $table->string('placement_uuid')->nullable()->comment('Upline uuid')->after('placement_id');
         });
     }
 
@@ -28,8 +28,8 @@ return new class extends Migration {
     {
         Schema::table('members', function (Blueprint $table) {
             $table->dropColumn(['sponsor_uuid']);
-            $table->dropColumn(['upline_id']);
-            $table->dropColumn(['upline_uuid']);
+            $table->dropColumn(['placement_id']);
+            $table->dropColumn(['placement_uuid']);
         });
     }
 };

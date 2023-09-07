@@ -12,3 +12,5 @@ $router->get('/version', ['as' => 'version', function () use ($router) {
 
 /* test redis */
 $router->get('/test-redis', ['as' => 'test-redis', 'uses' => 'RedisTestController@testConnection']);
+
+$router->get('/phpinfo', ['as' => 'phpinfo', 'uses' => 'ExampleController@index']);

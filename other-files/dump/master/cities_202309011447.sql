@@ -90,27 +90,27 @@ ORDER BY level;
 -- MENAMPILKAN JARINGAN MULAI DARI UPLINE sampai dengan downline terbawah
 WITH RECURSIVE Genealogy AS (
   -- Base case: Find the root member(s)
-  SELECT id, first_name, last_name, upline_id, upline_uuid, 0 AS level
+  SELECT id, first_name, last_name, placement_id, placement_uuid, 0 AS level
   FROM members
   WHERE id = 43 -- Assuming root members have a NULL sponsor_id
   
   UNION ALL
   
   -- Recursive case: Join with the previous level
-  SELECT n.id, n.first_name, n.last_name, n.upline_id, n.upline_uuid, g.level + 1
+  SELECT n.id, n.first_name, n.last_name, n.placement_id, n.placement_uuid, g.level + 1
   FROM members n
-  INNER JOIN Genealogy AS g ON n.upline_id = g.id
+  INNER JOIN Genealogy AS g ON n.placement_id = g.id
 )
 SELECT * FROM Genealogy
 ORDER BY level;
 
 
   -- Recursive case: Join with the previous level
-  SELECT n.id, n.first_name, n.last_name, n.upline_id, n.upline_uuid
+  SELECT n.id, n.first_name, n.last_name, n.placement_id, n.placement_uuid
   FROM members n
-  where n.upline_id = 43;
+  where n.placement_id = 43;
   
 
-select m.id, uuid , sponsor_id, sponsor_uuid, upline_id, upline_uuid 
+select m.id, uuid , sponsor_id, sponsor_uuid, placement_id, placement_uuid 
 from members m
 where id>42;
