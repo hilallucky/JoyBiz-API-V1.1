@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create('payment_types', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->uuid('ref_uuid')->nullable()->comment('Refference uuid from up Payment Type');
             $table->string('code')->comment('Short code of payment type');
             $table->string('name')->comment('Name of payment type');
             $table->string('description')->comment('Description of payment type')->nullable();

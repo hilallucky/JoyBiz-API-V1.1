@@ -31,6 +31,7 @@ return new class extends Migration {
         Schema::table('order_shipping_temp', function (Blueprint $table) {
             $table->foreign('order_header_temp_uuid')->references('uuid')->on('order_headers_temp')->onDelete('cascade');
             $table->foreign('courier_uuid')->references('uuid')->on('couriers')->onDelete('cascade');
+            $table->foreign('member_shipping_address_uuid')->references('uuid')->on('member_shipping_addresses')->onDelete('cascade');
         });
 
         Schema::table('order_headers', function (Blueprint $table) {
@@ -56,6 +57,7 @@ return new class extends Migration {
             $table->foreign('order_shipping_temp_uuid')->references('uuid')->on('order_shipping_temp')->onDelete('cascade');
             $table->foreign('order_header_uuid')->references('uuid')->on('order_headers')->onDelete('cascade');
             $table->foreign('courier_uuid')->references('uuid')->on('couriers')->onDelete('cascade');
+            $table->foreign('member_shipping_address_uuid')->references('uuid')->on('member_shipping_addresses')->onDelete('cascade');
         });
     }
 

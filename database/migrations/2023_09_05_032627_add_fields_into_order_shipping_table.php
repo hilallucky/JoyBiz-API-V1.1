@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::table('order_shipping_temp', function (Blueprint $table) {
-            $table->uuid('member_address_uuid')->comment('Get from table member_shipping_addresses')
+            $table->uuid('member_shipping_address_uuid')->comment('Get from table member_shipping_addresses')
                 ->nullable()->after('discount_shipping_charge');
             $table->string('province')->comment('Province Name')->after('member_address_uuid');
             $table->string('city')->comment('City Name')->after('province');
@@ -25,7 +25,7 @@ return new class extends Migration {
         });
 
         Schema::table('order_shipping', function (Blueprint $table) {
-            $table->uuid('member_address_uuid')->comment('Get from table member_shipping_addresses')
+            $table->uuid('member_shipping_address_uuid')->comment('Get from table member_shipping_addresses')
                 ->nullable()->after('discount_shipping_charge');
             $table->string('province')->comment('Province Name')->after('member_address_uuid');
             $table->string('city')->comment('City Name')->after('province');

@@ -58,7 +58,6 @@ class OrderService
                     'uuid' => Str::uuid()->toString(),
                     'price_code_uuid' => $orderHeader['price_code_uuid'],
                     'member_uuid' => $orderHeader['member_uuid'],
-                    'description' => $orderHeader['description'],
                     'remarks' => $orderHeader['remarks'],
                     'total_discount_value' => $orderHeader['total_discount_value'],
                     'total_discount_value_amount' => $orderHeader['total_discount_value_amount'],
@@ -175,18 +174,28 @@ class OrderService
                     );
                 }
 
-                foreach ($orderShipping as $sippingInfo) {
+                foreach ($orderShipping as $shippingInfo) {
                     $newOrderShipping = [
                         'uuid' => Str::uuid()->toString(),
                         'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
-                        'courier_uuid' => $sippingInfo['courier_uuid'],
+                        'courier_uuid' => $shippingInfo['courier_uuid'],
                         'shipping_charge' => $orderHeader['total_shipping_charge'],
+                        'province' => $shippingInfo['province'],
+                        'city' => $shippingInfo['city'],
+                        'district' => $shippingInfo['district'],
+                        'village' => $shippingInfo['village'],
+                        'details' => $shippingInfo['details'],
+                        'notes' => $shippingInfo['notes'],
                         'discount_shipping_charge' =>
-                        $sippingInfo['discount_shipping_charge']
-                        ? $sippingInfo['discount_shipping_charge']
-                        : 0,
+                        $shippingInfo['discount_shipping_charge']
+                            ? $shippingInfo['discount_shipping_charge']
+                            : 0,
                         // 'created_by' => $user->uuid,
                     ];
+
+                    if (isset($shippingInfo['address_uuid']) && $shippingInfo['address_uuid'] !== "") {
+                        $newOrderShipping['member_address_uuid'] = $shippingInfo['address_uuid'];
+                    }
 
                     // Insert into order_shipping_temp
                     $newOrderShippingAdd = new OrderShipping($newOrderShipping);
@@ -211,28 +220,17 @@ class OrderService
                 $newOrderStatusAdd->save();
 
                 $newOrderStatuses[] = $newOrderStatus;
-
             }
 
-            $newHeader = OrderHeader::
-                whereIn('uuid', array_column($newOrderHeaders, 'uuid'))
-                ->get();
+            $newHeader = OrderHeader::whereIn('uuid', array_column($newOrderHeaders, 'uuid'))->get();
 
-            $newDetails = OrderDetail::
-                whereIn('uuid', array_column($newOrderDetails, 'uuid'))
-                ->get();
+            $newDetails = OrderDetail::whereIn('uuid', array_column($newOrderDetails, 'uuid'))->get();
 
-            $newPayments = OrderPayment::
-                whereIn('uuid', array_column($newOrderPayments, 'uuid'))
-                ->get();
+            $newPayments = OrderPayment::whereIn('uuid', array_column($newOrderPayments, 'uuid'))->get();
 
-            $newShippings = OrderShipping::
-                whereIn('uuid', array_column($newOrderShippings, 'uuid'))
-                ->get();
+            $newShippings = OrderShipping::whereIn('uuid', array_column($newOrderShippings, 'uuid'))->get();
 
-            $newStatuses = OrderStatuses::
-                whereIn('uuid', array_column($newOrderStatuses, 'uuid'))
-                ->get();
+            $newStatuses = OrderStatuses::whereIn('uuid', array_column($newOrderStatuses, 'uuid'))->get();
 
             $newOrder = [
                 "header" => $newHeader,
@@ -261,7 +259,6 @@ class OrderService
             false,
             201
         );
-
     }
 
     private function validation($type = null, $request)
@@ -336,5 +333,4 @@ class OrderService
             $validator
         );
     }
-
 }

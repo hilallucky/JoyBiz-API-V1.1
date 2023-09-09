@@ -1,0 +1,27 @@
+Transfer
+	Manual
+		Mandiri
+		BCA
+		BRI
+		BNI
+		BTN
+	Virtual Account
+		Mandiri
+		BCA
+		BRIVA
+		BNI
+		BTN
+Credit Card
+Wallet
+	Gopay
+	OVO
+	Dana
+Merchant
+	Indomaret
+	Alfamart
+	POS
+	Circle K
+Instant
+	QRIS
+Product Voucher
+Cash Voucher

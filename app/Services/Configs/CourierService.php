@@ -119,12 +119,12 @@ class CourierService
                 $newCourierAdd = new Courier($newCourier);
                 $newCourierAdd->save();
 
-                $newCountries[] = $newCourierAdd->uuid;
+                $newCouriers[] = $newCourierAdd->uuid;
             }
 
             $courierList = Courier::whereIn(
                 'uuid',
-                $newCountries
+                $newCouriers
             )->get();
 
             $courierList = CourierResource::collection($courierList);
@@ -310,7 +310,7 @@ class CourierService
                 (count($couriers->get()) !== count($uuids))
             ) {
                 return response()->json(
-                    ['message' => 'Countries fail to deleted, because invalid uuid(s)'],
+                    ['message' => 'Couriers fail to deleted, because invalid uuid(s)'],
                     400
                 );
             }
@@ -333,7 +333,7 @@ class CourierService
 
         return $this->core->setResponse(
             'success',
-            "Countries deleted",
+            "Couriers deleted",
             null,
             200
         );

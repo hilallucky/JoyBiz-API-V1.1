@@ -61,4 +61,9 @@ class Member extends Model
     {
         return $this->hasMany(Member::class, 'sponsor_id');
     }
+
+    public function address()
+    {
+        return $this->hasMany(MemberAddress::class, 'member_uuid');
+    }
 }

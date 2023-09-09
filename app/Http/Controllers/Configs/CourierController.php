@@ -3,15 +3,8 @@
 namespace App\Http\Controllers\Configs;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Configs\CourierResource;
-use App\Models\Configs\Courier;
 use App\Services\Configs\CourierService;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class CourierController extends Controller
 {

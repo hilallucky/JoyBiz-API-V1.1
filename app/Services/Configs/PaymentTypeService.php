@@ -2,9 +2,9 @@
 
 namespace App\Services\Configs;
 
-use App\Http\Resources\Configs\CityResource;
+use App\Http\Resources\Configs\PaymentTypeResource;
 use app\Libraries\Core;
-use App\Models\Configs\City;
+use App\Models\Configs\PaymentType;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class CityService
+class PaymentTypeService
 {
     public $core;
 
@@ -21,12 +21,10 @@ class CityService
         $this->core = new Core();
     }
 
-    //Get all city
+    //Get all Payment Type
     public function index(Request $request)
     {
-        DB::enableQueryLog();
-
-        $query = City::query();
+        $query = PaymentType::query();
 
         // Apply filters based on request parameters
         if ($request->has('status')) {
@@ -37,7 +35,7 @@ class CityService
         } else {
             $query->where(
                 'status',
-                "1"
+                1
             );
         }
 
@@ -47,41 +45,34 @@ class CityService
             $query = $query->where(
                 function ($q) use ($param) {
                     $q->orWhere(
-                        'province',
+                        'code',
                         'ilike',
                         '%' . $param . '%'
                     )->orWhere(
-                            'city',
-                            'ilike',
-                            '%' . $param . '%'
-                        )->orWhere(
-                            'district',
-                            'ilike',
-                            '%' . $param . '%'
-                        )->orWhere(
-                            'village',
-                            'ilike',
-                            '%' . $param . '%'
-                        );
+                        'name',
+                        'ilike',
+                        '%' . $param . '%'
+                    )->orWhere(
+                        'description',
+                        'ilike',
+                        '%' . $param . '%'
+                    );
                 }
             );
         }
 
-        $cities = $query->get()->take(10);
+        $paymentType = $query->get();
 
-        // $query = DB::getQueryLog();
-        // dd($query);
-
-        $cityList = CityResource::collection($cities);
+        $paymentTypeList = PaymentTypeResource::collection($paymentType);
 
         return $this->core->setResponse(
             'success',
-            'City Found',
-            $cityList
+            'Payment Type Founded',
+            $paymentTypeList
         );
     }
 
-    //Create new City
+    //Create new Payment Type
     public function store(Request $request)
     {
         $validator = $this->validation(
@@ -90,10 +81,11 @@ class CityService
         );
 
         if ($validator->fails()) {
+
             return $this->core->setResponse(
                 'error',
                 $validator->messages()->first(),
-                null,
+                NULL,
                 false,
                 422
             );
@@ -109,47 +101,45 @@ class CityService
                 $user = Auth::user();
             }
 
-            $cities = $request->all();
-            foreach ($cities as $city) {
-                if (isset($city['status'])) {
-                    $status = $city['status'];
+            $paymentTypes = $request->all();
+            foreach ($paymentTypes as $paymentType) {
+                if (isset($paymentType['status'])) {
+                    $status = $paymentType['status'];
                 }
 
-                $newCity = [
+                $newPaymentType = [
                     'uuid' => Str::uuid()->toString(),
-                    // 'country_uuid' => $city['country_uuid'],
-                    'area_code' => $city['area_code'],
-                    'zip_code' => $city['zip_code'],
-                    'province' => $city['province'],
-                    'city' => $city['city'],
-                    'district' => $city['district'],
-                    'village' => $city['village'],
-                    'latitude' => $city['latitude'],
-                    'longitude' => $city['longitude'],
-                    'elevation' => $city['elevation'],
+                    'code' => $paymentType['code'],
+                    'name' => $paymentType['name'],
+                    'description' => $paymentType['description'],
+                    'remarks' => $paymentType['remarks'],
                     'status' => $status,
                     // 'created_by' => $user->uuid,
                 ];
 
-                $newCityAdd = new City($newCity);
-                $newCityAdd->save();
+                if (isset($paymentType['ref_uuid']) && $paymentType['ref_uuid'] !== "") {
+                    $newPaymentType['ref_uuid'] = $paymentType['ref_uuid'];
+                }
 
-                $newCities[] = $newCityAdd->uuid;
+                $newPaymentTypeAdd = new PaymentType($newPaymentType);
+                $newPaymentTypeAdd->save();
+
+                $newPaymentTypes[] = $newPaymentTypeAdd->uuid;
             }
 
-            $cityList = City::whereIn(
+            $paymentTypeList = PaymentType::whereIn(
                 'uuid',
-                $newCities
+                $newPaymentTypes
             )->get();
 
-            $cityList = CityResource::collection($cityList);
+            $paymentTypeList = PaymentTypeResource::collection($paymentTypeList);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             return $this->core->setResponse(
                 'error',
-                'City fail to created. ' . $e->getMessage(),
+                'PaymentType fail to created. ' . $e->getMessage(),
                 NULL,
                 FALSE,
                 500
@@ -158,14 +148,14 @@ class CityService
 
         return $this->core->setResponse(
             'success',
-            'City created',
-            $cityList,
+            'PaymentType created',
+            $paymentTypeList,
             false,
             201
         );
     }
 
-    //Get City by ids
+    //Get Payment Type by ids
     public function show(Request $request, $uuid)
     {
         if (!Str::isUuid($uuid)) {
@@ -180,34 +170,34 @@ class CityService
 
         $status = $request->input('status', "1");
 
-        $city = City::where([
+        $paymentType = PaymentType::where([
             'uuid' => $uuid,
             'status' => $status
         ])->get();
 
-        if (!isset($city)) {
+        if (!isset($paymentType)) {
             return $this->core->setResponse(
                 'error',
-                'City Not Found',
+                'PaymentType Not Found',
                 NULL,
                 FALSE,
                 400
             );
         }
 
-        $cityList = CityResource::collection($city);
+        $paymentTypeList = PaymentTypeResource::collection($paymentType);
 
         return $this->core->setResponse(
             'success',
-            'City Found',
-            $cityList
+            'PaymentType Found',
+            $paymentTypeList
         );
     }
 
-    //UpdateBulk City
+    //UpdateBulk Payment Type
     public function updateBulk(Request $request)
     {
-        $cities = $request->all();
+        $paymentType = $request->all();
 
         $validator = $this->validation(
             'update',
@@ -234,48 +224,48 @@ class CityService
                 $user = Auth::user();
             }
 
-            foreach ($cities as $cityData) {
-                if (isset($cityData['status'])) {
-                    $status = $cityData['status'];
+            foreach ($paymentType as $paymentTypeData) {
+                if (isset($paymentTypeData['status'])) {
+                    $status = $paymentTypeData['status'];
                 }
 
-                $city = City::lockForUpdate()
+                $paymentType = PaymentType::lockForUpdate()
                     ->where(
                         'uuid',
-                        $cityData['uuid']
+                        $paymentTypeData['uuid']
                     )->firstOrFail();
 
-                $city->update([
-                    // 'country_uuid' => $cityData['country_uuid'],
-                    'area_code' => $cityData['area_code'],
-                    'zip_code' => $cityData['zip_code'],
-                    'province' => $cityData['province'],
-                    'city' => $cityData['city'],
-                    'district' => $cityData['district'],
-                    'village' => $cityData['village'],
-                    'latitude' => $cityData['latitude'],
-                    'longitude' => $cityData['longitude'],
-                    'elevation' => $cityData['elevation'],
+                $paymentTypeUpdate = [
+                    'code' => $paymentTypeData['code'],
+                    'name' => $paymentTypeData['name'],
+                    'description' => $paymentTypeData['description'],
+                    'remarks' => $paymentTypeData['remarks'],
                     'status' => $status,
                     // 'updated_by' => $user->uuid,
-                ]);
+                ];
 
-                $updatedCountries[] = $city->toArray();
+                if (isset($paymentTypeData['ref_uuid']) && $paymentTypeData['ref_uuid'] !== "") {
+                    $paymentTypeUpdate['ref_uuid'] = $paymentTypeData['ref_uuid'];
+                }
+
+                $paymentType->update($paymentTypeUpdate);
+
+                $updatedpaymentTypes[] = $paymentType->toArray();
             }
 
-            $cityList = City::whereIn(
+            $paymentTypeList = PaymentType::whereIn(
                 'uuid',
-                array_column($updatedCountries, 'uuid')
+                array_column($updatedpaymentTypes, 'uuid')
             )->get();
 
-            $cityList = CityResource::collection($cityList);
+            $paymentTypeList = PaymentTypeResource::collection($paymentTypeList);
 
             DB::commit();
         } catch (QueryException $e) {
             DB::rollback();
             return $this->core->setResponse(
                 'error',
-                'City fail to updated. ' . $e->getMessage(),
+                'PaymentType fail to updated. ' . $e->getMessage(),
                 NULL,
                 FALSE,
                 500
@@ -284,7 +274,7 @@ class CityService
             DB::rollback();
             return $this->core->setResponse(
                 'error',
-                "City fail to updated. " . $ex->getMessage(),
+                "PaymentType fail to updated. " . $ex->getMessage(),
                 NULL,
                 FALSE,
                 500
@@ -293,12 +283,12 @@ class CityService
 
         return $this->core->setResponse(
             'success',
-            'City updated',
-            $cityList
+            'PaymentType updated',
+            $paymentTypeList
         );
     }
 
-    //Delete City by ids
+    //Delete PaymentType by ids
     public function destroyBulk(Request $request)
     {
 
@@ -318,9 +308,9 @@ class CityService
         }
 
         $uuids = $request->input('uuids');
-        $cities = null;
+        $paymentType = null;
         try {
-            $cities = City::lockForUpdate()
+            $paymentType = PaymentType::lockForUpdate()
                 ->whereIn(
                     'uuid',
                     $uuids
@@ -328,11 +318,11 @@ class CityService
 
             // Compare the count of found UUIDs with the count from the request array
             if (
-                !$cities ||
-                (count($cities->get()) !== count($uuids))
+                !$paymentType ||
+                (count($paymentType->get()) !== count($uuids))
             ) {
                 return response()->json(
-                    ['message' => 'Cities fail to deleted, because invalid uuid(s)'],
+                    ['message' => 'Countries fail to deleted, because invalid uuid(s)'],
                     400
                 );
             }
@@ -340,12 +330,11 @@ class CityService
             //Check Auth & update user uuid to deleted_by
             // if (Auth::check()) {
             //     $user = Auth::user();
-            // $cities->deleted_by = $user->uuid;
-            // $cities->save();
+            // $paymentType->deleted_by = $user->uuid;
+            // $paymentType->save();
             // }
 
-            $cities->delete();
-
+            $paymentType->delete();
         } catch (\Exception $e) {
             return response()->json(
                 ['message' => 'Error during bulk deletion ' . $e->getMessage()],
@@ -355,7 +344,7 @@ class CityService
 
         return $this->core->setResponse(
             'success',
-            "Cities deleted",
+            "Payment Types deleted",
             null,
             200
         );
@@ -371,7 +360,7 @@ class CityService
                 $validator = [
                     'uuids' => 'required|array',
                     'uuids.*' => 'required|uuid',
-                    // 'uuids.*' => 'required|exists:cities,uuid',
+                    // 'uuids.*' => 'required|exists:paymentType,uuid',
                 ];
 
                 break;
@@ -379,16 +368,10 @@ class CityService
             case 'create' || 'update':
 
                 $validator = [
-                    '*.country_uuid' => 'string|max:255|min:2',
-                    '*.area_code' => 'string|max:30|min:2',
-                    '*.zip_code' => 'string|max:10|min:2',
-                    '*.province' => 'required|string|max:100|min:2',
-                    '*.city' => 'required|string|max:100|min:2',
-                    '*.district' => 'required|string|max:100|min:2',
-                    '*.village' => 'required|string|max:100|min:2',
-                    '*.latitude' => 'string|max:100|min:2',
-                    '*.longitude' => 'string|max:100|min:2',
-                    '*.elevation' => 'string|max:100|min:2',
+                    '*.ref_uuid' => 'uuid|nullable',
+                    '*.code' => 'required|string|max:255|min:2',
+                    '*.name' => 'required|string|max:255|min:2',
+                    '*.description' => 'required|string|max:255|min:2',
                     '*.status' => 'in:0,1,2,3',
                     // '*.created_by' => 'required|string|min:4',
                 ];
@@ -402,5 +385,4 @@ class CityService
 
         return Validator::make($request->all(), $validator);
     }
-
 }
