@@ -47,9 +47,6 @@ class MemberRegisterService
         }
 
         try {
-            DB::beginTransaction();
-            DB::enableQueryLog();
-
             // Add User
             $newUser = $this->createUser($request, $status);
 

@@ -12,8 +12,20 @@ $router->get('/members/{uuid}/genealogy/{type}', [
     'uses' => 'Members\MemberController@getGenealogy'
 ]);
 
-// /* getUplineGenealogy */
-// $router->get('/members/{uuid}/genealogy/upline', [
-//     'as' => 'member-getUplineGenealogy',
-//     'uses' => 'Members\MemberController@getUplineGenealogy'
+/* getUplineGenealogy */
+$router->get('/members/{uuid}/upline/{type}', [
+    'as' => 'member-getUpline',
+    'uses' => 'Members\MemberController@getUpline'
+]);
+
+// /* check Network */
+// $router->get('/members/network', [
+//     'as' => 'member-network',
+//     'uses' => 'Members\MemberController@checkNetwork'
 // ]);
+/* check Network */
+$router->get('/members/check-network', [
+    'as' => 'member-checkNetwork',
+    'uses' => 'Members\MemberController@checkNetwork'
+]);
+

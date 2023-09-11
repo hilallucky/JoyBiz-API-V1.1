@@ -6,6 +6,7 @@ use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Member extends Model
 {
@@ -65,5 +66,58 @@ class Member extends Model
     public function address()
     {
         return $this->hasMany(MemberAddress::class, 'member_uuid');
+    }
+
+    function getUplineCode($uuid, $type)
+    {
+        $member = Member::where('uuid', $uuid)->first();
+
+        if (!$member) {
+            return null; // Member not found
+        }
+
+        // Initialize an empty array to store the upline codes
+        $uplines = [];
+
+        // Start from the member and traverse up the hierarchy until the root
+        while ($member) {
+            $uplines[] = $member;
+            $member = Member::where(
+                'uuid',
+                $type == 'placement' ? $member->placement_uuid : $member->sponsor_uuid
+            )
+                ->first();
+        }
+
+        // Reverse the array to get the upline codes from bottom to top
+        $uplines = array_reverse($uplines);
+
+        return $uplines;
+    }
+
+    function checkNetwork($uuid1, $uuid2)
+    {
+        $member = Member::where('uuid', $uuid1)->first();
+
+        if (!$member || $member->placement_uuid) {
+            return false; // Member not found
+        }
+
+        if ($member->uuid == $uuid2) {
+            return true;
+        }
+
+        // Start from the member and traverse up the hierarchy until the root
+        while ($member) {
+            $member = Member::where('uuid', $member->placement_uuid)->first();
+
+            if (!$member || $member->placement_uuid) {
+                return false; // Member not found
+            }
+
+            if ($member->uuid == $uuid2) {
+                return true;
+            }
+        }
     }
 }

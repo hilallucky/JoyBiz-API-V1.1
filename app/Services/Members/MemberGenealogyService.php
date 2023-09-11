@@ -4,14 +4,6 @@ namespace App\Services\Members;
 
 use app\Libraries\Core;
 use App\Models\Members\Member;
-use App\Models\Users\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Ramsey\Uuid\Nonstandard\Uuid;
 
 class MemberGenealogyService
 {
