@@ -19,7 +19,6 @@ class Member extends Model
         'uuid',
         'first_name',
         'last_name',
-        'password',
         'phone',
         'sponsor_id',
         'sponsor_uuid',
@@ -40,12 +39,17 @@ class Member extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'uuid', 'user_uuid');
+        return $this->belongsTo(User::class,  'user_uuid', 'uuid');
     }
 
     public function sponsor()
     {
         return $this->belongsTo(Member::class, 'sponsor_id');
+    }
+
+    public function placement()
+    {
+        return $this->belongsTo(Member::class, 'placement_id');
     }
 
     public function leftLegMembers()

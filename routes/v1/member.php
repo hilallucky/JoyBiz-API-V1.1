@@ -18,14 +18,14 @@ $router->get('/members/{uuid}/upline/{type}', [
     'uses' => 'Members\MemberController@getUpline'
 ]);
 
-// /* check Network */
-// $router->get('/members/network', [
-//     'as' => 'member-network',
-//     'uses' => 'Members\MemberController@checkNetwork'
-// ]);
+/* get Member List */
+$router->get('/members/list', [
+    'as' => 'member-list',
+    'uses' => 'Members\MemberController@getMemberList'
+]);
+
 /* check Network */
 $router->get('/members/check-network', [
     'as' => 'member-checkNetwork',
     'uses' => 'Members\MemberController@checkNetwork'
 ]);
-

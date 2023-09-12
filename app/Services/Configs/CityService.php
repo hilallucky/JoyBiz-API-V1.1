@@ -24,7 +24,7 @@ class CityService
     //Get all city
     public function index(Request $request)
     {
-        DB::enableQueryLog();
+        // DB::enableQueryLog();
 
         $query = City::query();
 
@@ -51,18 +51,18 @@ class CityService
                         'ilike',
                         '%' . $param . '%'
                     )->orWhere(
-                            'city',
-                            'ilike',
-                            '%' . $param . '%'
-                        )->orWhere(
-                            'district',
-                            'ilike',
-                            '%' . $param . '%'
-                        )->orWhere(
-                            'village',
-                            'ilike',
-                            '%' . $param . '%'
-                        );
+                        'city',
+                        'ilike',
+                        '%' . $param . '%'
+                    )->orWhere(
+                        'district',
+                        'ilike',
+                        '%' . $param . '%'
+                    )->orWhere(
+                        'village',
+                        'ilike',
+                        '%' . $param . '%'
+                    );
                 }
             );
         }
@@ -345,7 +345,6 @@ class CityService
             // }
 
             $cities->delete();
-
         } catch (\Exception $e) {
             return response()->json(
                 ['message' => 'Error during bulk deletion ' . $e->getMessage()],
@@ -402,5 +401,4 @@ class CityService
 
         return Validator::make($request->all(), $validator);
     }
-
 }

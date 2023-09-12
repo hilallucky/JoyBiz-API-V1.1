@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Members;
 use App\Http\Controllers\Controller;
 use App\Services\Members\MemberGenealogyService;
 use App\Services\Members\MemberGetUplineService;
+use App\Services\Members\MemberListService;
 use App\Services\Members\MemberRegisterService;
 use Illuminate\Http\Request;
 
@@ -14,13 +15,17 @@ class MemberController extends Controller
     private MemberGenealogyService $genealogyService;
     private MemberGetUplineService $getUplineService;
 
+    private MemberListService $memberListService;
+
     public function __construct(
         MemberRegisterService $registerService,
         MemberGenealogyService $genealogyService,
+        MemberListService $memberListService,
         MemberGetUplineService $getUplineService,
     ) {
         $this->registerService = $registerService;
         $this->genealogyService = $genealogyService;
+        $this->memberListService = $memberListService;
         $this->getUplineService = $getUplineService;
     }
 
@@ -37,6 +42,12 @@ class MemberController extends Controller
     public function getUpline($uuid, $type)
     {
         return $this->getUplineService->getUpline($uuid, $type);
+    }
+
+    public function getMemberList()
+    {
+        // print_r($request->all());
+        return $this->memberListService->getMemberList();
     }
 
     public function checkNetwork(Request $request)

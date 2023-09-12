@@ -40,7 +40,7 @@ class Core
                 $code = 404;
         }
 
-        $response = [$status => $message, $body => $data];
+        $response = ['status' => $status, 'message' => $message, $body => $data];
 
         if ($is_array) {
             return $response;
