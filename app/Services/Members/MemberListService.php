@@ -4,6 +4,7 @@ namespace App\Services\Members;
 
 use app\Libraries\Core;
 use App\Models\Members\Member;
+use Illuminate\Support\Facades\DB;
 
 class MemberListService
 {
@@ -14,8 +15,10 @@ class MemberListService
         $this->core = new Core();
     }
 
-    public function getMemberList()
+    public function getMemberList($request)
     {
+        DB::enableQueryLog();
+
         // Get member list
         $members = Member::select(
             'id',
@@ -27,13 +30,23 @@ class MemberListService
             'sponsor_uuid',
             'placement_id',
             'placement_uuid',
-            'user_uuid',
             'status',
             'created_by',
             'updated_by',
             'deleted_by',
-        )->with('sponsor', 'placement', 'user')
-            ->get();
+        )->with('sponsor', 'placement', 'user');
+
+        if ($request->input('start') && $request->input('end')) {
+            $start = $request->input('start');
+            $end = $request->input('end');
+
+            $members = $members->whereBetween('created_at', [$start, $end]);
+        }
+
+        $members = $members->orderBy('created_at', 'asc')->get();
+
+        $query = DB::getQueryLog();
+        // dd($query);
 
         if (!$members) {
             return $this->core->setResponse(
@@ -45,11 +58,11 @@ class MemberListService
             );
         }
 
-        $membersWithUplineNames = collect();
+        $memberDetails = collect();
 
+        $no = 0;
         foreach ($members as $member) {
             $memberData = $member->toArray();
-            $unset = [];
 
             if ($memberData['sponsor']) {
                 unset($memberData['sponsor']);
@@ -78,25 +91,26 @@ class MemberListService
                 $memberData['user']['password'] = $member->user->password;
             }
 
+            $remove = [
+                'user_uuid',
+                'sponsor_id',
+                'sponsor_uuid',
+                'placement_id',
+                'placement_uuid'
+            ];
 
             $memberData = array_diff_key(
                 $memberData,
-                array_flip([
-                    'user_uuid',
-                    'sponsor_id',
-                    'sponsor_uuid',
-                    'placement_id',
-                    'placement_uuid'
-                ])
+                array_flip($remove)
             );
 
-            $membersWithUplineNames->push($memberData);
+            $memberDetails->push($memberData);
         }
 
         return $this->core->setResponse(
             'success',
             'Member list.',
-            $membersWithUplineNames,
+            $memberDetails,
         );
     }
 }

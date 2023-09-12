@@ -44,15 +44,13 @@ class MemberController extends Controller
         return $this->getUplineService->getUpline($uuid, $type);
     }
 
-    public function getMemberList()
+    public function getMemberList(Request $request)
     {
-        // print_r($request->all());
-        return $this->memberListService->getMemberList();
+        return $this->memberListService->getMemberList($request);
     }
 
     public function checkNetwork(Request $request)
     {
-        // print_r($request->all());
         return $this->getUplineService->checkNetwork($request);
     }
 }
