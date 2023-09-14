@@ -3,6 +3,7 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Artisan;
 use app\Libraries\Core;
+use Tests\TestCase;
 
 class UserRegistrationTest extends TestCase
 {

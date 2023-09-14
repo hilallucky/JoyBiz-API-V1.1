@@ -3,6 +3,7 @@
 use App\Models\Movie;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Lumen\Testing\DatabaseMigrations;
+use Tests\TestCase;
 
 class MovieCRUDTest extends TestCase
 {

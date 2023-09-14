@@ -124,9 +124,4 @@ class Member extends Model
             }
         }
     }
-
-    public function joinDateRange($query, $startDate, $endDate)
-    {
-        return $query->whereBetween('created_at', [$startDate, $endDate]);
-    }
 }

@@ -1,12 +1,10 @@
 <?php
+
 use App\Http\Controllers\PriceCodeController;
 
 /* Price Code group */
+
 $router->group(['prefix' => 'price-codes', 'as' => 'price_codes'], function () use ($router) {
-
-    /* restrict route */
-    // $router->group(['middleware' => ['client', 'auth']], function () use ($router) {
-
     /* All Price Code can add request param status=0 or 1*/
     $router->get('/', ['as' => 'all', 'uses' => 'Products\PriceCodeController@index']);
 
@@ -20,8 +18,5 @@ $router->group(['prefix' => 'price-codes', 'as' => 'price_codes'], function () u
     $router->put('/', ['as' => 'update', 'uses' => 'Products\PriceCodeController@updateBulk']);
 
     /* Bulk delete Price Code */
-    $router->delete('/delete', ['as' => 'show', 'uses' => 'Products\PriceCodeController@destroyBulk']);
-
-
-    // });
+    $router->delete('/', ['as' => 'delete', 'uses' => 'Products\PriceCodeController@destroyBulk']);
 });

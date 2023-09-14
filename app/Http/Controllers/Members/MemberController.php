@@ -14,7 +14,6 @@ class MemberController extends Controller
     private MemberRegisterService $registerService;
     private MemberGenealogyService $genealogyService;
     private MemberGetUplineService $getUplineService;
-
     private MemberListService $memberListService;
 
     public function __construct(

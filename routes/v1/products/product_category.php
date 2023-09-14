@@ -1,12 +1,10 @@
 <?php
+
 use App\Http\Controllers\Products\ProductCategoryController;
 
 /* Product Categories group */
+
 $router->group(['prefix' => 'categories', 'as' => 'product-categories'], function () use ($router) {
-
-    /* restrict route */
-    // $router->group(['middleware' => ['client', 'auth']], function () use ($router) {
-
     /* All Product Categories can add request param status=0 or 1*/
     $router->get('/', ['as' => 'all', 'uses' => 'Products\ProductCategoryController@index']);
 
@@ -20,8 +18,5 @@ $router->group(['prefix' => 'categories', 'as' => 'product-categories'], functio
     $router->put('/', ['as' => 'update', 'uses' => 'Products\ProductCategoryController@updateBulk']);
 
     /* Bulk delete Product Categories */
-    $router->delete('/delete', ['as' => 'show', 'uses' => 'Products\ProductCategoryController@destroyBulk']);
-
-
-    // });
+    $router->delete('/', ['as' => 'delete', 'uses' => 'Products\ProductCategoryController@destroyBulk']);
 });

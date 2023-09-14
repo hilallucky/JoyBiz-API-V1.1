@@ -4,7 +4,7 @@
 // use Laravel\Lumen\Testing\DatabaseTransactions;
 
 use Illuminate\Support\Facades\Config;
-
+use Tests\TestCase;
 
 class EndpointTest extends TestCase
 {

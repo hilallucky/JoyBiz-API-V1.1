@@ -60,7 +60,6 @@ class MemberListService
 
         $memberDetails = collect();
 
-        $no = 0;
         foreach ($members as $member) {
             $memberData = $member->toArray();
 

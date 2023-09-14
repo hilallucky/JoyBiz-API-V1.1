@@ -1,12 +1,10 @@
 <?php
+
 use App\Http\Controllers\Orders\OrderController;
 
 /* Order group */
+
 $router->group(['prefix' => 'orders', 'as' => 'orders'], function () use ($router) {
-
-    /* restrict route */
-    // $router->group(['middleware' => ['client', 'auth']], function () use ($router) {
-
     /* All Order can add request param status=0 or 1*/
     $router->get('/', ['as' => 'all', 'uses' => 'Orders\OrderController@index']);
 
@@ -20,8 +18,5 @@ $router->group(['prefix' => 'orders', 'as' => 'orders'], function () use ($route
     $router->put('/', ['as' => 'update', 'uses' => 'Orders\OrderController@updateBulk']);
 
     /* Bulk delete Order */
-    $router->delete('/delete', ['as' => 'show', 'uses' => 'Orders\OrderController@destroyBulk']);
-
-    // });
-
+    $router->delete('/', ['as' => 'delete', 'uses' => 'Orders\OrderController@destroyBulk']);
 });
