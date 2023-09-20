@@ -34,11 +34,13 @@ class OrderApprovalService
             // Check Auth & update user uuid to deleted_by
             $user =  null;
             if (Auth::check()) {
-                $user = Auth::user();
+                $auth = Auth::user();
+                $user = $auth->uuid;
             }
 
             $orderTemp = OrderHeaderTemp::with('details', 'payments', 'shipping')
                 ->whereIn('uuid', $uuids)
+                ->where('status', 0)
                 ->get();
 
             // ->each(function ($orderHeaderTemps) use ($user) {
@@ -65,6 +67,17 @@ class OrderApprovalService
 
             // });
 
+            // Compare the count of found UUIDs with the count from the request array
+            if (
+                !$orderTemp ||
+                (count($orderTemp) !== count($uuids))
+            ) {
+                return response()->json(
+                    ['message' => 'Orders fail to approve, because invalid uuid(s)'],
+                    400
+                );
+            }
+
             foreach ($orderTemp as $order) {
                 // New Order Header;
                 $newOrderHeader = [
@@ -88,6 +101,13 @@ class OrderApprovalService
                     'airway_bill_no' => $order->airway_bill_no,
                     'created_by' => $user,
                 ];
+
+                // Update status in order_header_temp
+                OrderHeaderTemp::where('uuid', $order->uuid)
+                    ->update([
+                        'status' => 1,
+                        'updated_by' => $user
+                    ]);
 
                 // Insert into order_headers
                 $orderHeader = new OrderHeader($newOrderHeader);
@@ -240,7 +260,6 @@ class OrderApprovalService
             $orders = $orders->where('member_uuid', $member_uuid);
         }
 
-
         $orders = $orders->orderBy('created_at', 'asc')->get();
 
         if (!$orders) {
@@ -326,8 +345,6 @@ class OrderApprovalService
                     'uuid',
                     $uuids
                 );
-
-            // print_r($orders->get());
 
             // Compare the count of found UUIDs with the count from the request array
             if (

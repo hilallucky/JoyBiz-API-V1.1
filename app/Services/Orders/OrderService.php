@@ -342,8 +342,6 @@ class OrderService
         );
     }
 
-
-
     // Delete Orders
     public function destroyBulk($request)
     {
@@ -434,10 +432,6 @@ class OrderService
             200
         );
     }
-
-    
-
-
 
     private function validation($type = null, $request)
     {
