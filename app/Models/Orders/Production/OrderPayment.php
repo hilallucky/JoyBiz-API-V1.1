@@ -16,7 +16,7 @@ class OrderPayment extends Model
     protected $fillable = [
         'id',
         'uuid',
-        'order_header_temp_uuid',
+        'order_payments_temp_uuid',
         'order_header_uuid',
         'payment_type_uuid',
         'total_amount',

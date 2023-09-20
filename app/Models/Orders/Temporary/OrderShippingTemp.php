@@ -6,28 +6,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderDetail extends Model
+class OrderShippingTemp extends Model
 {
-    use HasFactory, SoftDeletes; //, Uuids;
+    use HasFactory, SoftDeletes;
 
-    protected $table = 'order_details_temp';
+    protected $table = 'order_shipping_temp';
     protected $primaryKey = 'id';
 
     protected $fillable = [
         'id',
         'uuid',
         'order_header_temp_uuid',
-        'product_price_uuid',
-        'qty',
-        'price',
-        'discount_type',
-        'discount_value',
-        'discount_value_amount',
-        'price_after_discount',
-        'pv',
-        'xv',
-        'bv',
-        'rv',
+        'courier_uuid',
+        'shipping_charge',
+        'discount_shipping_charge',
+        'member_address_uuid',
+        'province',
+        'city',
+        'district',
+        'village',
+        'details',
+        'notes',
+        'remarks',
+        'discount_shipping_charge',
         'created_by',
         'updated_by',
         'deleted_by',

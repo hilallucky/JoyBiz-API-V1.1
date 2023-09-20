@@ -23,10 +23,10 @@ return new class extends Migration
             $table->decimal('discount_shipping_charge', 10, 2)->default(0);
             $table->uuid('member_shipping_address_uuid')->comment('Get from table member_shipping_addresses')
                 ->nullable()->after('discount_shipping_charge');
-            $table->string('province')->comment('Province Name')->after('member_address_uuid');
-            $table->string('city')->comment('City Name')->after('province');
-            $table->string('district')->comment('District Name')->after('city');
-            $table->string('village')->comment('Village Name')->after('district');
+            $table->string('province')->comment('Province Name')->nullable();
+            $table->string('city')->comment('City Name')->after('province')->nullable();
+            $table->string('district')->comment('District Name')->after('city')->nullable();
+            $table->string('village')->comment('Village Name')->after('district')->nullable();
             $table->string('details')->comment('Address Detail')->after('village')->nullable();
             $table->string('notes')->comment('Address Notes')->after('details')->nullable();
             $table->string('remarks')->comment('Address remarks')->after('notes')->nullable();

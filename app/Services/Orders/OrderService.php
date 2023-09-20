@@ -4,10 +4,10 @@ namespace App\Services\Orders;
 
 use app\Libraries\Core;
 use App\Models\Orders\OrderStatuses;
-use App\Models\Orders\Temporary\OrderDetail;
-use App\Models\Orders\Temporary\OrderHeader;
-use App\Models\Orders\Temporary\OrderPayment;
-use App\Models\Orders\Temporary\OrderShipping;
+use App\Models\Orders\Temporary\OrderDetailTemp;
+use App\Models\Orders\Temporary\OrderHeaderTemp;
+use App\Models\Orders\Temporary\OrderPaymentTemp;
+use App\Models\Orders\Temporary\OrderShippingTemp;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -39,8 +39,6 @@ class OrderService
             );
         }
 
-        $status = "1";
-
         try {
             DB::beginTransaction();
             DB::enableQueryLog();
@@ -53,7 +51,7 @@ class OrderService
             $orderHeaders = $request->all();
 
             foreach ($orderHeaders as $orderHeader) {
-                // New Order Header
+                // New Order Header;
                 $newOrderHeader = [
                     'uuid' => Str::uuid()->toString(),
                     'price_code_uuid' => $orderHeader['price_code_uuid'],
@@ -76,7 +74,7 @@ class OrderService
                 ];
 
                 // Insert into order_headers_temp
-                $newOrderHeaderAdd = new OrderHeader($newOrderHeader);
+                $newOrderHeaderAdd = new OrderHeaderTemp($newOrderHeader);
                 $newOrderHeaderAdd->save();
                 $newOrderHeaders[] = $newOrderHeader;
 
@@ -116,7 +114,7 @@ class OrderService
                     ];
 
                     // Insert into order_details_temp
-                    $newOrderDetailAdd = new OrderDetail($newOrderDetail);
+                    $newOrderDetailAdd = new OrderDetailTemp($newOrderDetail);
                     $newOrderDetailAdd->save();
                     $newOrderDetails[] = $newOrderDetail;
                 }
@@ -151,7 +149,7 @@ class OrderService
                     ];
 
                     // Insert into order_payments_temp
-                    $newOrderPaymentAdd = new OrderPayment($newOrderPayment);
+                    $newOrderPaymentAdd = new OrderPaymentTemp($newOrderPayment);
                     $newOrderPaymentAdd->save();
 
                     $newOrderPayments[] = $newOrderPayment;
@@ -198,7 +196,7 @@ class OrderService
                     }
 
                     // Insert into order_shipping_temp
-                    $newOrderShippingAdd = new OrderShipping($newOrderShipping);
+                    $newOrderShippingAdd = new OrderShippingTemp($newOrderShipping);
                     $newOrderShippingAdd->save();
 
                     $newOrderShippings[] = $newOrderShipping;
@@ -222,13 +220,13 @@ class OrderService
                 $newOrderStatuses[] = $newOrderStatus;
             }
 
-            $newHeader = OrderHeader::whereIn('uuid', array_column($newOrderHeaders, 'uuid'))->get();
+            $newHeader = OrderHeaderTemp::whereIn('uuid', array_column($newOrderHeaders, 'uuid'))->get();
 
-            $newDetails = OrderDetail::whereIn('uuid', array_column($newOrderDetails, 'uuid'))->get();
+            $newDetails = OrderDetailTemp::whereIn('uuid', array_column($newOrderDetails, 'uuid'))->get();
 
-            $newPayments = OrderPayment::whereIn('uuid', array_column($newOrderPayments, 'uuid'))->get();
+            $newPayments = OrderPaymentTemp::whereIn('uuid', array_column($newOrderPayments, 'uuid'))->get();
 
-            $newShippings = OrderShipping::whereIn('uuid', array_column($newOrderShippings, 'uuid'))->get();
+            $newShippings = OrderShippingTemp::whereIn('uuid', array_column($newOrderShippings, 'uuid'))->get();
 
             $newStatuses = OrderStatuses::whereIn('uuid', array_column($newOrderStatuses, 'uuid'))->get();
 
@@ -258,6 +256,89 @@ class OrderService
             $newOrder,
             false,
             201
+        );
+    }
+
+    //Get list of orders
+    public function getOrderList($request)
+    {
+        DB::enableQueryLog();
+
+        // Get order list
+        $orders = OrderHeaderTemp::query();
+
+        if ($request->input('start') && $request->input('end')) {
+            $start = $request->input('start');
+            $end = $request->input('end');
+
+            $orders = $orders->whereBetween(DB::raw('created_at::date'), [$start, $end]);
+        }
+
+        if ($request->input('status') !== null) {
+            $status = $request->input('status');
+
+            $orders = $orders->where('status', $status);
+        }
+
+        if ($request->input('member_uuid') !== null) {
+            $member_uuid = $request->input('member_uuid');
+
+            $orders = $orders->where('member_uuid', $member_uuid);
+        }
+
+
+        $orders = $orders->orderBy('created_at', 'asc')->get();
+
+        if (!$orders) {
+            return $this->core->setResponse(
+                'error',
+                'Order not exist.',
+                NULL,
+                FALSE,
+                400
+            );
+        }
+
+        return $this->core->setResponse(
+            'success',
+            'Order list.',
+            $orders,
+        );
+    }
+
+    //Get Order by uuids
+    public function getOrderDetails($uuid)
+    {
+        if (!Str::isUuid($uuid)) {
+            return $this->core->setResponse(
+                'error',
+                'Invalid UUID format',
+                NULL,
+                FALSE,
+                400
+            );
+        }
+
+        $order = OrderHeaderTemp::where([
+            'uuid' => $uuid,
+        ])
+            ->with('details', 'payments', 'shipping')
+            ->get();
+
+        if (!isset($order)) {
+            return $this->core->setResponse(
+                'error',
+                'Order Not Found',
+                NULL,
+                FALSE,
+                400
+            );
+        }
+
+        return $this->core->setResponse(
+            'success',
+            'Order Found',
+            $order
         );
     }
 

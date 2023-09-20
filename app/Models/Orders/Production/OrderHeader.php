@@ -2,6 +2,7 @@
 
 namespace App\Models\Orders\Production;
 
+use App\Models\Orders\Temporary\OrderHeaderTemp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,7 +17,7 @@ class OrderHeader extends Model
     protected $fillable = [
         'id',
         'uuid',
-        'order_headers_temp_uuid',
+        'order_header_temp_uuid',
         'price_code_uuid',
         'member_uuid',
         'remarks',
@@ -44,4 +45,40 @@ class OrderHeader extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    public function headerTemp()
+    {
+        return $this->belongsTo(
+            OrderHeaderTemp::class,
+            'order_header_uuid',
+            'uuid'
+        );
+    }
+
+    public function details()
+    {
+        return $this->hasMany(
+            OrderDetail::class,
+            'order_header_uuid',
+            'uuid'
+        );
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(
+            OrderPayment::class,
+            'order_header_uuid',
+            'uuid'
+        );
+    }
+
+    public function shipping()
+    {
+        return $this->hasMany(
+            OrderShipping::class,
+            'order_header_uuid',
+            'uuid'
+        );
+    }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderHeader extends Model
+class OrderHeaderTemp extends Model
 {
     use HasFactory, SoftDeletes; //, Uuids;
 
@@ -47,7 +47,7 @@ class OrderHeader extends Model
     public function details()
     {
         return $this->hasMany(
-            OrderDetail::class,
+            OrderDetailTemp::class,
             'order_header_temp_uuid',
             'uuid'
         );
@@ -56,7 +56,7 @@ class OrderHeader extends Model
     public function payments()
     {
         return $this->hasMany(
-            OrderPayment::class,
+            OrderPaymentTemp::class,
             'order_header_temp_uuid',
             'uuid'
         );
@@ -65,7 +65,7 @@ class OrderHeader extends Model
     public function shipping()
     {
         return $this->hasMany(
-            OrderShipping::class,
+            OrderShippingTemp::class,
             'order_header_temp_uuid',
             'uuid'
         );

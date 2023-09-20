@@ -40,7 +40,7 @@ class MemberListService
             $start = $request->input('start');
             $end = $request->input('end');
 
-            $members = $members->whereBetween('created_at', [$start, $end]);
+            $members = $members->whereBetween(DB::raw('created_at::date'), [$start, $end]);
         }
 
         $members = $members->orderBy('created_at', 'asc')->get();
