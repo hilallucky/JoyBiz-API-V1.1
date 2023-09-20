@@ -12,9 +12,8 @@ use App\Models\Orders\Temporary\OrderHeaderTemp;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
-use function PHPUnit\Framework\isEmpty;
 
 class OrderApprovalService
 {
@@ -42,7 +41,6 @@ class OrderApprovalService
                 ->whereIn('uuid', $uuids)
                 ->get();
 
-            // print_r($orderTemp);
             // ->each(function ($orderHeaderTemps) use ($user) {
             //     $orderHeader = $orderHeaderTemps->replicate();
 
@@ -65,10 +63,6 @@ class OrderApprovalService
             //     $orderDetail = new OrderDetail();
             //     $orderDetail->insert($details);
 
-            //     // $orderHeaderTemps->update([
-            //     //     'status' => 1,
-            //     //     'updated_by' => $user,
-            //     // ]);
             // });
 
             foreach ($orderTemp as $order) {
@@ -266,7 +260,6 @@ class OrderApprovalService
         );
     }
 
-
     //Get Order by uuids
     public function getOrderDetails($uuid)
     {
@@ -301,5 +294,118 @@ class OrderApprovalService
             'Order Found',
             $order
         );
+    }
+
+    // Delete Orders
+    public function destroyBulk($request)
+    {
+
+        $validator = $this->validation(
+            'delete',
+            $request
+        );
+
+        if ($validator->fails()) {
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                422
+            );
+        }
+
+        $uuids = $request->input('uuids');
+        $orders = null;
+        try {
+            DB::beginTransaction();
+            DB::enableQueryLog();
+
+            $orders = OrderHeader::lockForUpdate()
+                ->whereIn(
+                    'uuid',
+                    $uuids
+                );
+
+            // print_r($orders->get());
+
+            // Compare the count of found UUIDs with the count from the request array
+            if (
+                !$orders ||
+                (count($orders->get()) !== count($uuids))
+            ) {
+                return response()->json(
+                    ['message' => 'Orders fail to deleted, because invalid uuid(s)'],
+                    400
+                );
+            }
+
+            // Check Auth & update user uuid to deleted_by
+            $user = null;
+            if (Auth::check()) {
+                $auth = Auth::user();
+                $user = $auth->uuid;
+                $orders->update([
+                    'deleted_by' => $user
+                ]);
+            }
+
+            $orders->delete();
+
+            $orderDetails = OrderDetail::lockForUpdate()->whereIn('order_header_uuid', $uuids);
+            $orderDetails->update([
+                'deleted_by' => $user
+            ]);
+            $orderDetails->delete();
+
+            $orderPayments = OrderPayment::lockForUpdate()->whereIn('order_header_uuid', $uuids);
+            $orderPayments->update([
+                'deleted_by' => $user
+            ]);
+            $orderPayments->delete();
+
+            $orderShipping = OrderShipping::lockForUpdate()->whereIn('order_header_uuid', $uuids);
+            $orderShipping->update([
+                'deleted_by' => $user
+            ]);
+            $orderShipping->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(
+                ['message' => 'Error during bulk deletion ' . $e->getMessage()],
+                500
+            );
+        }
+
+        return $this->core->setResponse(
+            'success',
+            "Orders deleted",
+            null,
+            200
+        );
+    }
+
+    private function validation($type = null, $request)
+    {
+        switch ($type) {
+
+            case 'delete':
+
+                $validator = [
+                    'uuids' => 'required|array',
+                    'uuids.*' => 'required|uuid',
+                    // 'uuids.*' => 'required|exists:warehouses,uuid',
+                ];
+
+                break;
+
+            default:
+
+                $validator = [];
+        }
+
+        return Validator::make($request->all(), $validator);
     }
 }

@@ -11,6 +11,9 @@ $router->group(['prefix' => 'orders', 'as' => 'orders'], function () use ($route
     /* Show Approved Order by uuid can add request param status=0 or 1*/
     $router->get('/success/{uuid}/details', ['as' => 'show', 'uses' => 'Orders\OrderController@getOrderApprovedDetails']);
 
+    /* Bulk delete Approved Order */
+    $router->delete('/success', ['as' => 'delete', 'uses' => 'Orders\OrderController@destroyApprovedBulk']);
+
     /* All Temporary Order can add request param status=0 or 1*/
     $router->get('/temp', ['as' => 'all', 'uses' => 'Orders\OrderController@getOrderTempList']);
 
@@ -23,8 +26,8 @@ $router->group(['prefix' => 'orders', 'as' => 'orders'], function () use ($route
     // /* Update Bulk Order by uuid */
     // $router->put('/', ['as' => 'update', 'uses' => 'Orders\OrderController@updateBulk']);
 
-    // /* Bulk delete Order */
-    // $router->delete('/', ['as' => 'delete', 'uses' => 'Orders\OrderController@destroyBulk']);
+    /* Bulk delete Temporary Order */
+    $router->delete('/temp', ['as' => 'delete', 'uses' => 'Orders\OrderController@destroyTempBulk']);
 
     /* Approve Bulk Order by uuids */
     $router->post('/approve', ['as' => 'approve', 'uses' => 'Orders\OrderController@approveOrder']);

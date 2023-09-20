@@ -21,15 +21,14 @@ return new class extends Migration
             $table->uuid('courier_uuid')->comment('Get from table couriers');
             $table->decimal('shipping_charge', 10, 2)->default(0);
             $table->decimal('discount_shipping_charge', 10, 2)->default(0);
-            $table->uuid('member_shipping_address_uuid')->comment('Get from table member_shipping_addresses')
-                ->nullable()->after('discount_shipping_charge');
+            $table->uuid('member_shipping_address_uuid')->comment('Get from table member_shipping_addresses')->nullable();
             $table->string('province')->comment('Province Name')->nullable();
-            $table->string('city')->comment('City Name')->after('province')->nullable();
-            $table->string('district')->comment('District Name')->after('city')->nullable();
-            $table->string('village')->comment('Village Name')->after('district')->nullable();
-            $table->string('details')->comment('Address Detail')->after('village')->nullable();
-            $table->string('notes')->comment('Address Notes')->after('details')->nullable();
-            $table->string('remarks')->comment('Address remarks')->after('notes')->nullable();
+            $table->string('city')->comment('City Name')->nullable();
+            $table->string('district')->comment('District Name')->nullable();
+            $table->string('village')->comment('Village Name')->nullable();
+            $table->string('details')->comment('Address Detail')->nullable();
+            $table->string('notes')->comment('Address Notes')->nullable();
+            $table->string('remarks')->comment('Address remarks')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

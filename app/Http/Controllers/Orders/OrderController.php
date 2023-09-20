@@ -31,6 +31,10 @@ class OrderController extends Controller
 
     //     return redirect()->route('users.index');
     // }
+    public function destroyTempBulk(Request $request)
+    {
+        return $this->orderService->destroyBulk($request);
+    }
 
     public function getOrderTempList(Request $request)
     {
@@ -55,5 +59,10 @@ class OrderController extends Controller
     public function getOrderApprovedDetails($uuid)
     {
         return $this->orderAppService->getOrderDetails($uuid);
+    }
+
+    public function destroyApprovedBulk(Request $request)
+    {
+        return $this->orderAppService->destroyBulk($request);
     }
 }

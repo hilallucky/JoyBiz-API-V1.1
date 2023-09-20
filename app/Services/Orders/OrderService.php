@@ -342,6 +342,103 @@ class OrderService
         );
     }
 
+
+
+    // Delete Orders
+    public function destroyBulk($request)
+    {
+
+        $validator = $this->validation(
+            'delete',
+            $request
+        );
+
+        if ($validator->fails()) {
+            return $this->core->setResponse(
+                'error',
+                $validator->messages()->first(),
+                NULL,
+                false,
+                422
+            );
+        }
+
+        $uuids = $request->input('uuids');
+        $orders = null;
+        try {
+            DB::beginTransaction();
+            DB::enableQueryLog();
+
+            $orders = OrderHeaderTemp::lockForUpdate()
+                ->whereIn(
+                    'uuid',
+                    $uuids
+                );
+
+            // print_r($orders->get());
+
+            // Compare the count of found UUIDs with the count from the request array
+            if (
+                !$orders ||
+                (count($orders->get()) !== count($uuids))
+            ) {
+                return response()->json(
+                    ['message' => 'Orders fail to deleted, because invalid uuid(s)'],
+                    400
+                );
+            }
+
+            // Check Auth & update user uuid to deleted_by
+            $user = null;
+            if (Auth::check()) {
+                $auth = Auth::user();
+                $user = $auth->uuid;
+                $orders->update([
+                    'deleted_by' => $user
+                ]);
+            }
+
+            $orders->delete();
+
+            $orderDetails = OrderDetailTemp::lockForUpdate()->whereIn('order_header_temp_uuid', $uuids);
+            $orderDetails->update([
+                'deleted_by' => $user
+            ]);
+            $orderDetails->delete();
+
+            $orderPayments = OrderPaymentTemp::lockForUpdate()->whereIn('order_header_temp_uuid', $uuids);
+            $orderPayments->update([
+                'deleted_by' => $user
+            ]);
+            $orderPayments->delete();
+
+            $orderShipping = OrderShippingTemp::lockForUpdate()->whereIn('order_header_temp_uuid', $uuids);
+            $orderShipping->update([
+                'deleted_by' => $user
+            ]);
+            $orderShipping->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(
+                ['message' => 'Error during bulk deletion ' . $e->getMessage()],
+                500
+            );
+        }
+
+        return $this->core->setResponse(
+            'success',
+            "Orders deleted",
+            null,
+            200
+        );
+    }
+
+    
+
+
+
     private function validation($type = null, $request)
     {
 
