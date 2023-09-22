@@ -43,5 +43,10 @@ $router->group(['middleware' => ['client']], function () use ($router) {
         $router->group(['prefix' => 'v1/products', 'as' => 'v1'], function () use ($router) {
             Core::renderRoutes('v1/products', $router);
         });
+
+        /* v1/calculation */
+        $router->group(['prefix' => 'v1/calculation', 'as' => 'v1'], function () use ($router) {
+            Core::renderRoutes('v1/calculation', $router);
+        });
     // });
 });
