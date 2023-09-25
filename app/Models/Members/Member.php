@@ -2,6 +2,8 @@
 
 namespace App\Models\Members;
 
+use App\Models\Orders\Production\OrderHeader;
+use App\Models\Orders\Temporary\OrderHeaderTemp;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +16,7 @@ class Member extends Model
 
     protected $table = 'members';
     protected $primaryKey = 'id';
+
     protected $fillable = [
         'id',
         'uuid',
@@ -33,8 +36,8 @@ class Member extends Model
     ];
     protected $hidden = [
         'password',
-        'created_at',
-        'updated_at'
+        // 'created_at',
+        // 'updated_at'
     ];
 
     public function user()
@@ -123,5 +126,16 @@ class Member extends Model
                 return true;
             }
         }
+    }
+
+    function transactionTemps()
+    {
+        return $this->hasMany(OrderHeaderTemp::class, 'member_uuid', 'uuid');
+    }
+
+
+    function transactions()
+    {
+        return $this->hasMany(OrderHeader::class, 'member_uuid', 'uuid');
     }
 }

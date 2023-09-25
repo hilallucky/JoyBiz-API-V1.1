@@ -23,8 +23,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('warehouse_id')->references('id')->on('warehouses');
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('warehouse_uuid')->references('uuid')->on('warehouses');
+            $table->foreign('product_uuid')->references('uuid')->on('products');
         });
     }
 

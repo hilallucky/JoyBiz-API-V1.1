@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Calculation;
+namespace App\Services\Calculations;
 
 use app\Libraries\Core;
 use App\Models\Calculation\MLMData;

@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Calculation;
+namespace App\Http\Controllers\Calculations;
 
 use App\Http\Controllers\Controller;
 use App\Models\Calculation\MLMData;
-use App\Services\Calculation\PointCalculationService;
+use App\Services\Calculations\PointCalculationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PointCalculationController extends Controller
 {
-    private PointCalculationService $calculationService;
+  private PointCalculationService $calculationService;
 
-    public function __construct(PointCalculationService $calculationService)
-    {
-        $this->calculationService = $calculationService;
-    }
-    public function calculationPoint()
-    {
-        return $this->calculationService->getMlmData();
-    }
+  public function __construct(PointCalculationService $calculationService)
+  {
+    $this->calculationService = $calculationService;
+  }
+  public function calculationPoint()
+  {
+    return $this->calculationService->getMlmData();
+  }
 
-    public function getMlmData()
-    {
-        $results = DB::select(DB::raw('
+  public function getMlmData()
+  {
+    $results = DB::select(DB::raw('
             WITH RECURSIVE RecursivePoints AS (
               SELECT
                 id,
@@ -64,13 +64,13 @@ class PointCalculationController extends Controller
               mlm_data.id;
         '));
 
-        return response()->json($results);
-    }
+    return response()->json($results);
+  }
 
-    public function getMlmData_V2()
-    {
-        $results = MlmData::getMlmDataWithAccumulatedPoints();
+  public function getMlmData_V2()
+  {
+    $results = MlmData::getMlmDataWithAccumulatedPoints();
 
-        return response()->json($results);
-    }
+    return response()->json($results);
+  }
 }

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Models\Orders\Production;
+namespace App\Models\Calculations\Transactions;
 
-use App\Models\Members\Member;
-use App\Models\Orders\Temporary\OrderHeaderTemp;
+use App\Models\Orders\Production\OrderHeader;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderHeader extends Model
+class CalculationPointMember extends Model
 {
+
     use HasFactory, SoftDeletes;
 
-    protected $table = 'order_headers';
+    protected $table = 'calculation_point_members';
     protected $primaryKey = 'id';
 
     protected $casts = [
@@ -32,10 +32,10 @@ class OrderHeader extends Model
     protected $fillable = [
         'id',
         'uuid',
-        'order_header_temp_uuid',
-        'price_code_uuid',
+        'start_date',
+        'end_date',
         'member_uuid',
-        'remarks',
+        'rank_uuid',
         'total_discount_value',
         'total_discount_value_amount',
         'total_price_after_discount',
@@ -47,10 +47,6 @@ class OrderHeader extends Model
         'total_xv',
         'total_bv',
         'total_rv',
-        'status',
-        'airway_bill_no',
-        'calculation_point_members_uuid',
-        'calculation_date',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -72,38 +68,11 @@ class OrderHeader extends Model
         );
     }
 
-    public function headerTemp()
+    public function orders()
     {
         return $this->belongsTo(
-            OrderHeaderTemp::class,
-            'order_header_uuid',
-            'uuid'
-        );
-    }
-
-    public function details()
-    {
-        return $this->hasMany(
-            OrderDetail::class,
-            'order_header_uuid',
-            'uuid'
-        );
-    }
-
-    public function payments()
-    {
-        return $this->hasMany(
-            OrderPayment::class,
-            'order_header_uuid',
-            'uuid'
-        );
-    }
-
-    public function shipping()
-    {
-        return $this->hasMany(
-            OrderShipping::class,
-            'order_header_uuid',
+            OrderHeader::class,
+            'uuid',
             'uuid'
         );
     }
