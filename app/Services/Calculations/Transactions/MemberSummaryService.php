@@ -45,7 +45,13 @@ class MemberSummaryService
     {
         $data = OrderHeader::select(
             'member_uuid',
+            DB::raw('SUM(total_discount_value) as total_discount_value'),
+            DB::raw('SUM(total_discount_value_amount) as total_discount_value_amount'),
+            DB::raw('SUM(total_price_after_discount) as total_price_after_discount'),
             DB::raw('SUM(total_amount) as total_amount'),
+            DB::raw('SUM(total_shipping_charge) as total_shipping_charge'),
+            DB::raw('SUM(total_payment_charge) as total_payment_charge'),
+            DB::raw('SUM(total_amount_summary) as total_amount_summary'),
             DB::raw('SUM(total_pv) as total_pv'),
             DB::raw('SUM(total_xv) as total_xv'),
             DB::raw('SUM(total_bv) as total_bv'),
@@ -83,10 +89,10 @@ class MemberSummaryService
                 // New Calculation;
                 $newCalculation = [
                     'uuid' => Str::uuid()->toString(),
-                    'start_date' => $data['start_date'],
-                    'end_date' => $data['end_date'],
-                    'member_uuid' => $data['rank_uuid'],
-                    'rank_uuid' => $data['remarks'],
+                    'start_date' => $start,
+                    'end_date' => $end,
+                    'member_uuid' => $data['member_uuid'],
+                    'rank_uuid' => $data['rank_uuid'],
                     'total_discount_value' => $data['total_discount_value'],
                     'total_discount_value_amount' => $data['total_discount_value_amount'],
                     'total_price_after_discount' => $data['total_price_after_discount'],
@@ -98,7 +104,7 @@ class MemberSummaryService
                     'total_xv' => $data['total_xv'],
                     'total_bv' => $data['total_bv'],
                     'total_rv' => $data['total_rv'],
-                    'created_by' => $userUuid,
+                    // 'created_by' => $userUuid,
                 ];
 
                 // Insert into order_headers_temp
