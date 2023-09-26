@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->uuid('member_uuid')->comment('Member uuid based from table members');
             $table->uuid('rank_uuid')->comment('Rank uuid based from table ranks')->nullable();
+            $table->uuid('sponsor_uuid')->comment('Sponsor uuid based from table members')->nullable();
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->decimal('total_amount_summary', 10, 2)->default(0);
             $table->decimal('p_pv', 10, 2)->default(0);

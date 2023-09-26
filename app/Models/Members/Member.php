@@ -2,6 +2,7 @@
 
 namespace App\Models\Members;
 
+use App\Models\Calculations\Transactions\CalculationPointMember;
 use App\Models\Orders\Production\OrderHeader;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
 use App\Models\Users\User;
@@ -138,30 +139,116 @@ class Member extends Model
         return $this->hasMany(OrderHeader::class, 'member_uuid', 'uuid');
     }
 
-
-    public function calculateAccumulatedPoints()
+    function transaction_sumaries($start, $end)
     {
-        $accumulatedPoints = $this->points;
+        DB::enableQueryLog();
 
-        foreach ($this->children as $child) {
-            $accumulatedPoints += $child->calculateAccumulatedPoints();
-        }
+        $data = OrderHeader::select(
+            'member_uuid',
+            DB::raw('SUM(total_discount_value) as total_discount_value'),
+            DB::raw('SUM(total_discount_value_amount) as total_discount_value_amount'),
+            DB::raw('SUM(total_price_after_discount) as total_price_after_discount'),
+            DB::raw('SUM(total_amount) as total_amount'),
+            DB::raw('SUM(total_shipping_charge) as total_shipping_charge'),
+            DB::raw('SUM(total_payment_charge) as total_payment_charge'),
+            DB::raw('SUM(total_amount_summary) as total_amount_summary'),
+            DB::raw('SUM(total_pv) as total_pv'),
+            DB::raw('SUM(total_xv) as total_xv'),
+            DB::raw('SUM(total_bv) as total_bv'),
+            DB::raw('SUM(total_rv) as total_rv'),
+        )
+            ->whereBetween(
+                DB::raw('created_at::date'),
+                [$start, $end]
+            )
+            ->groupBy('member_uuid')
+            ->get();
 
-        return $accumulatedPoints;
+        // $query = DB::getQueryLog();
+        // dd($query);
+
+        return $data;
     }
 
-    public static function getAccumulatedPoints()
+
+
+    function transaction_sumary_by_memberuuid($memberUuid, $start, $end)
+    {
+        DB::enableQueryLog();
+
+        $data = OrderHeader::select(
+            'member_uuid',
+            DB::raw('SUM(total_discount_value) as total_discount_value'),
+            DB::raw('SUM(total_discount_value_amount) as total_discount_value_amount'),
+            DB::raw('SUM(total_price_after_discount) as total_price_after_discount'),
+            DB::raw('SUM(total_amount) as total_amount'),
+            DB::raw('SUM(total_shipping_charge) as total_shipping_charge'),
+            DB::raw('SUM(total_payment_charge) as total_payment_charge'),
+            DB::raw('SUM(total_amount_summary) as total_amount_summary'),
+            DB::raw('SUM(total_pv) as total_pv'),
+            DB::raw('SUM(total_xv) as total_xv'),
+            DB::raw('SUM(total_bv) as total_bv'),
+            DB::raw('SUM(total_rv) as total_rv'),
+        )
+            ->whereBetween(
+                DB::raw('created_at::date'),
+                [$start, $end]
+            )
+            ->where('member_uuid', $memberUuid)
+            ->groupBy('member_uuid')
+            ->get();
+
+        // $query = DB::getQueryLog();
+        // dd($query);
+
+        return $data;
+    }
+
+
+    public function calculateAccumulatedPoints($pv)
+    {
+        $accumulated_total_pv = $pv;
+
+        foreach ($this->members as $member) {
+            $accumulated_total_pv += $member->calculateAccumulatedPoints($pv);
+        }
+
+        return $accumulated_total_pv;
+    }
+
+    public static function getAccumulatedPoints($start, $end)
     {
         $results = self::with('members')->get();
 
         $formattedResults = [];
 
+        $acc_pv = 0;
+
         foreach ($results as $result) {
+
+            $pv = 0;
+            $bv = 0;
+            $xv = 0;
+            $rv = 0;
+
+            $dataPoint = $result->transaction_sumary_by_memberuuid(
+                $result->uuid,
+                $start,
+                $end
+            );
+
+            foreach ($dataPoint as $dp) {
+                $pv = $dp->total_pv;
+                $bv = $dp->total_bv;
+                $xv = $dp->total_xv;
+                $rv = $dp->total_rv;
+            }
+
             $formattedResults[] = [
-                'id' => $result->id,
-                'parent_id' => $result->parent_id,
-                'points' => $result->points,
-                'akumulasi_points' => $result->calculateAccumulatedPoints(),
+                'uuid' => $result->uuid,
+                'sponsor_uuid' => $result->sponsor_uuid,
+                'pv' => $pv,
+                'acc_pv' => $result->calculateAccumulatedPoints($pv),
             ];
         }
 

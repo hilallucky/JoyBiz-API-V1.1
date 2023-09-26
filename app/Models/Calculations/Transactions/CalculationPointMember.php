@@ -39,6 +39,7 @@ class CalculationPointMember extends Model
         'end_date',
         'member_uuid',
         'rank_uuid',
+        'sponsor_uuid',
         'total_amount',
         'total_amount_summary',
         'p_pv',

@@ -4,6 +4,7 @@ namespace App\Services\Calculations\Transactions;
 
 use app\Libraries\Core;
 use App\Models\Calculations\Transactions\CalculationPointMember;
+use App\Models\Members\Member;
 use App\Models\Orders\Production\OrderHeader;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
 use Carbon\Carbon;
@@ -48,8 +49,10 @@ class MemberSummaryService
     {
         DB::enableQueryLog();
 
+        // $data = [];
+
         $data = OrderHeader::select(
-            'member_uuid',
+            'member_uuid as member_uuid',
             DB::raw('SUM(total_discount_value) as total_discount_value'),
             DB::raw('SUM(total_discount_value_amount) as total_discount_value_amount'),
             DB::raw('SUM(total_price_after_discount) as total_price_after_discount'),
@@ -62,16 +65,13 @@ class MemberSummaryService
             DB::raw('SUM(total_bv) as total_bv'),
             DB::raw('SUM(total_rv) as total_rv'),
         )
-            ->with('member:uuid,first_name,last_name,created_at')
+            ->with('member:uuid,first_name,last_name,sponsor_uuid,created_at')
             ->whereBetween(
                 DB::raw('created_at::date'),
                 [$start, $end]
             )
             ->groupBy('member_uuid')
             ->get();
-
-        // $query = DB::getQueryLog();
-        // dd($query);
 
         return $data;
     }
@@ -122,18 +122,19 @@ class MemberSummaryService
                     'process_uuid' => $processUuid,
                     'start_date' => $start,
                     'end_date' => $end,
-                    'member_uuid' => $data['member_uuid'],
-                    'rank_uuid' => $data['rank_uuid'],
-                    'total_amount' => $data['total_amount'],
-                    'total_amount_summary' => $data['total_amount_summary'],
-                    'p_pv' => $data['total_pv'],
-                    'p_xv' => $data['total_xv'],
-                    'p_bv' => $data['total_bv'],
-                    'p_rv' => $data['total_rv'],
-                    'g_xv' => $data['total_xv'],
-                    'g_bv' => $data['total_bv'],
-                    'g_rv' => $data['total_rv'],
-                    'g_pv' => $data['total_pv'],
+                    'member_uuid' => $data->member_uuid,
+                    'rank_uuid' => null,
+                    'sponsor_uuid' => $data->member->sponsor_uuid,
+                    'total_amount' => $data->total_amount,
+                    'total_amount_summary' => $data->total_amount_summary,
+                    'p_pv' => $data->total_pv,
+                    'p_xv' => $data->total_xv,
+                    'p_bv' => $data->total_bv,
+                    'p_rv' => $data->total_rv,
+                    'g_xv' => $data->total_xv,
+                    'g_bv' => $data->total_bv,
+                    'g_rv' => $data->total_rv,
+                    'g_pv' => $data->total_pv,
                     'created_by' => $userUuid,
                 ];
 

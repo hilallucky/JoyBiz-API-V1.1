@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Calculations;
 
 use App\Http\Controllers\Controller;
-use App\Models\Calculation\MLMData;
+use App\Models\Calculations\MLMData;
 use App\Services\Calculations\PointCalculationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -69,7 +69,7 @@ class PointCalculationController extends Controller
 
   public function getMlmData_V2()
   {
-    $results = MlmData::getMlmDataWithAccumulatedPoints();
+    $results = MLMData::getMlmDataWithAccumulatedPoints();
 
     return response()->json($results);
   }

@@ -3,7 +3,7 @@
 namespace App\Services\Calculations;
 
 use app\Libraries\Core;
-use App\Models\Calculation\MLMData;
+use App\Models\Calculations\MLMData;
 use App\Models\Members\Member;
 
 class PointCalculationService
