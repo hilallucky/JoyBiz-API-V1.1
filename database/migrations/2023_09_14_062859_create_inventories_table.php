@@ -20,6 +20,9 @@ return new class extends Migration
             $table->uuid('product_uuid')->comment('Product uuid based from table products');
             $table->uuid('purchase_uuid')->comment('Purchase uuid based from table purchases')->nullable();
             $table->integer('quantity');
+            $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
+            $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
+            $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

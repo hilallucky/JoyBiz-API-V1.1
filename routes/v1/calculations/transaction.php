@@ -8,5 +8,6 @@ $router->group(['prefix' => 'transaction', 'as' => 'transaction'], function () u
 
     //Production
     $router->get('/{start}/{end}', ['as' => 'all-prod', 'uses' => 'Calculations\Transactions\MemberSummaryController@getTransactionSummaries']);
-    $router->post('/{start}/{end}', ['as' => 'all-prod', 'uses' => 'Calculations\Transactions\MemberSummaryController@calculatePoint']);
+    $router->post('/{start}/{end}', ['as' => 'all-prod', 'uses' => 'Calculations\Transactions\MemberSummaryController@calculatePointFromTransactions']);
+    $router->post('/test/{start}/{end}', ['as' => 'all-prod', 'uses' => 'Calculations\Transactions\MemberSummaryController@updateAccumulatedPointsForAllMembers']);
 });

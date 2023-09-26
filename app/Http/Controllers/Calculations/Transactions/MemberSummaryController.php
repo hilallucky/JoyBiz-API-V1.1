@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Calculations\Transactions;
 
 use App\Http\Controllers\Controller;
+use App\Models\Calculations\Transactions\CalculationPointMember;
 use App\Services\Calculations\Transactions\MemberSummaryService;
 use Illuminate\Http\Request;
 
@@ -23,8 +24,9 @@ class MemberSummaryController extends Controller
         return $this->memberSummaryService->getTransactionSummaries($start, $end);
     }
 
-    public function calculatePoint(Request $request, $start, $end)
+    public function calculatePointFromTransactions(Request $request, $start, $end)
     {
-        return $this->memberSummaryService->calculatePoint($start, $end);
+        return $this->memberSummaryService->checkIfProcessIsExist($start, $end);
     }
+
 }

@@ -16,21 +16,24 @@ return new class extends Migration
         Schema::create('calculation_point_members', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->uuid('process_uuid');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->uuid('member_uuid')->comment('Member uuid based from table members');
             $table->uuid('rank_uuid')->comment('Rank uuid based from table ranks')->nullable();
-            $table->decimal('total_discount_value', 10, 2)->nullable()->default(0);
-            $table->decimal('total_discount_value_amount', 10, 2)->default(0);
-            $table->decimal('total_price_after_discount', 10, 2)->default(0);
             $table->decimal('total_amount', 10, 2)->default(0);
-            $table->decimal('total_shipping_charge', 10, 2)->default(0);
-            $table->decimal('total_payment_charge', 10, 2)->default(0);
             $table->decimal('total_amount_summary', 10, 2)->default(0);
-            $table->decimal('total_pv', 10, 2)->default(0);
-            $table->decimal('total_xv', 10, 2)->default(0);
-            $table->decimal('total_bv', 10, 2)->default(0);
-            $table->decimal('total_rv', 10, 2)->default(0);
+            $table->decimal('p_pv', 10, 2)->default(0);
+            $table->decimal('p_xv', 10, 2)->default(0);
+            $table->decimal('p_bv', 10, 2)->default(0);
+            $table->decimal('p_rv', 10, 2)->default(0);
+            $table->decimal('g_pv', 10, 2)->default(0);
+            $table->decimal('g_xv', 10, 2)->default(0);
+            $table->decimal('g_bv', 10, 2)->default(0);
+            $table->decimal('g_rv', 10, 2)->default(0);
+            $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
+            $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
+            $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

@@ -7,9 +7,12 @@ use App\Models\Calculations\Transactions\CalculationPointMember;
 use App\Models\Orders\Production\OrderHeader;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+
+use function PHPUnit\Framework\isEmpty;
 
 class MemberSummaryService
 {
@@ -43,6 +46,8 @@ class MemberSummaryService
 
     public function getTransactionSummaries($start, $end)
     {
+        DB::enableQueryLog();
+
         $data = OrderHeader::select(
             'member_uuid',
             DB::raw('SUM(total_discount_value) as total_discount_value'),
@@ -65,14 +70,37 @@ class MemberSummaryService
             ->groupBy('member_uuid')
             ->get();
 
+        // $query = DB::getQueryLog();
+        // dd($query);
+
         return $data;
     }
 
-    public function calculatePoint($start, $end)
+    public function checkIfProcessIsExist($start, $end)
+    {
+        $check = CalculationPointMember::whereBetween('start_date', [$start, $end])
+            ->orWhere(function ($query) use ($start, $end) {
+                $query->whereBetween('end_date', [$start, $end]);
+            })->get();
+
+        // dd($check->isEmpty()) ;
+        if (!$check->isEmpty()) {
+            return $this->core->setResponse(
+                'error',
+                "Calculation between date = $start to $end already exist.",
+                [],
+                FALSE,
+                500
+            );
+        }
+
+        return $this->calculatePointFromTransactions($start, $end);
+    }
+
+    public function calculatePointFromTransactions($start, $end)
     {
         $userUuid = null;
         $newCalculationAdd = null;
-        $uuids = collect();
 
         // Check Auth & update user uuid to deleted_by
         if (Auth::check()) {
@@ -80,38 +108,38 @@ class MemberSummaryService
             $userUuid = $user->uuid;
         }
 
+        DB::enableQueryLog();
         try {
             DB::beginTransaction();
 
+            $processUuid = Str::uuid()->toString();
             $getDatas = $this->getTransactionSummaries($start, $end);
 
             foreach ($getDatas as $data) {
                 // New Calculation;
                 $newCalculation = [
                     'uuid' => Str::uuid()->toString(),
+                    'process_uuid' => $processUuid,
                     'start_date' => $start,
                     'end_date' => $end,
                     'member_uuid' => $data['member_uuid'],
                     'rank_uuid' => $data['rank_uuid'],
-                    'total_discount_value' => $data['total_discount_value'],
-                    'total_discount_value_amount' => $data['total_discount_value_amount'],
-                    'total_price_after_discount' => $data['total_price_after_discount'],
                     'total_amount' => $data['total_amount'],
-                    'total_shipping_charge' => $data['total_shipping_charge'],
-                    'total_payment_charge' => $data['total_payment_charge'],
                     'total_amount_summary' => $data['total_amount_summary'],
-                    'total_pv' => $data['total_pv'],
-                    'total_xv' => $data['total_xv'],
-                    'total_bv' => $data['total_bv'],
-                    'total_rv' => $data['total_rv'],
-                    // 'created_by' => $userUuid,
+                    'p_pv' => $data['total_pv'],
+                    'p_xv' => $data['total_xv'],
+                    'p_bv' => $data['total_bv'],
+                    'p_rv' => $data['total_rv'],
+                    'g_xv' => $data['total_xv'],
+                    'g_bv' => $data['total_bv'],
+                    'g_rv' => $data['total_rv'],
+                    'g_pv' => $data['total_pv'],
+                    'created_by' => $userUuid,
                 ];
 
                 // Insert into order_headers_temp
                 $newCalculationAdd = new CalculationPointMember($newCalculation);
                 $newCalculationAdd->save();
-
-                $uuids->push($newCalculationAdd->uuid);
             }
 
             // Update in OrderHeader
@@ -122,16 +150,17 @@ class MemberSummaryService
                     [$start, $end]
                 )
                 ->update([
-                    'calculation_point_members_uuid' => $newCalculationAdd->uuid,
+                    'calculation_point_process_uuid' => $processUuid,
                     'calculation_date' => Carbon::now()->format('Y-m-d H:i:s')
                 ]);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+
             return $this->core->setResponse(
                 'error',
-                'Order fail to created. == ' . $e->getMessage(),
+                'Calculation fail to created. == ' . $e->getMessage(),
                 [],
                 FALSE,
                 500
@@ -146,4 +175,23 @@ class MemberSummaryService
             201
         );
     }
+
+
+    // public static function calculatePoints($start, $end, $processUuid)
+    // {
+    //     $results = self::with('children')->get();
+
+    //     $formattedResults = [];
+
+    //     foreach ($results as $result) {
+    //         $formattedResults[] = [
+    //             'id' => $result->id,
+    //             'parent_id' => $result->parent_id,
+    //             'points' => $result->points,
+    //             'akumulasi_points' => $result->calculateAccumulatedPoints_V2(),
+    //         ];
+    //     }
+
+    //     return $formattedResults;
+    // }
 }

@@ -133,9 +133,38 @@ class Member extends Model
         return $this->hasMany(OrderHeaderTemp::class, 'member_uuid', 'uuid');
     }
 
-
     function transactions()
     {
         return $this->hasMany(OrderHeader::class, 'member_uuid', 'uuid');
+    }
+
+
+    public function calculateAccumulatedPoints()
+    {
+        $accumulatedPoints = $this->points;
+
+        foreach ($this->children as $child) {
+            $accumulatedPoints += $child->calculateAccumulatedPoints();
+        }
+
+        return $accumulatedPoints;
+    }
+
+    public static function getAccumulatedPoints()
+    {
+        $results = self::with('members')->get();
+
+        $formattedResults = [];
+
+        foreach ($results as $result) {
+            $formattedResults[] = [
+                'id' => $result->id,
+                'parent_id' => $result->parent_id,
+                'points' => $result->points,
+                'akumulasi_points' => $result->calculateAccumulatedPoints(),
+            ];
+        }
+
+        return $formattedResults;
     }
 }
