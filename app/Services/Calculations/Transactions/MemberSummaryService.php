@@ -83,14 +83,13 @@ class MemberSummaryService
                 $query->whereBetween('end_date', [$start, $end]);
             })->get();
 
-        // dd($check->isEmpty()) ;
         if (!$check->isEmpty()) {
             return $this->core->setResponse(
                 'error',
                 "Calculation between date = $start to $end already exist.",
                 [],
                 FALSE,
-                500
+                400
             );
         }
 
