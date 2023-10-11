@@ -21,7 +21,7 @@ $router->group(['prefix' => 'v1/public', 'as' => 'v1'], function () use ($router
 });
 
 /* restrict route */
-$router->group(['middleware' => ['client']], function () use ($router) {
+// $router->group(['middleware' => ['client']], function () use ($router) {
     
     /* v1 auth */
     $router->group(['prefix' => 'v1', 'as' => 'v1'], function () use ($router) {
@@ -49,4 +49,4 @@ $router->group(['middleware' => ['client']], function () use ($router) {
             Core::renderRoutes('v1/calculations', $router);
         });
     // });
-});
+// });

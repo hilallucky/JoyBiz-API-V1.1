@@ -19,14 +19,14 @@ class CalculatePointsController extends Controller
         DB::table('calculation_point_members')
             ->where('sponsor_uuid', $sponsorUuid)
             ->update([
-                'p_pv' => DB::raw('(SELECT COALESCE(SUM(total_pv), 0) FROM order_headers WHERE member_uuid = calculation_point_members.member_uuid)'),
+                'ppv' => DB::raw('(SELECT COALESCE(SUM(total_pv), 0) FROM order_headers WHERE member_uuid = calculation_point_members.member_uuid)'),
             ]);
 
         // Calculate group points for each member's group
         DB::table('calculation_point_members')
             ->where('sponsor_uuid', $sponsorUuid)
             ->update([
-                'g_pv' => DB::raw('(SELECT COALESCE(SUM(g_pv), 0) FROM calculation_point_members c WHERE sponsor_uuid = c.member_uuid)'),
+                'gpv' => DB::raw('(SELECT COALESCE(SUM(gpv), 0) FROM calculation_point_members c WHERE sponsor_uuid = c.member_uuid)'),
             ]);
 
         // Recursively calculate points for child members
@@ -82,14 +82,14 @@ class CalculatePointsController extends Controller
                     'total_amount_summary' => $totalAmountSummary,
                     'start_date' => $start,
                     'end_date' => $end,
-                    'p_pv' => $personalPV,
-                    'p_bv' => $personalBV,
-                    'p_xv' => $personalXV,
-                    'p_rv' => $personalRV,
-                    'g_pv' => $groupPV,
-                    'g_bv' => $groupBV,
-                    'g_xv' => $groupXV,
-                    'g_rv' => $groupRV,
+                    'ppv' => $personalPV,
+                    'pbv' => $personalBV,
+                    'pxv' => $personalXV,
+                    'prv' => $personalRV,
+                    'gpv' => $groupPV,
+                    'gbv' => $groupBV,
+                    'gxv' => $groupXV,
+                    'grv' => $groupRV,
                     'created_date' => Carbon::now()->format('Y-m-d H:i:s'),
                     // Add transaction_start_date and transaction_end_date based on your logic
                 ]);

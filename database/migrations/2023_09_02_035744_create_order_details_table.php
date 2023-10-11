@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->decimal('xv', 10, 2)->default(0);
             $table->decimal('bv', 10, 2)->default(0);
             $table->decimal('rv', 10, 2)->default(0);
+            $table->enum('status', [0, 1, 2, 3, 4])->nullable()->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

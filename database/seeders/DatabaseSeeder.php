@@ -53,7 +53,8 @@ class DatabaseSeeder extends Seeder
             ProductCategorySeeder::class,
             // PriceCodeSeeder::class,
             ProductSeeder::class,
-            CourierSeeder::class
+            CourierSeeder::class,
+            RankSeeder::class,
         ]);
     }
 }

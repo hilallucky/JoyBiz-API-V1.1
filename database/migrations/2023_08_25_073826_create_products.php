@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('name')->comment('Name of product category');
             $table->string('description')->comment('Description of product category')->nullable();
             $table->enum('is_product_group', [0, 1])->nullable()->comment('Status : 0 = Single, 1 = Group/Bundling/Package')->default(0);
-            $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
+            $table->enum('status', [0, 1, 2, 3, 4])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
             $table->text('remarks')->comment('Notes of products')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
