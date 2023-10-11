@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Models\Configs;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Ramsey\Uuid\Nonstandard\Uuid;
+use Ramsey\Uuid\Provider\Node\RandomNodeProvider;
+
+class Country extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'countries';
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'uuid',
+        'name',
+        'name_iso',
+        'region_name',
+        'sub_region_name',
+        'intermediate_region_name',
+        'capital_city',
+        'tld',
+        'languages',
+        'geoname_id',
+        'dial_prefix',
+        'alpha_3_isp',
+        'alpha_2_isp',
+        'corrency_code_iso',
+        'currency_minro_unit_iso'
+    ];
+
+    public $incrementing = false;
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+
+            $nodeProvider = new RandomNodeProvider();
+
+            /* validate duplicate UUID */
+            do {
+
+                $uuid = Uuid::uuid1($nodeProvider->getNode());
+
+                $uuid_exist = self::where('uuid', $uuid)->exists();
+
+            } while ($uuid_exist);
+
+            $model->uuid = $uuid;
+        });
+    }
+}
