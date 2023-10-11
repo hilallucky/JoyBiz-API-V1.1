@@ -2,5 +2,5 @@
 
 $router->group(['prefix' => 'bonus', 'as' => 'bonus'], function () use ($router) {
 
-    $router->post('/weekly', ['as' => 'all', 'uses' => 'Calculations\Bonus\PeriodController@generate_week_periods']);
+    $router->post('/weekly', ['as' => 'all', 'uses' => 'Calculations\Bonus\PeriodController@generateWeekPeriods']);
 });

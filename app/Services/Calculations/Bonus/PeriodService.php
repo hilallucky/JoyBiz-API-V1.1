@@ -17,7 +17,7 @@ class PeriodService
         $this->core = new Core();
     }
 
-    public function generate_week_periods(Request $request)
+    public function generateWeekPeriods(Request $request)
     {
         $validator = $this->validation(
             'create',

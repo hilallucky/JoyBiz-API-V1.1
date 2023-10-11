@@ -17,8 +17,8 @@ class PeriodController extends Controller
         $this->periodService = $periodService;
     }
 
-    public function generate_week_periods(Request $request)
+    public function generateWeekPeriods(Request $request)
     {
-        return $this->periodService->generate_week_periods($request);
+        return $this->periodService->generateWeekPeriods($request);
     }
 }
