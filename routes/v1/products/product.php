@@ -10,8 +10,8 @@ $router->get('/', ['as' => 'all', 'uses' => 'Products\ProductController@index'])
 /* Show Product by uuid can add request param status=0 or 1*/
 $router->get('/{uuid}/details', ['as' => 'show', 'uses' => 'Products\ProductController@show']);
 
-/* create Product */
-$router->post('/', ['as' => 'create', 'uses' => 'Products\ProductController@store']);
+// /* create Product */
+// $router->post('/', ['as' => 'create', 'uses' => 'Products\ProductController@store']);
 
 /* create Product with Prices*/
 $router->post('/prices', ['as' => 'create-prices', 'uses' => 'Products\ProductController@storeIncludePrices']);

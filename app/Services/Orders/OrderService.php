@@ -106,10 +106,13 @@ class OrderService
                         'discount_value' => $orderDetail['discount_value'],
                         'discount_value_amount' => $orderDetail['discount_value_amount'],
                         'price_after_discount' => $orderDetail['price_after_discount'],
+                        'cashback' => $orderDetail['cashback'],
+                        'cashback_reseller' => $orderDetail['cashback_reseller'],
                         'pv' => $orderDetail['pv'],
                         'xv' => $orderDetail['xv'],
                         'bv' => $orderDetail['bv'],
                         'rv' => $orderDetail['rv'],
+                        'status' => $orderDetail['status'],
                         // 'created_by' => $user->uuid,
                     ];
 
@@ -373,8 +376,6 @@ class OrderService
                     $uuids
                 );
 
-            // print_r($orders->get());
-
             // Compare the count of found UUIDs with the count from the request array
             if (
                 !$orders ||
@@ -475,10 +476,13 @@ class OrderService
                     '*.products.*.discount_value' => 'required|numeric',
                     '*.products.*.discount_value_amount' => 'required|numeric',
                     '*.products.*.price_after_discount' => 'required|numeric',
+                    '*.products.*.cashback' => 'numeric',
+                    '*.products.*.cashback_reseller' => 'numeric',
                     '*.products.*.pv' => 'required|numeric',
                     '*.products.*.xv' => 'required|numeric',
                     '*.products.*.bv' => 'required|numeric',
                     '*.products.*.rv' => 'required|numeric',
+                    '*.products.*.status' => 'required|in:0,1,2,3,4,5,6',
 
                     '*.payments.*.payment_type_uuid' => 'required|uuid',
                     '*.payments.*.total_amount' => 'required|numeric|min:1',

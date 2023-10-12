@@ -2,6 +2,8 @@
 
 namespace App\Models\Orders\Production;
 
+use App\Models\Products\Product;
+use App\Models\Products\ProductPrice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -40,4 +42,14 @@ class OrderDetail extends Model
      * @var bool
      */
     public $incrementing = false;
+
+
+    public function productPrice()
+    {
+        return $this->belongsTo(
+            ProductPrice::class,
+            'product_price_uuid',
+            'uuid'
+        );
+    }
 }

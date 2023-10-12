@@ -3,9 +3,10 @@
 namespace App\Services\Calculations\Bonus;
 
 use app\Libraries\Core;
-use App\Models\Calculations\Bonus\Period;
+use App\Models\Calculations\Bonuses\Period;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PeriodService
@@ -19,6 +20,14 @@ class PeriodService
 
     public function generateWeekPeriods(Request $request)
     {
+
+        $userUuid = null;
+
+        if (Auth::check()) {
+            $user = Auth::user();
+            $userUuid = $user->uuid;
+        }
+
         $validator = $this->validation(
             'create',
             $request

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Calculations\Bonus;
+namespace App\Models\Calculations\Bonuses;
 
 use Illuminate\Database\Eloquent\Model;
 

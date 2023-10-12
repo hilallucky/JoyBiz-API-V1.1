@@ -28,10 +28,12 @@ return new class extends Migration
             $table->uuid('country_uuid')->comment('Country ID (get from table countries')->nullable();
             $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
             $table->integer('min_bv')->default(0)->comment('Minimum required BV');
+            $table->date('activated_at')->comment('Membership activate date')->nullable();
             $table->text('remarks')->comment('Notes of members')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+            $table->string('activated_by')->comment('Activated By (User ID from table user')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

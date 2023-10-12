@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -24,6 +25,8 @@ return new class extends Migration {
             $table->decimal('discount_value', 10, 2)->nullable()->default(0);
             $table->decimal('discount_value_amount', 10, 2)->default(0);
             $table->decimal('price_after_discount', 10, 2)->default(0);
+            $table->decimal('cashback', 10, 2)->default(0);
+            $table->decimal('cashback_reseller', 10, 2)->default(0);
             $table->decimal('pv', 10, 2)->default(0);
             $table->decimal('xv', 10, 2)->default(0);
             $table->decimal('bv', 10, 2)->default(0);

@@ -2,6 +2,7 @@
 
 namespace App\Models\Members;
 
+use App\Models\Bonuses\BonusRank;
 use App\Models\Calculations\Transactions\CalculationPointMember;
 use App\Models\Orders\Production\OrderHeader;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
@@ -253,5 +254,11 @@ class Member extends Model
         }
 
         return $formattedResults;
+    }
+
+
+    public function effectiveRank()
+    {
+        return $this->hasMany(BonusRank::class, 'member_uuid', 'uuid');
     }
 }
