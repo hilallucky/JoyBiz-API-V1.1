@@ -15,10 +15,14 @@ class ProductPrice extends Model
     protected $primaryKey = 'id';
 
     protected $casts = [
+        'status' => 'integer',
         'price' => 'float',
         'discount_value' => 'float',
         'discount_value_amount' => 'float',
         'price_after_discount' => 'float',
+        'cashback' => 'float',
+        'cashback_reseller' => 'float',
+        'shipping_budget' => 'float',
         'pv' => 'float',
         'xv' => 'float',
         'bv' => 'float',
@@ -36,6 +40,9 @@ class ProductPrice extends Model
         'discount_value',
         'discount_value_amount',
         'price_after_discount',
+        'cashback',
+        'cashback_reseller',
+        'shipping_budget',
         'pv',
         'xv',
         'bv',

@@ -79,6 +79,8 @@ class ProductSeeder extends Seeder
         $product->name = "Laptop";
         $product->description = "Laptop Desc";
         $product->status = 1;
+        $product->sc_show_status = 1;
+        $product->weight = 1.2;
         $product->created_by = $user_uuid->uuid;
         $product->save();
 
@@ -92,6 +94,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 227000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 9000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -110,6 +115,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 240000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 12000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -128,6 +136,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 260000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 20000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -143,6 +154,8 @@ class ProductSeeder extends Seeder
         $product->name = "T-Shirt";
         $product->description = "T-Shirt Desc";
         $product->status = 1;
+        $product->sc_show_status = 1;
+        $product->weight = 0.2;
         $product->created_by = $user_uuid->uuid;
         $product->save();
 
@@ -156,6 +169,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 127000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 9000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -174,6 +190,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 140000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 15000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -192,6 +211,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 160000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 20000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -261,6 +283,8 @@ class ProductSeeder extends Seeder
         $product->name = "Runaway";
         $product->description = "Runaway Desc";
         $product->status = 1;
+        $product->sc_show_status = 1;
+        $product->weight = 1.0;
         $product->created_by = $user_uuid->uuid;
         $product->save();
 
@@ -274,6 +298,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 150000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 9000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -292,6 +319,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 160000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 15000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -310,6 +340,9 @@ class ProductSeeder extends Seeder
         $productPrice->discount_value = 0;
         $productPrice->discount_value_amount = 0;
         $productPrice->price_after_discount = 170000;
+        $productPrice->cashback = 0;
+        $productPrice->cashback_reseller = 0;
+        $productPrice->shipping_budget = 20000;
         $productPrice->pv = 240;
         $productPrice->xv = 241;
         $productPrice->bv = 242;
@@ -317,6 +350,5 @@ class ProductSeeder extends Seeder
         $productPrice->remarks = null;
         $productPrice->created_by = $user_uuid->uuid;
         $productPrice->save();
-
     }
 }

@@ -24,7 +24,11 @@ class ProductResource extends JsonResource
                     'attributes'
                 )
             ),
+            "is_register" => $this->is_register,
             "status" => $this->status,
+            "show_status" => $this->show_status,
+            "sc_show_status" => $this->sc_show_status,
+            "weight" => $this->weight,
             "remarks" => $this->remarks,
             "prices" => ProductPriceResource::collection(
                 $this->whenLoaded(

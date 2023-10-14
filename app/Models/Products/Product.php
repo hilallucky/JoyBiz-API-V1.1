@@ -17,13 +17,27 @@ class Product extends Model
     protected $table = 'products';
     protected $primaryKey = 'id';
 
+
+    protected $casts = [
+        'is_register' => 'boolean',
+        'status' => 'integer',
+        'show_status' => 'boolean',
+        'sc_show_status' => 'boolean',
+        'weight' => 'float',
+    ];
+    
     protected $fillable = [
         'uuid',
         'category_uuid',
-        'is_product_group',
         'name',
         'description',
+        'is_product_group',
+        'is_register',
         'status',
+        'show_status',
+        'sc_show_status',
+        'weight',
+        'remarks',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -36,6 +50,11 @@ class Product extends Model
         'uuid',
         'name',
         'description',
+        'is_register',
+        'status',
+        'show_status',
+        'sc_show_status',
+        'weight',
         'created_at',
         'updated_at',
         'deleted_at',

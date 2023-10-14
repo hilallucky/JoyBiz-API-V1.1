@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Period extends Model
 {
     protected $table = 'week_periods';
-    protected $fillable = ['sDate', 'sDay_name', 'eDate', 'eDay_name', 'name', 'interval_days'];
+    protected $fillable = [
+        'start_date',
+        'start_day_name', 
+        'end_date', 
+        'end_day_name', 
+        'name', 
+        'interval_days'
+    ];
     protected $hidden = ['created_at', 'updated_at'];
 }

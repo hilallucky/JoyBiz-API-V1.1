@@ -13,6 +13,10 @@ class PriceCode extends Model
     protected $table = 'price_codes';
     protected $primaryKey = 'id';
 
+    protected $casts = [
+        'status' => 'integer',
+    ];
+
     protected $fillable = [
         'id',
         'uuid',

@@ -16,6 +16,7 @@ class ProductGroupComposition extends Model
 
     protected $casts = [
         'qty' => 'integer',
+        'status' => 'integer',
     ];
 
     protected $fillable = [

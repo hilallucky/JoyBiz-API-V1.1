@@ -14,6 +14,10 @@ class ProductAttribute extends Model
     protected $table = 'product_attributes';
     protected $primaryKey = 'id';
 
+    protected $casts = [
+        'status' => 'integer',
+    ];
+
     protected $fillable = [
         'id',
         'uuid',

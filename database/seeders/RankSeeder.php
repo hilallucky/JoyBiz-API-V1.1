@@ -43,6 +43,7 @@ class RankSeeder extends Seeder
             // ], 
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 1,
                 "name" => "Alpha",
                 "short_name" => "A",
                 "description" => "Alpha",
@@ -54,6 +55,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 2,
                 "name" => "Beta",
                 "short_name" => "B",
                 "description" => "Beta",
@@ -64,6 +66,7 @@ class RankSeeder extends Seeder
                 "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
             ], [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 3,
                 "name" => "Gamma",
                 "short_name" => "G",
                 "description" => "Gamma",
@@ -75,6 +78,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 4,
                 "name" => "JoyPriser",
                 "short_name" => "JPS",
                 "description" => "Joypriser",
@@ -86,6 +90,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 5,
                 "name" => "Joypreneur",
                 "short_name" => "JP",
                 "description" => "JoyPreneur",
@@ -97,6 +102,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 6,
                 "name" => "JoyBizPreneur",
                 "short_name" => "JBP",
                 "description" => "JoyBizPreneur",
@@ -108,6 +114,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 7,
                 "name" => "Baron JBpreneur",
                 "short_name" => "BJ",
                 "description" => "Baron JBpreneur",
@@ -119,6 +126,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 8,
                 "name" => "Viscount JBpreneur",
                 "short_name" => "VJ",
                 "description" => "Viscount JBpreneur",
@@ -130,6 +138,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 9,
                 "name" => "Earl JBpreneur",
                 "short_name" => "EJ",
                 "description" => "Earl JBpreneur",
@@ -141,6 +150,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 10,
                 "name" => "Marquis JBpreneur",
                 "short_name" => "MJ",
                 "description" => "Marquis JBpreneur",
@@ -152,6 +162,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 11,
                 "name" => "Duke JBpreneur",
                 "short_name" => "DJ",
                 "description" => "Duke JBpreneur",
@@ -163,6 +174,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 12,
                 "name" => "Crown Ambassador",
                 "short_name" => "CA",
                 "description" => "Crown Ambassador",
@@ -174,6 +186,7 @@ class RankSeeder extends Seeder
             ],
             [
                 "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
+                "rank_id" => 13,
                 "name" => "Royal Crown Ambassador",
                 "short_name" => "RCA",
                 "description" => "Royal Crown Ambassador",

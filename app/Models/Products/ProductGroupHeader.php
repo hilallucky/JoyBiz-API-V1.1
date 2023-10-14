@@ -14,6 +14,10 @@ class ProductGroupHeader extends Model
     protected $table = 'product_group_headers';
     protected $primaryKey = 'id';
 
+    protected $casts = [
+        'status' => 'integer',
+    ];
+    
     protected $fillable = [
         'uuid',
         'product_uuid',

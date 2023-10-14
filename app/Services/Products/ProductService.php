@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Nonstandard\Uuid;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ProductService
 {
     public $core;
@@ -42,6 +44,18 @@ class ProductService
         }
         $query->where('status', $status);
 
+        $showStatus = true;
+        if ($request->has('show_status')) {
+            $status = $request->input('show_status');
+        }
+        $query->where('show_status', $showStatus);
+
+        $scShowStatus = true;
+        if ($request->has('sc_show_status')) {
+            $status = $request->input('sc_show_status');
+        }
+        $query->where('sc_show_status', $scShowStatus);
+
         if ($request->has('is_product_group')) {
             $is_product_group = $request->input('is_product_group');
 
@@ -61,10 +75,10 @@ class ProductService
                         'ilike',
                         '%' . $param . '%'
                     )->orWhere(
-                            'description',
-                            'ilike',
-                            '%' . $param . '%'
-                        );
+                        'description',
+                        'ilike',
+                        '%' . $param . '%'
+                    );
                 }
             );
         }
@@ -139,7 +153,12 @@ class ProductService
                     'name' => $product['name'],
                     'description' => $product['description'],
                     'is_product_group' => $product['is_product_group'],
+                    'is_register' => $product['is_register'],
                     'status' => $status,
+                    'show_status' => $product['show_status'],
+                    'sc_show_status' => $product['sc_show_status'],
+                    'weight' => $product['weight'],
+                    'remarks' => $product['remarks'] ? $product['remarks'] : null,
                     // 'created_by' => $user->uuid,
                 ];
 
@@ -159,10 +178,14 @@ class ProductService
                         'discount_value' => $price['discount_value'],
                         'discount_value_amount' => $price['discount_value_amount'],
                         'price_after_discount' => $price['price_after_discount'],
+                        'cashback' => $price['cashback'],
+                        'cashback_reseller' => $price['cashback_reseller'],
+                        'shipping_budget' => $price['shipping_budget'],
                         'pv' => $price['pv'],
                         'xv' => $price['xv'],
                         'bv' => $price['bv'],
                         'rv' => $price['rv'],
+                        'remarks' => $price['remarks'] ? $price['remarks'] : null,
                         // 'created_by' => $user->uuid,
                     ];
 
@@ -237,7 +260,6 @@ class ProductService
             false,
             201
         );
-
     }
 
     //Get product information by ids
@@ -345,10 +367,6 @@ class ProductService
             $products = $request->all();
             foreach ($products as $productData) {
 
-                if ($request->has('status')) {
-                    $status = $productData['status'];
-                }
-
                 $error_info = 'Product uuid = ' . $productData['uuid'] . ' doesn\'t exist';
 
                 // Update Product
@@ -358,12 +376,18 @@ class ProductService
                         $productData['uuid']
                     )->firstOrFail();
 
+
                 $product->update([
                     'category_uuid' => $productData['category_uuid'],
                     'name' => $productData['name'],
                     'description' => $productData['description'],
                     'is_product_group' => $productData['is_product_group'],
-                    'status' => $status,
+                    'is_register' => $productData['is_register'],
+                    'status' => $productData['status'],
+                    'show_status' => $productData['show_status'],
+                    'sc_show_status' => $productData['sc_show_status'],
+                    'weight' => $productData['weight'],
+                    'remarks' => $productData['remarks'],
                     // 'updated_by' => $user->uuid,
                 ]);
 
@@ -372,125 +396,129 @@ class ProductService
 
                 // Price
                 $prices = $productData['prices'];
-                foreach ($prices as $price) {
+                if (!isEmpty($prices)) {
+                    foreach ($prices as $price) {
 
-                    $priceStatus = 1;
-                    if ($request->has('prices.status')) {
-                        $priceStatus = $price['status'];
-                    }
-
-                    $priceRemarks = null;
-                    if ($request->has('prices.remarks')) {
-                        $priceRemarks = $price['remarks'];
-                    }
-
-                    // Check data from table product price
-                    $priceFromDB = ProductPrice::where([
-                        'product_uuid' => $productData['uuid'],
-                        'price_code_uuid' => $price['price_code_uuid']
-                    ])->first();
-
-                    // Set value for product price
-                    $priceData = [
-                        'product_uuid' => $productData['uuid'],
-                        'price_code_uuid' => $price['price_code_uuid'],
-                        'price' => $price['price'],
-                        'discount_type' => $price['discount_type'],
-                        'discount_value' => $price['discount_value'],
-                        'discount_value_amount' => $price['discount_value_amount'],
-                        'price_after_discount' => $price['price_after_discount'],
-                        'pv' => $price['pv'],
-                        'xv' => $price['xv'],
-                        'bv' => $price['bv'],
-                        'rv' => $price['rv'],
-                        'status' => $priceStatus,
-                        'remarks' => $priceRemarks,
-                        // 'created_by' => $user->uuid,
-                    ];
-
-                    // Update value if record doesn't exit
-                    if (!empty($priceFromDB)) {
-                        $newPrice = $priceFromDB->update($priceData);
-                    } else { // Add new record if doesn't exit
-                        $priceData['uuid'] = Str::uuid()->toString();
-
-                        $newPrice = ProductPrice::create($priceData);
-                    }
-
-                    $newPrices[] = $newPrice;
-                }
-
-
-                // Product Group Composition
-                $compositions = $productData['composition'];
-                if (
-                    $productData['is_product_group'] == 1 &&
-                    empty($productData['composition'])
-                ) {
-                    DB::rollback();
-                    return $this->core->setResponse(
-                        'error',
-                        'Product composition cannot be empty while set to group.',
-                        NULL,
-                        FALSE,
-                        400
-                    );
-                } else if (
-                    $productData['is_product_group'] === 1 &&
-                    !empty($productData['composition'])
-                ) {
-                    foreach ($compositions as $composition) {
-                        $compositionStatus = 1;
-                        if ($request->has('composition.status')) {
-                            $compositionStatus = $composition['status'];
+                        $priceStatus = 1;
+                        if ($request->has('prices.status')) {
+                            $priceStatus = $price['status'];
                         }
 
-                        $compositionRemarks = null;
-                        if ($request->has('composition.remarks')) {
-                            $compositionRemarks = $composition['remarks'];
+                        $priceRemarks = null;
+                        if ($request->has('prices.remarks')) {
+                            $priceRemarks = $price['remarks'];
                         }
-
 
                         // Check data from table product price
-                        $compositionFromDB = ProductGroupComposition::where([
-                            'product_group_header_uuid' => $productData['uuid'],
+                        $priceFromDB = ProductPrice::where([
                             'product_uuid' => $productData['uuid'],
+                            'price_code_uuid' => $price['price_code_uuid']
                         ])->first();
 
-                        $compositions = $product['composition'];
-                        $compositionData = [
-                            'product_group_header_uuid' => $productData['uuid'],
-                            'product_uuid' => $composition['product_uuid'],
-                            'qty' => $composition['qty'],
-                            'status' => $compositionStatus,
-                            'remarks' => $compositionRemarks,
+                        // Set value for product price
+                        $priceData = [
+                            'product_uuid' => $productData['uuid'],
+                            'price_code_uuid' => $price['price_code_uuid'],
+                            'price' => $price['price'],
+                            'discount_type' => $price['discount_type'],
+                            'discount_value' => $price['discount_value'],
+                            'discount_value_amount' => $price['discount_value_amount'],
+                            'price_after_discount' => $price['price_after_discount'],
+                            'cashback' => $price['cashback'],
+                            'cashback_reseller' => $price['cashback_reseller'],
+                            'shipping_budget' => $price['shipping_budget'],
+                            'pv' => $price['pv'],
+                            'xv' => $price['xv'],
+                            'bv' => $price['bv'],
+                            'rv' => $price['rv'],
+                            'status' => $priceStatus,
+                            'remarks' => $priceRemarks,
                             // 'created_by' => $user->uuid,
                         ];
 
                         // Update value if record doesn't exit
-                        if (!empty($compositionFromDB)) {
-                            $newComposition = $compositionFromDB
-                                ->update($compositionData)
-                                ->where('uuid', $compositionData['uuid']);
-
+                        if (!empty($priceFromDB)) {
+                            $newPrice = $priceFromDB->update($priceData);
                         } else { // Add new record if doesn't exit
-                            $compositionData['uuid'] = Str::uuid()->toString();
+                            $priceData['uuid'] = Str::uuid()->toString();
 
-                            $newComposition = ProductGroupComposition::create($compositionData);
+                            $newPrice = ProductPrice::create($priceData);
                         }
 
-                        $newCompositions[] = $newComposition;
+                        $newPrices[] = $newPrice;
                     }
-                } else if (
-                    $productData['is_product_group'] === 0
-                ) {
-                    // Delete in Product Composition if product not group
-                    ProductGroupComposition::where([
-                        'product_group_header_uuid' => $productData['uuid'],
-                    ])->delete();
                 }
 
 
+                // Product Group Composition
+                if (!empty($productData['composition'])) {
+                    $compositions = $productData['composition'];
+                    if (
+                        $productData['is_product_group'] == 1 &&
+                        empty($productData['composition'])
+                    ) {
+                        DB::rollback();
+                        return $this->core->setResponse(
+                            'error',
+                            'Product composition cannot be empty while set to group.',
+                            NULL,
+                            FALSE,
+                            400
+                        );
+                    } else if (
+                        $productData['is_product_group'] === 1 &&
+                        !empty($productData['composition'])
+                    ) {
+                        foreach ($compositions as $composition) {
+                            $compositionStatus = 1;
+                            if ($request->has('composition.status')) {
+                                $compositionStatus = $composition['status'];
+                            }
+
+                            $compositionRemarks = null;
+                            if ($request->has('composition.remarks')) {
+                                $compositionRemarks = $composition['remarks'];
+                            }
+
+
+                            // Check data from table product price
+                            $compositionFromDB = ProductGroupComposition::where([
+                                'product_group_header_uuid' => $productData['uuid'],
+                                'product_uuid' => $productData['uuid'],
+                            ])->first();
+
+                            $compositions = $product['composition'];
+                            $compositionData = [
+                                'product_group_header_uuid' => $productData['uuid'],
+                                'product_uuid' => $composition['product_uuid'],
+                                'qty' => $composition['qty'],
+                                'status' => $compositionStatus,
+                                'remarks' => $compositionRemarks,
+                                // 'created_by' => $user->uuid,
+                            ];
+
+                            // Update value if record doesn't exit
+                            if (!empty($compositionFromDB)) {
+                                $newComposition = $compositionFromDB
+                                    ->update($compositionData)
+                                    ->where('uuid', $compositionData['uuid']);
+                            } else { // Add new record if doesn't exit
+                                $compositionData['uuid'] = Str::uuid()->toString();
+
+                                $newComposition = ProductGroupComposition::create($compositionData);
+                            }
+
+                            $newCompositions[] = $newComposition;
+                        }
+                    } else if (
+                        $productData['is_product_group'] === 0
+                    ) {
+                        // Delete in Product Composition if product not group
+                        ProductGroupComposition::where([
+                            'product_group_header_uuid' => $productData['uuid'],
+                        ])->delete();
+                    }
+                }
             }
 
             $productList = Product::with([
@@ -512,8 +540,8 @@ class ProductService
         } catch (QueryException $e) {
             DB::rollback();
             return $this->core->setResponse(
-                'error'
-                , "Product fail to updated. $error_info" . $e->getMessage(),
+                'error',
+                "Product fail to updated. $error_info" . $e->getMessage(),
                 NULL,
                 FALSE,
                 500
@@ -584,7 +612,6 @@ class ProductService
             // }
 
             $products->delete();
-
         } catch (\Exception $e) {
             return $this->core->setResponse(
                 'error',
@@ -625,8 +652,8 @@ class ProductService
                     '*.description' => 'required|max:140|min:5',
                     '*.is_product_group' => 'in:0,1,2',
                     '*.composition' => '*.is_product_group' == 1
-                    ? ['required', 'array', 'min:0']
-                    : ['array'],
+                        ? ['required', 'array', 'min:0']
+                        : ['array'],
                     //'required|array',
                     'composition.product_uuid' => 'uuid',
                     'composition.qty' => 'numeric',
@@ -644,14 +671,18 @@ class ProductService
                     '*.name' => 'required|string|max:255|min:2',
                     '*.description' => 'required|max:140|min:5',
                     '*.is_product_group' => 'in:0,1,2',
+                    '*.is_register' => 'required|in:0,1',
+                    '*.status' => 'in:0,1,2,3',
+                    '*.show_status' => 'required|in:true,false',
+                    '*.sc_show_status' => 'required|in:true,false',
+                    '*.weight' => 'required|numeric',
                     '*.composition' => '*.is_product_group' == 1
-                    ? ['required', 'array', 'min:0']
-                    : ['array'],
+                        ? ['required', 'array', 'min:0']
+                        : ['array'],
                     //'required|array',
                     'composition.product_uuid' => 'uuid',
                     'composition.qty' => 'numeric',
                     'composition.status' => 'integer|in:0,1,2,3',
-                    '*.status' => 'in:0,1,2,3',
                     // '*.created_by' => 'required|string|min:4',
                     '*.category_uuid' => 'required|uuid',
                     '*.prices' => 'required|array',
@@ -661,6 +692,9 @@ class ProductService
                     'prices.discount_value' => 'required|numeric',
                     'prices.discount_value_amount' => 'required|numeric',
                     'prices.price_after_discount' => 'required|numeric',
+                    'prices.cashback' => 'required|numeric',
+                    'prices.cashback_reseller' => 'required|numeric',
+                    'prices.shipping_budget' => 'required|numeric',
                     'prices.pv' => 'required|numeric',
                     'prices.xv' => 'required|numeric',
                     'prices.bv' => 'required|numeric',

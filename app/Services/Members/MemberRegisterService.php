@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Nonstandard\Uuid;
+use stdClass;
 
 class MemberRegisterService
 {
@@ -47,6 +48,8 @@ class MemberRegisterService
         }
 
         try {
+            DB::beginTransaction();
+
             // Add User
             $newUser = $this->createUser($request, $status);
 
@@ -94,22 +97,40 @@ class MemberRegisterService
     }
     protected function generateDownlines(Member $member, $numLegs, $type, $address)
     {
+
         if ($type == "straight") {
             $legs = $numLegs / 2;
             $no = 1;
+
             for ($i = 0; $i < 2; $i++) { // 2 (right & left)
                 $currentSponsorId = $member->id;
                 $currentSponsorUUID = $member->uuid;
+
+                $newUser = new stdClass;
+                $newMemberUuid = Str::uuid()->toString();
+
+                $newUser->uuid = $newMemberUuid;
+                $newUser->first_name = $member->first_name;
+                $newUser->last_name = $member->last_name;
+                $newUser->email = $i . $member->user->email;
+                $newUser->password = null;
+
+                $this->createUser(
+                    $newUser,
+                    $member->status
+                );
+
                 for ($j = 0; $j < $legs; $j++) {
                     // Add New downline
                     $downline = Member::create([
-                        'uuid' => Str::uuid()->toString(),
-                        'first_name' => 'Downline ' . ($no++),
+                        'uuid' => $newMemberUuid,
+                        'first_name' => $member->first_name, //'Downline ' . ($no++),
+                        'last_name' => $member->last_name,
                         'sponsor_id' => $currentSponsorId,
                         'sponsor_uuid' => $currentSponsorUUID,
                         'placement_id' => $member->placement_id,
                         'placement_uuid' => $member->placement_uuid,
-                        'user_uuid' => $member->uuid,
+                        'user_uuid' => $newUser->uuid,
                     ]);
 
                     $currentSponsorId = $downline->id;
@@ -126,15 +147,31 @@ class MemberRegisterService
             $currentSponsorUUID = $member->uuid;
 
             for ($i = 0; $i < $numLegs; $i++) { // 2 (right & left)
+
+                $newUser = new stdClass;
+                $newMemberUuid = Str::uuid()->toString();
+
+                $newUser->uuid = $newMemberUuid;
+                $newUser->first_name = $member->first_name;
+                $newUser->last_name = $member->last_name;
+                $newUser->email = $i . $member->user->email;
+                $newUser->password = null;
+
+                $this->createUser(
+                    $newUser,
+                    $member->status
+                );
+
                 if ($i <= 1) {
                     $downline = Member::create([
-                        'uuid' => Str::uuid()->toString(),
-                        'first_name' => 'Downline ' . ($no++),
+                        'uuid' => $newMemberUuid,
+                        'first_name' => $member->first_name, //'Downline ' . ($no++),
+                        'last_name' => $member->last_name,
                         'sponsor_id' => $currentSponsorId,
                         'sponsor_uuid' => $currentSponsorUUID,
                         'placement_id' => $member->placement_id,
                         'placement_uuid' => $member->placement_uuid,
-                        'user_uuid' => $member->uuid,
+                        'user_uuid' => $newUser->uuid,
                     ]);
 
                     if ($i == 0) {
@@ -152,23 +189,25 @@ class MemberRegisterService
                 if ($i > 1) {
                     if ($i % 2 == 0) { // set sponsor to the left
                         $downline = Member::create([
-                            'uuid' => Str::uuid()->toString(),
-                            'first_name' => 'Downline ' . ($no++),
+                            'uuid' => $newMemberUuid,
+                            'first_name' => $member->first_name, //'Downline ' . ($no++),
+                            'last_name' => $member->last_name,
                             'sponsor_id' => $leftSponsorId,
                             'sponsor_uuid' => $leftSponsorUUID,
                             'placement_id' => $member->placement_id,
                             'placement_uuid' => $member->placement_uuid,
-                            'user_uuid' => $member->uuid,
+                            'user_uuid' => $newUser->uuid,
                         ]);
                     } else {
                         $downline = Member::create([
-                            'uuid' => Str::uuid()->toString(),
-                            'first_name' => 'Downline ' . ($no++),
+                            'uuid' => $newMemberUuid,
+                            'first_name' => $member->first_name, //'Downline ' . ($no++),
+                            'last_name' => $member->last_name,
                             'sponsor_id' => $rightSponsorId,
                             'sponsor_uuid' => $rightSponsorUUID,
                             'placement_id' => $member->placement_id,
                             'placement_uuid' => $member->placement_uuid,
-                            'user_uuid' => $member->uuid,
+                            'user_uuid' => $newUser->uuid,
                         ]);
                     }
                 }
@@ -257,6 +296,8 @@ class MemberRegisterService
                     'phone' => 'required|string',
                     'auto_leg_to_generate' => 'required|numeric|min:2|max:6',
                     'status' => 'in:0,1,2,3',
+                    'min_bv' => 'numeric',
+                    'activated_at' => 'date',
                     'address' => 'required',
                     // 'address.city_uuid' => 'string',
                     'address.zip_code' => 'required|string',

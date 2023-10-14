@@ -26,6 +26,8 @@ class OrderDetail extends Model
         'discount_type',
         'discount_value',
         'discount_value_amount',
+        'cashback',
+        'cashback_reseller',
         'price_after_discount',
         'pv',
         'xv',

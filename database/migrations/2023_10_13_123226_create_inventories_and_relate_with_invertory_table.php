@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,24 +13,22 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('couriers', function (Blueprint $table) {
+        // Table inventories
+        Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('gallery_uuid')->nullable();
-            $table->string('code');
-            $table->string('name');
-            $table->string('short_name');
-            $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
+            $table->uuid('uuid');
+            $table->uuid('warehouse_uuid')->comment('Warehouse uuid based from table warehouses');
+            $table->uuid('product_uuid')->comment('Product uuid based from table products');
+            $table->uuid('purchase_uuid')->comment('Purchase uuid based from table purchases')->nullable();
+            $table->integer('quantity');
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
-
-            // $table->foreign('created_by')->references('uuid')->on('users');
-            // $table->foreign('updated_by')->references('uuid')->on('users');
-            // $table->foreign('deleted_by')->references('uuid')->on('users');
-
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('warehouse_uuid')->references('uuid')->on('warehouses');
+            $table->foreign('product_uuid')->references('uuid')->on('products');
         });
     }
 
@@ -40,6 +39,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('couriers');
+        Schema::dropIfExists('inventories');
     }
 };

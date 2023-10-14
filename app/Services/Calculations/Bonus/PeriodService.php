@@ -62,10 +62,10 @@ class PeriodService
 
             Period::firstOrCreate(
                 [
-                    'sDate' => $startDate,
-                    'sDay_name' => Carbon::parse($startDate)->dayName,
-                    'eDate' => $eDate->toDateString(),
-                    'eDay_name' => Carbon::parse($eDate->toDate())->dayName,
+                    'start_date' => $startDate,
+                    'start_day_name' => Carbon::parse($startDate)->dayName,
+                    'end_date' => $eDate->toDateString(),
+                    'end_day_name' => Carbon::parse($eDate->toDate())->dayName,
                     'interval_days' => $request->days_interval
                 ]
             );

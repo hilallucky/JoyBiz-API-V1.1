@@ -19,6 +19,7 @@ class OrderPayment extends Model
         'order_payments_temp_uuid',
         'order_header_uuid',
         'payment_type_uuid',
+        'voucher_uuid',
         'total_amount',
         'total_discount',
         'total_amount_after_discount',
