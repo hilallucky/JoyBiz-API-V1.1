@@ -70,6 +70,26 @@ return new class extends Migration
             $table->integer('biz_rv')->default(0);
             $table->timestamps();
         });
+
+
+        Schema::create('joy_datas', function (Blueprint $table) {
+            $table->increments('id');
+            $table->date('date');
+            $table->integer('member_uuid');
+            $table->integer('sponsor_uuid');
+            $table->integer('upline_uuid');
+            $table->integer('ppv')->default(0);
+            $table->integer('pbv')->default(0);
+            $table->integer('prv')->default(0);
+            $table->integer('gpv')->default(0);
+            $table->integer('gbv')->default(0);
+            $table->integer('grv')->default(0);
+            $table->integer('pgpv')->default(0);
+            $table->integer('pgbv')->default(0);
+            $table->integer('jrank')->default(0);
+            #$table->integer('apbv')->default(0);            
+            $table->timestamps();
+        });
     }
 
     /**
@@ -82,5 +102,6 @@ return new class extends Migration
         Schema::dropIfExists('prepared_data_joys');
         Schema::dropIfExists('joy_bonus_summaries');
         Schema::dropIfExists('joy_point_rewards');
+        Schema::dropIfExists('joy_datas');
     }
 };

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('sponsor_uuid')->nullable()->comment('Direct Sponsor uuid, Recruiter genealogy');
             $table->string('user_uuid')->comment('User uuid (get from table users)')->nullable();
             $table->uuid('country_uuid')->comment('Country ID (get from table countries')->nullable();
+            $table->enum('membership_status', [1, 2, 3])->nullable()->comment('Membership Status : 1 = Member, 2 = Special Customer')->default(1);
             $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
             $table->integer('min_bv')->default(0)->comment('Minimum required BV');
             $table->date('activated_at')->comment('Membership activate date')->nullable();
@@ -140,7 +141,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
     }
 
     /**

@@ -56,10 +56,12 @@ return new class extends Migration
             $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Pending, 1 = Paid, 2 = Posted, 3 = Rejected')->default(0);
             $table->string('airway_bill_no')->comment('AWB/Resi No, only if ship_type = 2')->nullable();
             $table->uuid('calculation_point_process_uuid')->nullable()->comment('Fill this field, if transaction already process to table calculation_point_members');
-            $table->date('calculation_date')->nullable()->comment('Calculation date')->after('sponsor_id');
+            $table->date('calculation_date')->nullable()->comment('Calculation date');
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+            $table->date('approved_date')->comment('Approved date');
+            $table->string('approved_by')->comment('Approved By (User ID from table user')->nullable();
 
             // $table->foreign('created_by')->references('uuid')->on('users');
             // $table->foreign('updated_by')->references('uuid')->on('users');
@@ -100,9 +102,9 @@ return new class extends Migration
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
             $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
 
-            $table->foreign('order_detail_temp_uuid')->references('uuid')->on('order_details_temp');//->onDelete('cascade');
-            $table->foreign('order_header_uuid')->references('uuid')->on('order_headers');//->onDelete('cascade');
-            $table->foreign('product_price_uuid')->references('uuid')->on('product_prices');//->onDelete('cascade');
+            $table->foreign('order_detail_temp_uuid')->references('uuid')->on('order_details_temp'); //->onDelete('cascade');
+            $table->foreign('order_header_uuid')->references('uuid')->on('order_headers'); //->onDelete('cascade');
+            $table->foreign('product_price_uuid')->references('uuid')->on('product_prices'); //->onDelete('cascade');
 
             // $table->foreign('created_by')->references('uuid')->on('users');
             // $table->foreign('updated_by')->references('uuid')->on('users');

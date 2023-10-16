@@ -60,6 +60,8 @@ class OrderHeader extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'approved_date',
+        'approved_by',
     ];
 
     /**
@@ -76,6 +78,21 @@ class OrderHeader extends Model
             'member_uuid',
             'uuid'
         );
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(
+            User::class,
+            'created_by',
+            'uuid'
+        );
+    }
+
+    public function specialCustomer()
+    {
+        return $this->hasOne(Member::class, 'member_uuid', 'member_uuid')
+            ->with(['address']);
     }
 
     public function headerTemp()

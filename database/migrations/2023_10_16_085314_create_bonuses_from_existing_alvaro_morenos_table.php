@@ -1,0 +1,201 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+
+
+        Schema::create('eranks', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //jbid
+            $table->uuid('sponsor_uuid')->nullable(); //spid
+            $table->uuid('placement_uuid')->nullable(); //upid
+            $table->decimal('ppv', 12, 2)->default(0);
+            $table->decimal('gpv', 12, 2)->default(0);
+            $table->integer('mid')->nullable();
+            $table->integer('erank')->default(0);
+            $table->timestamps();
+        });
+
+        Schema::create('sranks', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //jbid
+            $table->integer('sponsor_uuid')->nullable(); //spid
+            $table->integer('placement_uuid')->nullable(); //upid
+            $table->decimal('appv', 12, 2)->default(0);
+            $table->decimal('apbv', 12, 2)->default(0);
+            $table->integer('jbp')->default(0);
+            $table->integer('bj')->default(0);
+            $table->integer('vj')->default(0);
+            $table->integer('srank')->default(0);
+            $table->integer('bj_active')->default(0);
+            $table->integer('vj_active')->default(0);
+            $table->timestamps();
+        });
+
+
+        Schema::create('effective_rank', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid')->nullable();
+            $table->decimal('ppv', 12, 2)->nullable();
+            $table->decimal('pgv', 12, 2)->nullable();
+            $table->integer('month')->nullable();
+            $table->integer('year')->nullable();
+            $table->date('date_start')->nullable();
+            $table->date('date_end')->nullable();
+            $table->integer('effective_rank')->nullable(); //PERUBAHAN DARI STRING KE INTEGER
+            $table->timestamps();
+        });
+
+
+
+        Schema::create('prepared_data_joys', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->integer('wid');
+            $table->uuid('member_uuid'); //jbid
+            $table->uuid('sponsor_uuid')->nullable(); //spid
+            $table->uuid('placement_uuid')->nullable(); //upid
+            $table->decimal('ppv', 12, 2)->default(0);
+            $table->decimal('pbv', 12, 2)->default(0);
+            $table->decimal('prv', 12, 2)->default(0);
+            $table->decimal('ppvj', 12, 2)->default(0);
+            $table->decimal('pbvj', 12, 2)->default(0);
+            $table->decimal('prvj', 12, 2)->default(0);
+            $table->decimal('gpvj', 12, 2)->default(0);
+            $table->decimal('gbvj', 12, 2)->default(0);
+            $table->decimal('grvj', 12, 2)->default(0);
+            $table->decimal('omzet', 12, 2)->default(0);
+            $table->decimal('ozj', 12, 2)->default(0);
+            $table->integer('srank')->default(0);
+            $table->integer('erank')->default(0);
+            $table->timestamps();
+        });
+
+
+        //Coupons
+
+        Schema::create('monthly_reward_coupons', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //owner
+            // $table->uuid('owner');
+            $table->string('voucher');
+            $table->string('mid');
+            $table->boolean('active')->default(true);
+            $table->timestamps();
+        });
+
+
+        // Vouchers
+
+        Schema::create('vouchers', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //owner
+            // $table->uuid('owner');
+            $table->string('saldo');
+            $table->timestamps();
+        });
+
+
+        Schema::create('voucher_details', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //owner
+            // $table->uuid('owner');
+            $table->string('code');
+            $table->string('debit');
+            $table->string('credit');
+            $table->timestamps();
+            $table->softDeletes();
+            $table->text('note');
+        });
+
+
+        Schema::create('voucher_cashbacks', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //owner
+            // $table->uuid('owner_id');
+            $table->decimal('amount', 12, 2)->default(0);
+            $table->string('encrypted_amount')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+
+        Schema::create('voucher_cashback_details', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //owner
+            // $table->uuid('owner_id');
+            $table->string('code');
+            $table->boolean('credit')->default('true');
+            $table->string('amount')->nullable();
+            $table->string('encrypted_amount')->nullable();
+            $table->string('description')->nullable();
+            $table->string('transaction_code')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+
+        // Wallets
+
+        Schema::create('wallets', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //owner
+            // $table->uuid('owner');
+            $table->string('saldo');
+            $table->timestamps();
+        });
+
+
+        Schema::create('wallet_details', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->uuid('member_uuid'); //owner
+            // $table->uuid('owner');
+            $table->string('code');
+            $table->string('debit');
+            $table->string('credit');
+            $table->timestamps();
+            $table->softDeletes();
+            $table->text('note');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('eranks');
+        Schema::dropIfExists('sranks');
+        Schema::drop('effective_rank');
+        Schema::dropIfExists('monthly_reward_coupons');
+        Schema::dropIfExists('vouchers');
+        Schema::dropIfExists('voucher_details');
+        Schema::dropIfExists('voucher_cashbacks');
+        Schema::dropIfExists('voucher_cashback_details');
+        Schema::dropIfExists('wallets');
+        Schema::dropIfExists('wallet_details');
+    }
+};

@@ -3,6 +3,8 @@
 namespace App\Models\Members;
 
 use App\Models\Bonuses\BonusRank;
+use App\Models\Bonuses\Ranks\EffectiveRank;
+use App\Models\Bonuses\Ranks\SRank;
 use App\Models\Calculations\Transactions\CalculationPointMember;
 use App\Models\Orders\Production\OrderHeader;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
@@ -266,4 +268,30 @@ class Member extends Model
     {
         return $this->hasMany(BonusRank::class, 'member_uuid', 'uuid');
     }
+
+
+    // ==========================================================================================================
+
+
+    public function srank()
+    {
+        return $this->hasOne(SRank::class, 'member_uuid', 'uuid');
+    }
+
+    public function effective_rank()
+    {
+        return $this->hasMany(EffectiveRank::class, 'member_uuid', 'uuid');
+    }
+
+    public function erank()
+    {
+        return $this->hasOne(E_RECOVERABLE_ERRORRank::class, 'member_uuid', 'uuid');
+    }
+
+
+
+
+    // ==========================================================================================================
+
+
 }
