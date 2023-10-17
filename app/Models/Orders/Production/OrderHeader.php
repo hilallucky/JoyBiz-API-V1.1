@@ -60,6 +60,7 @@ class OrderHeader extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'transaction_date',
         'approved_date',
         'approved_by',
     ];

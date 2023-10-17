@@ -56,6 +56,7 @@ class OrderHeaderTemp extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'transaction_date',
     ];
 
     /**

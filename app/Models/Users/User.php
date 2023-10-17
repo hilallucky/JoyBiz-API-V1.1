@@ -102,4 +102,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'uuid'
         );
     }
+
+    public function member()
+    {
+        return $this->hasOne(
+            Member::class,
+            'user_uuid',
+            'uuid'
+        );
+    }
 }

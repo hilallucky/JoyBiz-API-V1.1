@@ -2,375 +2,399 @@
 
 namespace App\Helpers\Bonuses;
 
-use DB;
-use Log;
+use App\Models\Bonuses\Joys\JoyCarryForward;
+use App\Models\Bonuses\Joys\JoyData;
+use App\Models\Bonuses\Joys\JoyPointReward;
+use App\Models\Bonuses\Joys\JoyRVForward;
+use App\Models\Bonuses\Ranks\SRank;
+use App\Models\Bonuses\VitalSign;
+use App\Models\Members\Member;
+use App\Models\Orders\Production\OrderHeader;
+use App\Models\Users\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class JoyHelper extends Model
 {
-    //    
-    public function syncJoyData($date)
-    {
-        Log::info('Sycn Joy Data ' . $date . ' at ' . Carbon::now());
-        $transactions = transaksi::where('transaction_date', $date)->whereIn('status', ['S', 'A', 'PC', 'I'])->with('user')->get();
-        foreach ($transactions as $key => $t) {
-            echo $key;
-            Log::debug($t->code_trans);
-            Log::debug("-------------");
-            if ($t->bv_total > 0 || $t->rv_total > 0) {
-                $user = Membership::where('jbid', $t->id_cust_fk)->with('srank')->first();
-                Log::debug($user->username);
-                if (isset($user->srank) && $user->srank->appv >= 2400) {
-                    $jrank = 3;
-                } elseif (isset($user->srank) && $user->srank->appv >= 1200) {
-                    $jrank = 2;
-                } elseif (isset($user->srank) && $user->srank->appv >= 240) {
-                    $jrank = 1;
-                } else {
-                    $jrank = 0;
-                }
-
-                $joydata = JoyData::firstOrCreate(['date' => $t->transaction_date, 'jbid' => $user->jbid]);
-                $joydata->spid = $user->spid;
-                $joydata->upid = $user->upid;
-
-                $joydata->ppv += $t->pv_plan_joy;
-                $joydata->pbv += $t->bv_plan_joy;
-                $joydata->prv += $t->rv_plan_joy;
-
-                $joydata->pgpv += $t->pv_plan_joy;
-                $joydata->pgbv += $t->bv_plan_joy;
-                $joydata->pgrv += $t->rv_plan_joy;
-
-                $joydata->jrank = $jrank;
-                $joydata->save();
-
-                Log::debug("-----------");
-                if (!is_null($t->membership->upid)) $this->pushJoyData($t->transaction_date, $t->membership->upid, $t->pv_plan_joy, $t->bv_plan_joy, $t->rv_total);
-                Log::debug("-----------");
-            }
-            // Log::debug($t->membership->upid);
-        }
-        Log::info('Sycn Joy Data ' . $date . 'finish at ' . Carbon::now());
-    }
-
-    public function syncJoyDatabyCode($code)
-    {
-        #Log::info('Sycn Joy Data '.$date.' at '.Carbon::now());      
-        $t = transaksi::where('code_trans', $code)->whereIn('status', ['S', 'A', 'PC', 'I'])->with('user')->first();
-        #foreach ($transactions as $key => $t) {
-        #Log::debug($t->code_trans);
-        if ($t->bv_total > 0 || $t->rv_total > 0) {
-            $user = Membership::where('jbid', $t->id_cust_fk)->with('srank')->first();
-            if (isset($user->srank) && $user->srank->appv >= 2400) {
-                $jrank = 3;
-            } elseif (isset($user->srank) && $user->srank->appv >= 1200) {
-                $jrank = 2;
-            } elseif (isset($user->srank) && $user->srank->appv >= 240) {
-                $jrank = 1;
-            } else {
-                $jrank = 0;
-            }
-
-            $joydata = JoyData::firstOrCreate(['date' => $t->transaction_date, 'jbid' => $user->jbid]);
-            $joydata->spid = $user->spid;
-            $joydata->upid = $user->upid;
-            $joydata->ppv += $t->pv_plan_joy;
-            $joydata->pbv += $t->bv_plan_joy;
-            $joydata->prv += $t->rv_plan_joy;
-
-            $joydata->pgpv += $t->pv_plan_joy;
-            $joydata->pgbv += $t->bv_plan_joy;
-            $joydata->pgrv += $t->rv_plan_joy;
-
-            $joydata->jrank = $jrank;
-            $joydata->save();
-
-            if (!is_null($t->membership->upid)) $this->pushJoyData($t->transaction_date, $t->membership->upid, $t->pv_plan_joy, $t->bv_plan_joy, $t->rv_total);
-        }
-        #Log::debug($t->user->upid);
-        #}
-        #Log::info('Sycn Joy Data '.$date.'finish at '.Carbon::now());      
-    }
-
-
-
-    public function pushJoyData($date, $upid, $gpv, $gbv, $grv)
-    {
-        $user = Membership::where('jbid', $upid)->with('srank')->first();
-        // Log::debug($user->username);
-        if ($user) {
-            if (isset($user->srank) && $user->srank->appv >= 2400) {
-                $jrank = 3;
-            } elseif (isset($user->srank) && $user->srank->appv >= 1200) {
-                $jrank = 2;
-            } elseif (isset($user->srank) && $user->srank->appv >= 240) {
-                $jrank = 1;
-            } else {
-                $jrank = 0;
-            }
-
-            $joydata = JoyData::firstOrCreate(['date' => $date, 'jbid' => $user->jbid]);
-            $joydata->spid = $user->spid;
-            $joydata->upid = $user->upid;
-            $joydata->gpv += $gpv;
-            $joydata->gbv += $gbv;
-            $joydata->grv += $grv;
-            $joydata->pgpv += $gpv;
-            $joydata->pgbv += $gbv;
-            $joydata->pgrv += $grv;
-            $joydata->jrank = $jrank;
-            $joydata->save();
-
-            if ($user->upid != null) $this->pushJoyData($date, $user->upid, $gpv, $gbv, $grv);
-        }
-    }
-
-    public function clearJoyData($date)
-    {
-        echo "Start Clear Data \n";
-        $joydatas = JoyData::where('date', $date)->update(['ppv' => 0, 'pbv' => 0, 'prv' => 0, 'gpv' => 0, 'gbv' => 0, 'grv' => 0, 'pgpv' => 0, 'pgbv' => 0, 'pgrv' => 0]);
-        echo "End Clear Data \n";
-    }
-
-    public function deleteJoyData($date)
-    {
-        $joydatas = JoyData::where('date', $date)->delete();
-    }
-
-    public function pushNewABGCount($jbid, $year, $month, $rank)
-    {
-
-        $user = Membership::where('jbid', $jbid)->first();
-        if ($jbid && $user) {
-            $vs = \App\VitalSign::firstOrCreate(['owner' => $user->uid, 'year' => $year, 'month' => $month]);
-            $vs->abg++;
-
-            if ($rank == 1) {
-                $vs->a++;
-            } else if ($rank == 2) {
-                $vs->b++;
-            } else if ($rank >= 3) {
-                $vs->g++;
-            }
-
-            $vs->save();
-
-            if ($user->upid) {
-                $this->pushNewABGCount($user->upid, $year, $month, $rank);
-            }
-        }
-    }
-
-
-    public function checkAtLeg($master, $target, $id)
-    {
-        $user = Membership::where('jbid', $id)->first();
-
-        if ($user->upid == $target) {
-            $result = true;
-        } else if ($user->upid == $master || $user->upid == null) {
-            $result = false;
-        } else if ($user->upid != null) {
-            $result = $this->checkAtLeg($master, $target, $user->upid);
+  //    
+  public function syncJoyData($date)
+  {
+    Log::info('Sycn Joy Data ' . $date . ' at ' . Carbon::now());
+    $transactions = OrderHeader::where('transaction_date', $date)
+      ->with('user', 'member')
+      ->get();
+    foreach ($transactions as $key => $t) {
+      echo $key;
+      Log::debug($t->code_trans);
+      Log::debug("-------------");
+      if ($t->total_bv > 0 || $t->total_rv > 0) {
+        $user = Member::where('uuid', $t->member_uuid)
+          ->with('srank', 'user')
+          ->first();
+        Log::debug($user->user->uuid);
+        if (isset($user->srank) && $user->srank->appv >= 2400) {
+          $jrank = 3;
+        } elseif (isset($user->srank) && $user->srank->appv >= 1200) {
+          $jrank = 2;
+        } elseif (isset($user->srank) && $user->srank->appv >= 240) {
+          $jrank = 1;
+        } else {
+          $jrank = 0;
         }
 
-        return $result;
+        $joydata = JoyData::firstOrCreate([
+          'date' => $t->transaction_date,
+          'member_uuid' => $user->uuid
+        ]);
+        $joydata->sponsor_uuid = $user->sponsor_uuid;
+        $joydata->placement_uuid = $user->placement_uuid;
+
+        $joydata->ppv += $t->total_pv_plan_joy;
+        $joydata->pbv += $t->total_bv_plan_joy;
+        $joydata->prv += $t->total_rv_plan_joy;
+
+        $joydata->pgpv += $t->total_pv_plan_joy;
+        $joydata->pgbv += $t->total_bv_plan_joy;
+        $joydata->pgrv += $t->total_rv_plan_joy;
+
+        $joydata->jrank = $jrank;
+        $joydata->save();
+
+        Log::debug("-----------");
+        if (!is_null($t->membership->placement_uuid)) {
+          $this->pushJoyData(
+            $t->transaction_date,
+            $t->membership->placement_uuid,
+            $t->total_pv_plan_joy,
+            $t->total_bv_plan_joy,
+            $t->total_rv
+          );
+        }
+        Log::debug("-----------");
+      }
+    }
+    Log::info('Sycn Joy Data ' . $date . 'finish at ' . Carbon::now());
+  }
+
+  public function syncJoyDatabyCode($uuid)
+  {
+    // $t = transaksi::where('code_trans', $code)->whereIn('status', ['S', 'A', 'PC', 'I'])->with('user')->first();
+    $t = OrderHeader::where('uuid', $uuid)
+      ->with('member')
+      ->first();
+    #foreach ($transactions as $key => $t) {
+    #Log::debug($t->code_trans);
+    if ($t->total_bv > 0 || $t->total_rv > 0) {
+      $user = Member::where('uuid', $t->member_uuid)
+        ->with('srank')
+        ->first();
+      if (isset($user->srank) && $user->srank->appv >= 2400) {
+        $jrank = 3;
+      } elseif (isset($user->srank) && $user->srank->appv >= 1200) {
+        $jrank = 2;
+      } elseif (isset($user->srank) && $user->srank->appv >= 240) {
+        $jrank = 1;
+      } else {
+        $jrank = 0;
+      }
+
+      $joydata = JoyData::firstOrCreate([
+        'date' => $t->transaction_date,
+        'member_uuid' => $user->uuid
+      ]);
+      $joydata->sponsor_uuid = $user->sponsor_uuid;
+      $joydata->placement_uuid = $user->placement_uuid;
+      $joydata->ppv += $t->total_pv_plan_joy;
+      $joydata->pbv += $t->total_bv_plan_joy;
+      $joydata->prv += $t->total_rv_plan_joy;
+
+      $joydata->pgpv += $t->total_pv_plan_joy;
+      $joydata->pgbv += $t->total_bv_plan_joy;
+      $joydata->pgrv += $t->total_rv_plan_joy;
+
+      $joydata->jrank = $jrank;
+      $joydata->save();
+
+      if (!is_null($t->member->placement_uuid)) $this->pushJoyData(
+        $t->transaction_date,
+        $t->member->placement_uuid,
+        $t->total_pv_plan_joy,
+        $t->total_bv_plan_joy,
+        $t->total_rv
+      );
+    }
+  }
+
+
+
+  public function pushJoyData($date, $upid, $gpv, $gbv, $grv)
+  {
+    $user = Member::where('uuid', $upid)->with('srank')->first();
+    if ($user) {
+      if (isset($user->srank) && $user->srank->appv >= 2400) {
+        $jrank = 3;
+      } elseif (isset($user->srank) && $user->srank->appv >= 1200) {
+        $jrank = 2;
+      } elseif (isset($user->srank) && $user->srank->appv >= 240) {
+        $jrank = 1;
+      } else {
+        $jrank = 0;
+      }
+
+      $joydata = JoyData::firstOrCreate(['date' => $date, 'member_uuid' => $user->member_uuid]);
+      $joydata->sponsor_uuid = $user->sponsor_uuid;
+      $joydata->placement_uuid = $user->placement_uuid;
+      $joydata->gpv += $gpv;
+      $joydata->gbv += $gbv;
+      $joydata->grv += $grv;
+      $joydata->pgpv += $gpv;
+      $joydata->pgbv += $gbv;
+      $joydata->pgrv += $grv;
+      $joydata->jrank = $jrank;
+      $joydata->save();
+
+      if ($user->placement_uuid != null) $this->pushJoyData(
+        $date,
+        $user->placement_uuid,
+        $gpv,
+        $gbv,
+        $grv
+      );
+    }
+  }
+
+  public function clearJoyData($date)
+  {
+    echo "Start Clear Data \n";
+    JoyData::where('date', $date)
+      ->update([
+        'ppv' => 0,
+        'pbv' => 0,
+        'prv' => 0,
+        'gpv' => 0,
+        'gbv' => 0,
+        'grv' => 0,
+        'pgpv' => 0,
+        'pgbv' => 0,
+        'pgrv' => 0
+      ]);
+    echo "End Clear Data \n";
+  }
+
+  public function deleteJoyData($date)
+  {
+    JoyData::where('date', $date)->delete();
+  }
+
+  public function pushNewABGCount($member_uuid, $year, $month, $rank)
+  {
+
+    $user = Member::where('uuid', $member_uuid)->first();
+    if ($member_uuid && $user) {
+      $vs = VitalSign::firstOrCreate([
+        'uuid' => Str::uuid()->toString(),
+        'member_uuid' => $user->uuid,
+        'year' => $year,
+        'month' => $month
+      ]);
+      $vs->abg++;
+
+      if ($rank == 1) {
+        $vs->a++;
+      } elseif ($rank == 2) {
+        $vs->b++;
+      } elseif ($rank >= 3) {
+        $vs->g++;
+      }
+
+      $vs->save();
+
+      if ($user->placement_uuid) {
+        $this->pushNewABGCount($user->placement_uuid, $year, $month, $rank);
+      }
+    }
+  }
+
+
+  public function checkAtLeg($master, $target, $member_uuid)
+  {
+    $user = Member::where('uuid', $member_uuid)->first();
+
+    if ($user->placement_uuid == $target) {
+      $result = true;
+    } elseif ($user->placement_uuid == $master || $user->placement_uuid == null) {
+      $result = false;
+    } elseif ($user->upiplacement_uuidd != null) {
+      $result = $this->checkAtLeg($master, $target, $user->placement_uuid);
     }
 
-    public function checkYoungEagle($uid, $mid)
-    {
-        // $erank = erank::where('mid',$mid)->get();
-        // $pbv = $erank->sum('ppv');
+    return $result;
+  }
 
-        // $sponsor = User::where('uid',$uid)->with('srank')->get();
+  public function checkYoungEagle($uuid, $mid)
+  {
+    $user = Member::where('uuid', $uuid)
+      ->with(['srank', 'vital_signs'])
+      ->first();
+    $gammaChilds = SRank::where([[
+      'sponsor_uuid',
+      $user->uuid
+    ], ['srank', '>=', 3]])->get();
 
-        $user = User::where('uid', $uid)->with(['srank', 'vital_signs'])->first();
-        $gammaChilds = srank::where([['spid', $user->id], ['srank', '>=', 3]])->get();
+    $gammaAtLeft = false;
+    $gammaAtRight = false;
 
-        $gammaAtLeft = false;
-        $gammaAtRight = false;
-
-        foreach ($gammaChilds as $key => $child) {
-            $gammaAtLeft = $this->checkAtLeg($user->id, $user->left, $child->user->id);
-            if (!$gammaAtLeft) $gammaAtRight = true;
-        }
-
-
-
-        if ($user->srank >= 3) {
-            $sponsorGamma = srank::where([['spid', $user->id], ['srank', 3]])->get();
-        }
+    foreach ($gammaChilds as $key => $child) {
+      $gammaAtLeft = $this->checkAtLeg(
+        $user->uuid,
+        $user->left,
+        $child->user->iuud
+      );
+      if (!$gammaAtLeft) $gammaAtRight = true;
     }
 
-    public function resetCarryForward($user)
-    {
-        $jcf = JoyCarryForward::where('owner', $user->uid)->orderBy('date', 'DESC')->first();
-        if ($jcf) {
-            $jcf->big_bv = 0;
-            $jcf->small_bv = 0;
-            $jcf->save();
-        }
 
-        $jrv = JoyRVForward::where('owner', $user->uid)->orderBy('date', 'DESC')->first();
-        if ($jrv) {
-            $jrv->big_rv = 0;
-            $jrv->small_rv = 0;
-            $jrv->save();
-        }
 
-        $jpr = JoyPointReward::where('owner', $user->uid)->delete();
+    if ($user->srank >= 3) {
+      $sponsorGamma = SRank::where([
+        ['sponsor_uuid', $user->uuid],
+        ['srank', 3]
+      ])->get();
+    }
+  }
+
+  public function resetCarryForward($member_uuid)
+  {
+    $jcf = JoyCarryForward::where('member_uuid', $member_uuid)
+      ->orderBy('date', 'DESC')
+      ->first();
+    if ($jcf) {
+      $jcf->big_bv = 0;
+      $jcf->small_bv = 0;
+      $jcf->save();
     }
 
-    public function diffMonth($sdate, $edate)
-    {
-        $to = Carbon::parse($sdate);
-        $from = Carbon::parse($edate);
-        $result = $to->diffInMonths($from);
-
-        return $result;
+    $jrv = JoyRVForward::where('member_uuid', $member_uuid)
+      ->orderBy('date', 'DESC')
+      ->first();
+    if ($jrv) {
+      $jrv->big_rv = 0;
+      $jrv->small_rv = 0;
+      $jrv->save();
     }
 
-    public function dormant($uid)
-    {
+    $jpr = JoyPointReward::where('member_uuid', $member_uuid)->delete();
+  }
 
-        // $user = Membership::where('uid',$uid)->with('srank')->first();
-        $user = User::where('uid', $uid)->with(['srank', 'memberships'])->first();
+  public function diffMonth($sdate, $edate)
+  {
+    $to = Carbon::parse($sdate);
+    $from = Carbon::parse($edate);
+    return $to->diffInMonths($from);
+  }
 
-        $now = Carbon::now()->toDateString();
-        $dormant = Dormant::where('owner', $uid)->first();
+  public function dormant($uuid)
+  {
+    $member = Member::where('uuid', $uuid)->with(['srank'])->first();
+    $now = Carbon::now()->toDateString();
 
-        if ($dormant) {
-            if ($now == $dormant->will) {
-                $user->dormant = $dormant->will;
-                $user->save();
+    if ($member->status == 3) { // 3 = status member is Dormant
+      if ($now == $member->will_dormant_at) {
+        $member->status = 3;
 
-                // $reset = $this->resetCarryForward($user);
+        foreach ($member as $membership) {
+          $membership->will_dormant_at = $member->will_dormant_at;
+          $membership->save();
 
-                foreach ($user->memberships as $membership) {
-                    $membership->dormant = $dormant->will;
-                    $membership->save();
-
-                    $reset = $this->resetCarryForward($membership);
-                }
-            } else if ($dormant->will > $now && $user->dormant) {
-                $user->dormant = null;
-                $user->save();
-
-                foreach ($user->memberships as $membership) {
-                    $membership->dormant = null;
-                    $membership->save();
-                }
-            } else if ($dormant->will < $now && $user->dormant == null) {
-                $user->dormant = $dormant->will;
-                $user->save();
-
-                // $reset = $this->resetCarryForward($user);
-                foreach ($user->memberships as $membership) {
-                    $membership->dormant = $dormant->will;
-                    $membership->save();
-
-                    $reset = $this->resetCarryForward($membership);
-                }
-            }
+          $this->resetCarryForward($membership->uuid);
         }
+      } elseif ($member->will_dormant_at > $now && $member->status == 3) {
+        $member->status = 1;
+        $member->save();
 
-
-        // $e6date = Carbon::now()->subMonths(6)->toDateString();        
-        // $e12date = Carbon::now()->subMonths(12)->toDateString();        
-        // $diff = $this->diffMonth($user->activated_at,$now);        
-
-        // $endDate = $diff <= 12 ? $e12date : $e6date;
-        // $sixMonthsBV = transaksi::where('id_cust_fk',$user->id)->whereBetween('transaction_date',[$endDate,$now])->sum('bv_total');
-
-        // if($sixMonthsBV < 100 && $diff > 12){
-        //     if($user->dormant == null){
-        //         $user->dormant = $now;
-        //         $user->save();
-
-        //         $reset = $this->resetCarryForward($user);
-        //     }
-        // } else {
-        //     $user->dormant = null;
-        //     $user->save();
-        // }                 
-
-    }
-
-    public function downgradeToSC($uid)
-    {
-
-        try {
-            DB::beginTransaction();
-            $u = User::where('uid', $uid)->first();
-
-            if ($u) {
-                $email = $u->email;
-                $nik = $u->no_ktp;
-                $username = $u->username;
-                $name = $u->nama;
-                $password = $u->password;
-
-                $u->nama = "-";
-                $u->password = "1266hwehfsweo34iu437797dhfkjsdhfshf";
-                $u->username = "dgsc-" . $u->username;
-                $u->email = "dgsc-" . $u->email;
-                $u->no_ktp = null;
-                // $u->upid = null;       
-                // $u->disabled = 1;
-                $u->dormant = null;
-                $u->save();
-
-                $childs = User::where('id_sponsor_fk', $u->id)->update(['id_sponsor_fk' => $u->id_sponsor_fk]);
-
-                $new = $u->replicate()->fill([
-                    'id' => DB::table('users')->max('id') + 1,
-                    'nama' => $name,
-                    'username' => $username,
-                    'password' => $password,
-                    // 'upid' => null,
-                    'no_ktp' => $nik,
-                    'email' => $email,
-                    'flag' => 2,
-                    'uid' => Str::uuid(),
-                    'left' => null,
-                    'right' => null,
-                ]);
-                $new->save();
-            }
-
-
-            #membership
-            $m = Membership::where('uid', $uid)->first();
-            $username = $m->username;
-            $membership_jbid = $m->jbid;
-            $membership_childs = Membership::where('spid', $m->jbid)->update(['spid' => $m->spid]);
-
-            $newMembership = $m->replicate()->fill([
-                'id' => DB::table('memberships')->max('id') + 1,
-                'owner' => $new->uid,
-                'username' => $username,
-                'jbid' => $membership_jbid . "000",
-                'upid' => null,
-                'flag' => 2,
-                'dormant' => null,
-                'uid' => Str::uuid(),
-                'left' => null,
-                'right' => null,
-            ]);
-
-            $newMembership->save();
-
-            $m->username = "dgsc-" . $m->username;
-            $m->save();
-
-            DB::commit();
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            // print_r($th);
-            echo $th;
+        foreach ($member as $membership) {
+          $membership->status = 1;
         }
+      } elseif ($member->will_dormant_at  < $now && $member->status == 1) {
+        $lastOrder = OrderHeader::where('member_uuid', $member->uuid)
+          ->orderBy('created_at', 'DESC')
+          ->first();
+        $will_dormant_at = Carbon::parse($lastOrder->transaction_date)->addMonths(6)->toDateString();
+
+        $member->will_dormant_at = $will_dormant_at;
+
+        foreach ($member as $membership) {
+          $membership->will_dormant_at = $will_dormant_at;
+
+          $this->resetCarryForward($membership->uuid);
+        }
+      }
+      $member->save();
     }
+  }
+
+  public function downgradeToSC($uuid)
+  {
+
+    try {
+      DB::beginTransaction();
+      $u = User::where('uuid', $uuid)->with('member')->first();
+
+      if ($u) {
+        $email = $u->email;
+        $username = $u->username;
+        $first_name = $u->first_name;
+        $last_name = $u->last_name;
+        $password = $u->password;
+
+        $u->password = "1266hwehfsweo34iu437797dhfkjsdhfshf";
+        $u->username = "dgsc-" . $u->username;
+        $u->email = "dgsc-" . $u->email;
+        $u->status = 0;
+        $u->save();
+
+        $newUser = $u->replicate()->fill([
+          'uid' => Str::uuid(),
+          'first_name' => $first_name,
+          'last_name' => $last_name,
+          'username' => $username,
+          'password' => $password,
+          'email' => $email,
+          'status' => 1,
+        ]);
+        $newUser->save();
+      }
+
+
+      #membership
+      $m = Member::where('uuid', $u->member->uuid)->first();
+      $username = $m->username;
+      Member::where('sponsor_uuid', $m->uuid)
+        ->update([
+          'sponsor_uuid' => $m->sponsor_uuid
+        ]);
+
+      $newMembership = $m->replicate()->fill([
+        'uid' => Str::uuid(),
+        'user_id' => $newUser->id,
+        'membership_status' => 2,
+        'status' => 1,
+        'min_bv' => 0,
+        'sponsor_uuid' => null,
+        'sponsor_id' => null,
+        'placement_uuid' => null,
+        'placement_id' => null,
+      ]);
+
+      $newMembership->save();
+
+      DB::commit();
+    } catch (\Throwable $th) {
+      DB::rollBack();
+      echo $th;
+    }
+  }
 }
