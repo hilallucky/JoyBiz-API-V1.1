@@ -26,6 +26,7 @@ return new class extends Migration
       $table->integer('mid')->nullable();
       $table->integer('erank')->default(0);
       $table->timestamps();
+      $table->softDeletes();
     });
 
     Schema::create('sranks', function (Blueprint $table) {
@@ -43,6 +44,7 @@ return new class extends Migration
       $table->integer('bj_active')->default(0);
       $table->integer('vj_active')->default(0);
       $table->timestamps();
+      $table->softDeletes();
     });
 
 
@@ -58,8 +60,20 @@ return new class extends Migration
       $table->date('date_end')->nullable();
       $table->integer('effective_rank')->nullable(); //PERUBAHAN DARI STRING KE INTEGER
       $table->timestamps();
+      $table->softDeletes();
     });
 
+
+    Schema::create('carry_forward_details', function (Blueprint $table) {
+      $table->id();
+      $table->uuid('uuid');
+      $table->integer('wid');
+      $table->uuid('member_uuid');
+      $table->decimal('gpvj');
+      $table->decimal('gbvj');
+      $table->timestamps();
+      $table->softDeletes();
+    });
 
 
     Schema::create('prepared_data_joys', function (Blueprint $table) {
@@ -83,6 +97,7 @@ return new class extends Migration
       $table->integer('srank')->default(0);
       $table->integer('erank')->default(0);
       $table->timestamps();
+      $table->softDeletes();
     });
 
 
@@ -96,6 +111,7 @@ return new class extends Migration
       $table->integer('small_leg')->nullable();
       $table->integer('small_bv')->default(0);
       $table->timestamps();
+      $table->softDeletes();
     });
 
 
@@ -109,6 +125,7 @@ return new class extends Migration
       $table->integer('small_leg')->nullable();
       $table->integer('small_rv')->default(0);
       $table->timestamps();
+      $table->softDeletes();
     });
 
 
@@ -121,6 +138,7 @@ return new class extends Migration
       $table->integer('joy_rv')->default(0);
       $table->integer('biz_rv')->default(0);
       $table->timestamps();
+      $table->softDeletes();
     });
 
 
@@ -135,7 +153,33 @@ return new class extends Migration
       $table->integer('depth1')->default(0);
       $table->integer('depth2')->default(0);
       $table->timestamps();
+      $table->softDeletes();
     });
+
+
+    // ================== Start Plan Biz ==================
+
+    Schema::create('prepared_data_bizs', function (Blueprint $table) {
+      $table->increments('id');
+      $table->integer('mid');
+      $table->integer('member_uuid');
+      $table->integer('sponsor_uuid')->nullable();
+      $table->integer('placement_uuid')->nullable();
+      $table->decimal('ppv', 12, 2)->default(0);
+      $table->decimal('pbv', 12, 2)->default(0);
+      $table->decimal('gpv', 12, 2)->default(0);
+      $table->decimal('gbv', 12, 2)->default(0);
+      $table->decimal('ppvb', 12, 2)->default(0);
+      $table->decimal('pbvb', 12, 2)->default(0);
+      $table->decimal('gpvb', 12, 2)->default(0);
+      $table->decimal('gbvb', 12, 2)->default(0);
+      $table->decimal('omzet', 12, 2)->default(0);
+      $table->decimal('ozb', 12, 2)->default(0);
+      $table->integer('srank')->default(0);
+      $table->integer('erank')->default(0);
+      $table->timestamps();
+    });
+    // ================== End Plan Biz ==================
 
 
     //Coupons
@@ -149,6 +193,7 @@ return new class extends Migration
       $table->string('mid');
       $table->boolean('active')->default(true);
       $table->timestamps();
+      $table->softDeletes();
     });
 
 
@@ -161,6 +206,7 @@ return new class extends Migration
       // $table->uuid('owner');
       $table->string('saldo');
       $table->timestamps();
+      $table->softDeletes();
     });
 
 
@@ -175,6 +221,7 @@ return new class extends Migration
       $table->timestamps();
       $table->softDeletes();
       $table->text('note');
+      $table->softDeletes();
     });
 
 
@@ -186,6 +233,7 @@ return new class extends Migration
       $table->decimal('amount', 12, 2)->default(0);
       $table->string('encrypted_amount')->nullable();
       $table->timestamps();
+      $table->softDeletes();
       $table->softDeletes();
     });
 
@@ -203,6 +251,7 @@ return new class extends Migration
       $table->string('transaction_code')->nullable();
       $table->timestamps();
       $table->softDeletes();
+      $table->softDeletes();
     });
 
 
@@ -215,6 +264,7 @@ return new class extends Migration
       // $table->uuid('owner');
       $table->string('saldo');
       $table->timestamps();
+      $table->softDeletes();
     });
 
 
@@ -229,6 +279,7 @@ return new class extends Migration
       $table->timestamps();
       $table->softDeletes();
       $table->text('note');
+      $table->softDeletes();
     });
   }
 
@@ -243,9 +294,12 @@ return new class extends Migration
     Schema::dropIfExists('sranks');
     Schema::drop('effective_rank');
     Schema::dropIfExists('vital_signs');
+    Schema::dropIfExists('carry_forward_details');
+    Schema::dropIfExists('prepared_data_joys');
     Schema::dropIfExists('joy_carry_forwards');
     Schema::dropIfExists('joy_rv_forwards');
     Schema::dropIfExists('joy_point_rewards');
+    Schema::dropIfExists('prepared_data_bizs');
     Schema::dropIfExists('monthly_reward_coupons');
     Schema::dropIfExists('vouchers');
     Schema::dropIfExists('voucher_details');

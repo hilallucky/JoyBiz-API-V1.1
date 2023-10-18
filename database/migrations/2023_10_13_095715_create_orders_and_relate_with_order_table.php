@@ -52,14 +52,19 @@ return new class extends Migration
       $table->decimal('total_price_joy', 10, 2)->default(0);
       $table->decimal('total_price_biz', 10, 2)->default(0);
       $table->decimal('total_price_with_bv', 10, 2)->default(0);
-      $table->enum('ship_type', [0, 1, 2])->nullable()->comment('Shipping Type : 0 = Hold, 1 = Pickup, 2 = Ship To Address')->default(1);
-      $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Pending, 1 = Paid, 2 = Posted, 3 = Rejected')->default(0);
+      $table->enum('ship_type', [0, 1, 2])->nullable()
+        ->comment('Shipping Type : 0 = Hold, 1 = Pickup, 2 = Ship To Address')
+        ->default(1);
+      $table->enum('status', [0, 1, 2, 3, 4, 5, 6, 7])->nullable()
+        ->comment('Status : 0 = Pending, 1 = Paid, 2 = Posted, 3 = Rejected, 4 = Waiting For Prepared, 5 = Prepared From Warehouse, 6 = Picked Up By Courier, 7 = Delivered')
+        ->default(0);
       $table->string('airway_bill_no')->comment('AWB/Resi No, only if ship_type = 2')->nullable();
-      $table->uuid('calculation_point_process_uuid')->nullable()->comment('Fill this field, if transaction already process to table calculation_point_members');
+      $table->uuid('calculation_point_process_uuid')->nullable()
+        ->comment('Fill this field, if transaction already process to table calculation_point_members');
       $table->date('calculation_date')->nullable()->comment('Calculation date');
-      $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
-      $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
-      $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+      $table->string('created_by')->comment('Created By in order_headers (User ID from table user')->nullable();
+      $table->string('updated_by')->comment('Updated By in order_headers (User ID from table user')->nullable();
+      $table->uuid('deleted_by')->comment('Deleted By in order_headers (User ID from table user')->nullable();
       $table->date('transaction_date')->comment('Transaction date');
       $table->date('approved_date')->comment('Approved date')->nullable();
       $table->string('approved_by')->comment('Approved By (User ID from table user')->nullable();

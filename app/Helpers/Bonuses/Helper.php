@@ -3,12 +3,18 @@
 namespace App\Helpers\Bonuses;
 
 use app\Libraries\Core;
+use App\Models\Bonuses\BonusRankLog;
 use App\Models\Bonuses\BonusWeekly;
+use App\Models\Bonuses\CarryForwardDetail;
 use App\Models\Bonuses\CouponsAndRewards\MonthlyRewardCoupon;
+use App\Models\Bonuses\CouponsAndRewards\Voucher;
+use App\Models\Bonuses\CouponsAndRewards\VoucherCashback;
 use App\Models\Bonuses\CouponsAndRewards\VoucherCashbackDetail;
+use App\Models\Bonuses\CouponsAndRewards\VoucherDetail;
 use App\Models\Bonuses\Joys\JoyBonusSummary;
 use App\Models\Bonuses\Joys\JoyPointReward;
 use App\Models\Bonuses\PreparedDatas\Joy as PreparedDataJoy;
+use App\Models\Bonuses\PreparedDatas\PreparedDataBiz;
 use App\Models\Bonuses\Ranks\ERank;
 use App\Models\Bonuses\Ranks\SRank;
 use App\Models\Calculations\Bonuses\Period;
@@ -17,33 +23,32 @@ use App\Models\Orders\Production\OrderDetail;
 use App\Models\Orders\Production\OrderHeader;
 use App\Models\Users\User;
 use Carbon\Carbon;
-use DateTime;
-use DatePeriod;
-use DateInterval;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Helper extends Model
 {
 
 
-  public function GenerateCoupon($lid, $owner, $uuid)
-  {
+  // public function GenerateCoupon($lid, $owner, $uuid)
+  // {
 
-    $lid = 1;
-    $owner = $owner;
-    $code_trans = $uuid;
+  //   $lid = 1;
+  //   $owner = $owner;
+  //   $code_trans = $uuid;
 
-    do {
-      $coupon = $this->RandomAlphaNumeric(5);
-      $unique = LotteryCoupon::where('coupon', $coupon)->first();
-    } while ($unique);
+  //   do {
+  //     $coupon = $this->RandomAlphaNumeric(5);
+  //     $unique = LotteryCoupon::where('coupon', $coupon)->first();
+  //   } while ($unique);
 
 
-    $Coupon = LotteryCoupon::create(['lid' => $lid, 'owner' => $owner, 'coupon' => $coupon, 'code_trans' => $code_trans]);
-  }
+  //   $Coupon = LotteryCoupon::create(['lid' => $lid, 'owner' => $owner, 'coupon' => $coupon, 'code_trans' => $code_trans]);
+  // }
 
   public function RandomAlphaNumeric($max)
   {
@@ -61,15 +66,15 @@ class Helper extends Model
   public function check_Rank($apbv, $leg_jbp, $bj, $vj, $user)
   {
 
-    $srank = SRank::where('member_uuid', $user->member_uuid)->first();
+    $srank = SRank::where('member_uuid', $user->uuid)->first();
     $srank = isset($srank) ? $srank->srank : 0;
-    $childs = SRank::where('sponsor_uuid', $user->member_uuid)->get();
+    $childs = SRank::where('sponsor_uuid', $user->uuid)->get();
 
-    $joybonus = JoyBonusSummary::where('member_uuid', $user->member_uuid)->sum('total');
-    $bizbonus = BonusWeekly::where('member_uuid', $user->member_uuid)->sum('total');
+    $joybonus = JoyBonusSummary::where('member_uuid', $user->uuid)->sum('total');
+    $bizbonus = BonusWeekly::where('member_uuid', $user->uuid)->sum('total');
     $ab = $joybonus + $bizbonus; #akumulasi bonus
 
-    $reward = JoyPointReward::where('member_uuid', $user->member_uuid)->get(); #reward
+    $reward = JoyPointReward::where('member_uuid', $user->uuid)->get(); #reward
     $r = $reward->sum('joy') + $reward->sum('biz');
 
     $sAlpha = 0;
@@ -96,7 +101,7 @@ class Helper extends Model
 
     $sGamma = $sGamma + $sJPS + $sJP;
 
-    $legs = SRank::where('placement_uuid', $user->member_uuid)->get();
+    $legs = SRank::where('placement_uuid', $user->uuid)->get();
     $leg1 = isset($legs[0]) ? $legs[0] : null;
     $leg2 = isset($legs[1]) ? $legs[1] : null;
 
@@ -309,10 +314,13 @@ class Helper extends Model
       $srank->save();
 
       if ($newRank > $current_rank) {
-        $result = SrankLog::firstOrCreate([
+        $result = BonusRankLog::firstOrCreate([
+          'uuid' => Str::uuid(),
+          'process_uuid' => null,
           'member_uuid' => $member_uuid,
-          'srank' => $newRank,
-          'achieve_at' => $updated_at
+          'rank_id' => $newRank,
+          // 'rank_uuid' => $newRank,
+          'created_at' => $updated_at
         ]);
       }
 
@@ -501,10 +509,13 @@ class Helper extends Model
       $srank->save();
 
       if ($newRank > $current_rank) {
-        $result = SrankLog::firstOrCreate([
+        $result = BonusRankLog::firstOrCreate([
+          'uuid' => Str::uuid(),
+          'process_uuid' => null,
           'member_uuid' => $member_uuid,
-          'srank' => $newRank,
-          'achieve_at' => $updated_at
+          'rank_id' => $newRank,
+          // 'rank_uuid' => $newRank,
+          'created_at' => $updated_at
         ]);
       }
 
@@ -695,9 +706,14 @@ class Helper extends Model
       $srank->save();
 
       if ($newRank > $current_rank) {
-        $result = SrankLog::firstOrCreate(
-          ['member_uuid' => $member_uuid, 'srank' => $newRank, 'achieve_at' => $updated_at]
-        );
+        $result = BonusRankLog::firstOrCreate([
+          'uuid' => Str::uuid(),
+          'process_uuid' => null,
+          'member_uuid' => $member_uuid,
+          'rank_id' => $newRank,
+          // 'rank_uuid' => $newRank,
+          'created_at' => $updated_at
+        ]);
       }
 
       if (($newRank >= 5) && ($newRank > $current_rank)) {
@@ -1211,13 +1227,13 @@ class Helper extends Model
     $sBV = 0;
     $cashback = 0;
 
-    foreach ($trx['details'] as $trxd) {
+    foreach ($trx->details as $trxd) {
       // $product = barang::where('id', $trxd->id_barang_fk)->first();
 
       // if ($product->bv) {
-      $percentPV = $trxd->pv / $trxd->harga_1;
-      $percentBV = $trxd->bv / $trxd->harga_1;
-      $tH1 = $trxd->qty * $trxd->harga_1;
+      $percentPV = $trxd->pv / $trxd->price;
+      $percentBV = $trxd->bv / $trxd->price;
+      $tH1 = $trxd->qty * $trxd->price;
 
       $sisaTH1 = $point_reward >= $tH1 ? 0 : $tH1 - $point_reward;
       $point_reward -= $tH1;
@@ -1433,7 +1449,7 @@ class Helper extends Model
 
       $preparedDataJoy = PreparedDataJoy::firstOrCreate(
         ['member_uuid' => $member_uuid, 'wid' => $wid->id],
-        ['spid' => $spid, 'upid' => $upid]
+        ['sponsor_uuid' => $spid, 'placement_uuid' => $upid]
       );
 
       $preparedDataJoy->ppv += $ppv;
@@ -1551,10 +1567,10 @@ class Helper extends Model
     $month = date('m', strtotime($week->eDate));
     $year = date('Y', strtotime($week->eDate));
 
-    $From = $now->subMonths($m);
+    $from = $now->subMonths($m);
 
-    $weeks = Period::whereMonth('end_date', $From->month)
-      ->whereYear('end_date', $From->year)
+    $weeks = Period::whereMonth('end_date', $from->month)
+      ->whereYear('end_date', $from->year)
       ->orderBy('id', 'asc')->get();
     $sDate = $weeks->first()->sDate;
 
@@ -1583,8 +1599,8 @@ class Helper extends Model
       ->orderBy('id', 'asc')
       ->get();
 
-    $sDate = $weeks->first()->sDate;
-    $eDate = $weeks->last()->eDate;
+    $sDate = $weeks->first()->end_date;
+    $eDate = $weeks->last()->end_date;
 
     return array('start_date' => $sDate, 'end_date' => $eDate);
   }
@@ -1597,7 +1613,7 @@ class Helper extends Model
       ->first();
 
     if ($trx) {
-      $register = OrderDetail::where('id_trans_fk', $trx->id)
+      $register = OrderDetail::where('order_header_uuid', $trx->uuid)
         // ->whereIn('id_barang_fk', [1, 2, 16, 17, 18])
         ->whereHas('productPrice.product', function ($query) {
           $query->whereIn('uuid', [1, 2, 16, 17, 18]);
@@ -1652,69 +1668,81 @@ class Helper extends Model
         }
 
         //refund voucher
-        if ($trx->voucher_amount > 0) {
+        if ($trx->total_voucher_amount > 0) {
           $note = "Refund from void transaction " . $trx->code_trans;
 
-          if ($trx->id_sc_fk) {
-            $refund = $emoney->topupVoucher($trx['special_customer']->uid, $trx->voucher_amount, $note, null);
+          if ($trx->member_uuid) {
+            $refund = $emoney->topupVoucher($trx->member_uuid, $trx->total_voucher_amount, $note, null);
           } else {
-            $refund = $emoney->topupVoucher($trx['membership']->uid, $trx->voucher_amount, $note, null);
+            $refund = $emoney->topupVoucher($trx->member_uuid, $trx->total_voucher_amount, $note, null);
           }
         }
 
-        if ($trx->pickup_code && $trx->pickup_stock_pack && $trx->status == 'A') {
-          foreach ($trx->transaksi_detail as $key => $detail) {
-            foreach ($detail->barang->barang_detail as $bd) {
+        // if ($trx->airway_bill_no && $trx->status == 6) {//&& $trx->pickup_stock_pack 
+        //   foreach ($trx->details as $key => $detail) {
+        //     foreach ($detail->barang->barang_detail as $bd) {
 
-              $stock_detail = StockPackStockDetail::updateOrCreate([
-                'jspid' => $trx->pickup_stock_pack,
-                'tcode' => $trx->code_trans, 'pcode' => $bd->barang->kode, 'in' => true
-              ], ['qty' => $bd->qty]);
-              $stock = StockPackStock::firstOrCreate(['jspid' => $trx->pickup_stock_pack, 'pcode' => $bd->barang->kode]);
-              $stock->qty += $bd->qty;
-              $stock->save();
-            }
-          }
-        }
+        //       $stock_detail = StockPackStockDetail::updateOrCreate([
+        //         'jspid' => $trx->pickup_stock_pack,
+        //         'tcode' => $trx->code_trans, 'pcode' => $bd->barang->kode, 'in' => true
+        //       ], ['qty' => $bd->qty]);
+        //       $stock = StockPackStock::firstOrCreate(['jspid' => $trx->pickup_stock_pack, 'pcode' => $bd->barang->kode]);
+        //       $stock->qty += $bd->qty;
+        //       $stock->save();
+        //     }
+        //   }
+        // }
 
 
-        $Member = Member::where('jbid', $trx->id_cust_fk)->first();
+        $member = Member::where('uuid', $trx->member_uuid)->first();
         if ($register) {
-          // $Member = Member::where('jbid',$trx->id_cust_fk)->first();
-          if ($Member->activated_at == null) {
-            // $Member->status = null;
-            // $Member->no_ktp = null;					
-            // $Member->save();
+          // $member = Member::where('jbid',$trx->id_cust_fk)->first();
+          if ($member->activated_at == null) {
+            // $member->status = null;
+            // $member->no_ktp = null;					
+            // $member->save();
           }
         }
 
         #cashback
-        $cashbacks = VoucherCashbackDetail::where([['transaction_code', $trx->code_trans], ['uid', $Member->uid]])->get();
-        // dd($cashbacks);
-        foreach ($cashbacks as $cashback) {
-          $description = "Void Transaksi " . $trx->code_trans;
+        $cashbacks = VoucherCashbackDetail::where([
+          ['transaction_uuid', $trx->uuid],
+          ['uid', $member->uuid]
+        ])
+          ->get();
 
-          // money($type,$user, $amount, $credit, $description,$freeze=false,$transaction_code = null){
-          $emoney->money("cashback", $Member, decrypt($cashback->encrypted_amount), false, $description, false, $trx->code_trans);
+        foreach ($cashbacks as $cashback) {
+          $description = "Void Transaksi " . $trx->uuid;
+
+          $emoney->money(
+            "cashback",
+            $member,
+            decrypt($cashback->encrypted_amount),
+            false,
+            $description,
+            false,
+            $trx->uuid
+          );
         }
         #cashback
 
-        $SO = SpecialOffer::where('code_trans', $trx->code_trans)->delete();
-        $trx_detail = transaksi_detail::where('id_trans_fk', $trx->id)->delete();
+        // $so = SpecialOffer::where('code_trans', $trx->code_trans)->delete();
+        $trx_detail = orderDetail::where('order_header_uuid', $trx->uuid)->delete();
         $result = $trx->delete();
 
         DB::commit();
       } catch (\PDOException $e) {
         DB::rollBack();
-        //dd($e);
-        //Log::debug($e);
         echo $e;
       }
     } else {
       $result = "Transasction not found";
     }
 
-    if (!isset($result)) $result = "Void transaksi dengan kode " . $uuid . " gagal";
+    if (!isset($result)) {
+      $result = "Void transaksi dengan kode " . $uuid . " gagal";
+    }
+
     return $result;
   }
 
@@ -1724,40 +1752,41 @@ class Helper extends Model
     $trx = OrderHeader::where('uuid', $uuid)
       ->with('user', 'special_customer')
       ->first();
-    $register = transaksi_detail::where('id_trans_fk', $trx->id)->whereIn('id_barang_fk', [1, 2, 16, 17, 18])->first();
+    $register = OrderDetail::where('order_header_uuid', $trx->uuid)
+      ->whereHas('productPrice.product', function ($query) {
+        $query->whereIn('uuid', [1, 2, 16, 17, 18]);
+      })
+      ->first();
 
     if ($trx) {
       try {
         DB::beginTransaction();
 
+        $mid = $this->getMid($trx->transaction_date);
 
-        if (in_array($trx->status, ['PC', 'A', 'S', 'I'])) {
-          $mid = $this->getMid($trx->transaction_date);
-
-          $srank = SRank::where('jbid', $trx->id_cust_fk)->first();
-          if ($srank) {
-            $srank->appv -= $trx->pv_total;
-            $srank->save();
-          }
-
-          $erank = ERank::where([['jbid', $trx->id_cust_fk], ['mid', $mid]])->first();
-          if ($erank) {
-            $erank->ppv -= $trx->bv_total;
-            $erank->save();
-          }
-
-          $do = DeliveryOrder::where('code_trans', $trx->code_trans)->first();
-          if ($do) {
-            $stock_card = stock_card::where('kode', $do->code)->delete();
-            $do->delete();
-          }
+        $srank = SRank::where('member_uuid', $trx->member_uuid)->first();
+        if ($srank) {
+          $srank->appv -= $trx->total_pv;
+          $srank->save();
         }
 
+        $erank = ERank::where([['member_uuid', $trx->member_uuid], ['mid', $mid]])->first();
+        if ($erank) {
+          $erank->ppv -= $trx->total_bv;
+          $erank->save();
+        }
+
+        // $do = DeliveryOrder::where('code_trans', $trx->uuid)->first();
+        // if ($do) {
+        //   $stock_card = stock_card::where('kode', $do->code)->delete();
+        //   $do->delete();
+        // }
+
         //refund voucher
-        if ($trx->voucher_amount > 0) {
-          $note = "Refund from void transaction " . $trx->code_trans;
-          if ($trx->id_sc_fk) {
-            $refund = $emoney->topupVoucher($trx['special_customer']->uid, $trx->voucher_amount, $note, null);
+        if ($trx->total_voucher_amount > 0) {
+          $note = "Refund from void transaction " . $trx->uuid;
+          if ($trx->member_uuid) {
+            $refund = $emoney->topupVoucher($trx->uid, $trx->voucher_amount, $note, null);
           } else {
             $refund = $emoney->topupVoucher($trx['user']->uid, $trx->voucher_amount, $note, null);
           }
@@ -1796,15 +1825,14 @@ class Helper extends Model
         }
         #cashback
 
-        $SO = SpecialOffer::where('code_trans', $trx->code_trans)->delete();
-        $trx_detail = transaksi_detail::where('id_trans_fk', $trx->id)->delete();
+        // $SO = SpecialOffer::where('code_trans', $trx->code_trans)->delete();
+        $trx_detail = OrderDetail::where('order_header_uuid', $trx->uuid)->delete();
+
         $result = $trx->delete();
 
         DB::commit();
       } catch (\PDOException $e) {
         DB::rollBack();
-        //dd($e);
-        //Log::debug($e);
         echo $e;
       }
     } else {
@@ -1816,41 +1844,44 @@ class Helper extends Model
 
   public function voidPaymentGateway($uuid)
   {
-    $emoney = new \App\AlvaMarvello\Money;
-    $trx = OrderHeader::where('code_trans', $uuid)->whereNotIn('status', ['PC', 'S', 'A'])->with('user')->first();
+    $emoney = new Money;
+    $trx = OrderHeader::where('uuid', $uuid)
+      // ->whereNotIn('status', ['PC', 'S', 'A'])
+      ->with('member')
+      ->first();
 
     if ($trx) {
-      $register = transaksi_detail::where('id_trans_fk', $trx->id)->whereIn('id_barang_fk', [1, 2, 16, 17, 18])->first();
+      $register = OrderDetail::where('order_header_uuid', $trx->uuid)
+        // ->whereIn('id_barang_fk', [1, 2, 16, 17, 18])
+        ->first();
       try {
         DB::beginTransaction();
 
 
-        if (in_array($trx->status, ['PC', 'A', 'S', 'I'])) {
-          $mid = $this->getMid($trx->transaction_date);
+        $mid = $this->getMid($trx->transaction_date);
 
-          $srank = SRank::where('jbid', $trx->id_cust_fk)->first();
-          if ($srank) {
-            $srank->appv -= $trx->pv_total;
-            $srank->save();
-          }
-
-          $erank = ERank::where([['jbid', $trx->id_cust_fk], ['mid', $mid]])->first();
-          if ($erank) {
-            $erank->ppv -= $trx->bv_total;
-            $erank->save();
-          }
-
-          $do = DeliveryOrder::where('code_trans', $trx->code_trans)->first();
-          if ($do) {
-            $stock_card = stock_card::where('kode', $do->code)->delete();
-            $do->delete();
-          }
+        $srank = SRank::where('uuid', $trx->member_uuid)->first();
+        if ($srank) {
+          $srank->appv -= $trx->pv_total;
+          $srank->save();
         }
 
+        $erank = ERank::where([['uuid', $trx->member_uuid], ['mid', $mid]])->first();
+        if ($erank) {
+          $erank->ppv -= $trx->bv_total;
+          $erank->save();
+        }
+
+        // $do = DeliveryOrder::where('code_trans', $trx->code_trans)->first();
+        // if ($do) {
+        //   $stock_card = stock_card::where('kode', $do->code)->delete();
+        //   $do->delete();
+        // }
+
         //refund voucher
-        if ($trx->voucher_amount > 0) {
+        if ($trx->total_voucher_amount > 0) {
           $note = "Refund from void transaction " . $trx->code_trans;
-          $refund = $emoney->topupVoucher($trx['user']->uid, $trx->voucher_amount, $note, null);
+          $refund = $emoney->topupVoucher($trx['user']->uid, $trx->total_voucher_amount, $note, null);
         }
 
         /*
@@ -1861,24 +1892,25 @@ class Helper extends Model
 					$user->save();					
 				}*/
 
-        $Member = Member::where('jbid', $trx->id_cust_fk)->first();
+        $member = Member::where('uuid', $trx->member_uuid)->first();
         #cashback
-        $cashbacks = VoucherCashbackDetail::where([['transaction_code', $trx->code_trans], ['uid', $Member->uid]])->get();
+        $cashbacks = VoucherCashbackDetail::where([
+          ['transaction_uuid', $trx->uuid],
+          ['uid', $member->uid]
+        ])->get();
         foreach ($cashbacks as $cashback) {
           $description = "Void Transaksi " . $trx->code_trans;
-          $emoney->money("cashback", $Member, decrypt($cashback->encrypted_amount), false, $description, false, $trx->code_trans);
+          $emoney->money("cashback", $member, decrypt($cashback->encrypted_amount), false, $description, false, $trx->code_trans);
         }
         #cashback
 
-        $SO = SpecialOffer::where('code_trans', $trx->code_trans)->delete();
-        $trx_detail = transaksi_detail::where('id_trans_fk', $trx->id)->delete();
+        // $sO = SpecialOffer::where('code_trans', $trx->code_trans)->delete();
+        $trx_detail = OrderDetail::where('order_header_uuid', $trx->uuid)->delete();
         $result = $trx->delete();
 
         DB::commit();
       } catch (\PDOException $e) {
         DB::rollBack();
-        //dd($e);
-        //Log::debug($e);
         echo $e;
       }
     } else {
@@ -1888,11 +1920,18 @@ class Helper extends Model
     return $result;
   }
 
-  public function getSponsor($jbid)
+  public function getSponsor($uuid)
   {
-    $user = User::where([['id', $jbid], ['activated_at', '!=', null], ['flag', 1]])->first();
-    //if(!$user) Log::debug($jbid);
-    $sponsor = User::where([['id', $user->id_sponsor_fk], ['activated_at', '!=', null], ['flag', 1]])->first();
+    $user = Member::where([
+      ['member_uuid', $uuid],
+      ['activated_at', '!=', null],
+      ['flag', 1]
+    ])->first();
+    $sponsor = Member::where([
+      ['uuid', $user->sponsor_uuid],
+      ['activated_at', '!=', null],
+      ['flag', 1]
+    ])->first();
 
     return $sponsor;
   }
@@ -1927,11 +1966,9 @@ class Helper extends Model
     return array('start_date' => $sDate, 'end_date' => $eDate);
   }
 
-  public function useVoucher($owner, $amount, $uuid)
+  public function useVoucher($member_uuid, $amount, $uuid)
   {
-    $username = Auth::user() ? Auth::user()->username : "API";
-
-    $voucher = Voucher::where('owner', $owner->uid)->first();
+    $voucher = Voucher::where('member_uuid', $member_uuid)->first();
     $saldo = decrypt($voucher->saldo);
 
     $now = Carbon::now();
@@ -1939,13 +1976,18 @@ class Helper extends Model
     $eDate = $now->endOfMonth();
     $index = VoucherDetail::whereBetween('created_at', [$sDate, $eDate])->count() + 1;
 
-    //dd($owner->username);
     $code = "UVCI" . $now->year . $now->format('m') . $index . rand(111, 999);
-    $note = "Voucher dipakai oleh " . $owner->username . " pada " . $now . " untuk transaksi " . $uuid . " issued_by " . $username;
+    $note = "Voucher dipakai oleh " . $member_uuid . " pada " . $now . " untuk transaksi " . $uuid . " issued_by " . $member_uuid;
 
     try {
       DB::beginTransaction();
-      $result = VoucherDetail::create(['owner' => $owner->uid, 'code' => $code, 'debit' => encrypt(0), 'credit' => encrypt($amount), 'note' => $note]);
+      $result = VoucherDetail::create([
+        'member_uuid' => $member_uuid,
+        'code' => $code,
+        'debit' => encrypt(0),
+        'credit' => encrypt($amount),
+        'note' => $note
+      ]);
 
       $new_saldo = $saldo - $amount;
       $voucher->saldo = encrypt($new_saldo);
@@ -1959,22 +2001,22 @@ class Helper extends Model
     return $code;
   }
 
-  public static function getSaldoVoucher($owner)
+  public static function getSaldoVoucher($member_uuid)
   {
-    $voucher = Voucher::where('owner', $owner)->first();
+    $voucher = Voucher::where('member_uuid', $member_uuid)->first();
     if ($voucher) return $voucher->saldo;
   }
 
-  public static function getSaldoVoucherCashback($owner)
+  public static function getSaldoVoucherCashback($member_uuid)
   {
-    $voucher = VoucherCashback::where('uid', $owner)->first();
+    $voucher = VoucherCashback::where('member_uuid', $member_uuid)->first();
     if ($voucher) return decrypt($voucher->encrypted_amount);
   }
 
   public function pickSponsorByProvince($ppv, $province)
   {
 
-    $prodate = $this->getPeriodeMonth(now()->month, now()->year);
+    $prodate = $this->getPeriodeMonth(Carbon::now()->month, Carbon::now()->year);
 
     if ($province) {
       $raws = OrderHeader::leftjoin('users', function ($join) use ($province) {
@@ -2180,102 +2222,102 @@ class Helper extends Model
     return $result;
   }
 
-  public function getProduct($code)
-  {
+  // public function getProduct($code)
+  // {
 
-    $login = Auth::user();
+  //   $login = Auth::user();
 
-    $login = $login ? $login->load('srank') : null;
-    $srank = empty($login->srank) ? 0 : $login->srank->srank;
-    $JPSPacked = $login ? SpecialOffer::where('jbid', $login->id)->first() : null;
-    $category = Product::where('code', $code)->first();
-    $category = $category ? $category->category : null;
+  //   $login = $login ? $login->load('srank') : null;
+  //   $srank = empty($login->srank) ? 0 : $login->srank->srank;
+  //   $JPSPacked = $login ? SpecialOffer::where('jbid', $login->id)->first() : null;
+  //   $category = Product::where('code', $code)->first();
+  //   $category = $category ? $category->category : null;
 
-    if ($code) {
+  //   if ($code) {
 
-      if ($category) {
-        $products = Product::where([['code', $code], ['active', true], ['show', '>=', $login ? $login->flag : 2]])
-          ->with(['barang', 'variants' => function ($query) use ($login, $JPSPacked, $srank, $category) {
-            return $query->with(['barang_induk' => function ($barang) use ($login, $JPSPacked, $srank, $category) {
-              if ($login && $login->flag == 0) {
-                return $barang->where('id_category_fk', $category)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-              } elseif ($login && $login->flag == 1) {
-                if ($srank >= 5) {
-                  return $barang->where('id_category_fk', $category)->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 3], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                } elseif ($JPSPacked) {
-                  return $barang->where('id_category_fk', $category)->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                } else {
-                  return $barang->where('id_category_fk', $category)->where('is_show', '>=', 1)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                }
-              } else {
-                return $barang->where('is_show', $login ? $login->flag : 2)->where('id_category_fk', $category)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-              }
-            }]);
-          }])->orderBy('id')->first();
-      } else {
-        $products = Product::where([['code', $code], ['active', true], ['show', '>=', $login ? $login->flag : 2]])
-          ->with(['barang', 'variants' => function ($query) use ($login, $JPSPacked, $srank, $category) {
-            return $query->with(['barang_induk' => function ($barang) use ($login, $JPSPacked, $srank, $category) {
-              if ($login && $login->flag == 0) {
-                return $barang->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-              } elseif ($login && $login->flag == 1) {
-                if ($srank >= 5) {
-                  return $barang->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 3], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                } elseif ($JPSPacked) {
-                  return $barang->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                } else {
-                  return $barang->where('is_show', '>=', 1)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                }
-              } else {
-                return $barang->where('is_show', $login ? $login->flag : 2)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-              }
-            }]);
-          }])->orderBy('id')->first();
-      }
-    } else {
-      if ($category) {
-        $products = Product::where([['active', true], ['show', '>=', $login ? $login->flag : 2]])
-          ->with(['barang', 'variants' => function ($query) use ($login, $JPSPacked, $srank, $category) {
-            return $query->with(['barang_induk' => function ($barang) use ($login, $JPSPacked, $srank, $category) {
-              if ($login && $login->flag == 0) {
-                return $barang->where('id_category_fk', $category)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-              } elseif ($login && $login->flag == 1) {
-                if ($srank >= 5) {
-                  return $barang->where('id_category_fk', $category)->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 3], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                } elseif ($JPSPacked) {
-                  return $barang->where('id_category_fk', $category)->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                } else {
-                  return $barang->where('id_category_fk', $category)->where('is_show', '>=', 1)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                }
-              } else {
-                return $barang->where('is_show', 2)->where('id_category_fk', $category)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-              }
-            }]);
-          }])->orderBy('id')->get();
-      } else {
-        $products = Product::where([['active', true], ['show', '>=', $login ? $login->flag : 2]])
-          ->with(['barang', 'variants' => function ($query) use ($login, $JPSPacked, $srank, $category) {
-            return $query->with(['barang_induk' => function ($barang) use ($login, $JPSPacked, $srank, $category) {
-              if ($login && $login->flag == 0) {
-                return $barang->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-              } elseif ($login && $login->flag == 1) {
-                if ($srank >= 5) {
-                  return $barang->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 3], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                } elseif ($JPSPacked) {
-                  return $barang->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                } else {
-                  return $barang->where('is_show', '>=', 1)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-                }
-              } else {
-                return $barang->where('is_show', 2)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
-              }
-            }]);
-          }])->orderBy('id')->get();
-      }
-    }
+  //     if ($category) {
+  //       $products = Product::where([['code', $code], ['active', true], ['show', '>=', $login ? $login->flag : 2]])
+  //         ->with(['barang', 'variants' => function ($query) use ($login, $JPSPacked, $srank, $category) {
+  //           return $query->with(['barang_induk' => function ($barang) use ($login, $JPSPacked, $srank, $category) {
+  //             if ($login && $login->flag == 0) {
+  //               return $barang->where('id_category_fk', $category)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //             } elseif ($login && $login->flag == 1) {
+  //               if ($srank >= 5) {
+  //                 return $barang->where('id_category_fk', $category)->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 3], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               } elseif ($JPSPacked) {
+  //                 return $barang->where('id_category_fk', $category)->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               } else {
+  //                 return $barang->where('id_category_fk', $category)->where('is_show', '>=', 1)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               }
+  //             } else {
+  //               return $barang->where('is_show', $login ? $login->flag : 2)->where('id_category_fk', $category)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //             }
+  //           }]);
+  //         }])->orderBy('id')->first();
+  //     } else {
+  //       $products = Product::where([['code', $code], ['active', true], ['show', '>=', $login ? $login->flag : 2]])
+  //         ->with(['barang', 'variants' => function ($query) use ($login, $JPSPacked, $srank, $category) {
+  //           return $query->with(['barang_induk' => function ($barang) use ($login, $JPSPacked, $srank, $category) {
+  //             if ($login && $login->flag == 0) {
+  //               return $barang->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //             } elseif ($login && $login->flag == 1) {
+  //               if ($srank >= 5) {
+  //                 return $barang->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 3], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               } elseif ($JPSPacked) {
+  //                 return $barang->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               } else {
+  //                 return $barang->where('is_show', '>=', 1)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               }
+  //             } else {
+  //               return $barang->where('is_show', $login ? $login->flag : 2)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //             }
+  //           }]);
+  //         }])->orderBy('id')->first();
+  //     }
+  //   } else {
+  //     if ($category) {
+  //       $products = Product::where([['active', true], ['show', '>=', $login ? $login->flag : 2]])
+  //         ->with(['barang', 'variants' => function ($query) use ($login, $JPSPacked, $srank, $category) {
+  //           return $query->with(['barang_induk' => function ($barang) use ($login, $JPSPacked, $srank, $category) {
+  //             if ($login && $login->flag == 0) {
+  //               return $barang->where('id_category_fk', $category)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //             } elseif ($login && $login->flag == 1) {
+  //               if ($srank >= 5) {
+  //                 return $barang->where('id_category_fk', $category)->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 3], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               } elseif ($JPSPacked) {
+  //                 return $barang->where('id_category_fk', $category)->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               } else {
+  //                 return $barang->where('id_category_fk', $category)->where('is_show', '>=', 1)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               }
+  //             } else {
+  //               return $barang->where('is_show', 2)->where('id_category_fk', $category)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //             }
+  //           }]);
+  //         }])->orderBy('id')->get();
+  //     } else {
+  //       $products = Product::where([['active', true], ['show', '>=', $login ? $login->flag : 2]])
+  //         ->with(['barang', 'variants' => function ($query) use ($login, $JPSPacked, $srank, $category) {
+  //           return $query->with(['barang_induk' => function ($barang) use ($login, $JPSPacked, $srank, $category) {
+  //             if ($login && $login->flag == 0) {
+  //               return $barang->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //             } elseif ($login && $login->flag == 1) {
+  //               if ($srank >= 5) {
+  //                 return $barang->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 3], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               } elseif ($JPSPacked) {
+  //                 return $barang->where([['is_show', '>=', 1], ['id_jenis_fk', '!=', 6]])->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               } else {
+  //                 return $barang->where('is_show', '>=', 1)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //               }
+  //             } else {
+  //               return $barang->where('is_show', 2)->whereIn('status', ['A', 'I', 'X'])->orderBy('index');
+  //             }
+  //           }]);
+  //         }])->orderBy('id')->get();
+  //     }
+  //   }
 
-    return $products;
-  }
+  //   return $products;
+  // }
 
   public function getSponsorJoybizer($spid)
   {
@@ -2310,29 +2352,38 @@ class Helper extends Model
     return $user;
   }
 
-  public function recalculateCarryForward($username, $week, $carry_week)
+  public function recalculateCarryForward($member_uuid, $week, $carry_week)
   {
-    $user = User::where('username', $username)->first();
-    $pdjs = PreparedDataJoy::where([['upid', $user->id], ['wid', $week]])->orderBy('gpvj')->get();
+    $pdjs = PreparedDataJoy::where([
+      ['placement_uuid', $member_uuid],
+      ['wid', $week]
+    ])->orderBy('gpvj')->get();
 
-    $lastCF = CarryForwardDetail::where([['owner', $user->uid], ['wid', $carry_week]])->first();
-    $CF = CarryForwardDetail::where([['owner', $user->uid], ['wid', $week]])->first();
+    $lastCF = CarryForwardDetail::where([
+      ['member_uuid', $member_uuid],
+      ['wid', $carry_week]
+    ])->first();
+
+    $cf = CarryForwardDetail::where([
+      ['member_uuid', $member_uuid],
+      ['wid', $week]
+    ])->first();
 
     $found = false;
     foreach ($pdjs as $pdj) {
-      $dataPV[$pdj->jbid] = $pdj->pvj + $pdj->gpvj;
-      $dataBV[$pdj->jbid] = $pdj->bvj + $pdj->gbvj;
+      $dataPV[$pdj->member_uuid] = $pdj->pvj + $pdj->gpvj;
+      $dataBV[$pdj->member_uuid] = $pdj->bvj + $pdj->gbvj;
 
-      if ($lastCF->jbid == $pdj->jbid) {
-        $dataPV[$pdj->jbid] += $lastCF->gpvj;
-        $dataBV[$pdj->jbid] += $lastCF->gbvj;
+      if ($lastCF->member_uuid == $pdj->member_uuid) {
+        $dataPV[$pdj->member_uuid] += $lastCF->gpvj;
+        $dataBV[$pdj->member_uuid] += $lastCF->gbvj;
         $found = true;
       }
     }
 
     if (!$found) {
-      $dataPV[$lastCF->jbid] = $lastCF->gpvj;
-      $dataBV[$lastCF->jbid] = $lastCF->gbvj;
+      $dataPV[$lastCF->member_uuid] = $lastCF->gpvj;
+      $dataBV[$lastCF->member_uuid] = $lastCF->gbvj;
     }
 
     arsort($dataPV);
@@ -2354,38 +2405,38 @@ class Helper extends Model
       $ctr++;
     }
 
-    $CF->jbid = $cid;
-    $CF->gpvj = $cgpvj;
-    $CF->gbvj = $cgbvj;
-    $CF->save();
+    $cf->member_uuid = $cid;
+    $cf->gpvj = $cgpvj;
+    $cf->gbvj = $cgbvj;
+    $cf->save();
   }
 
-  public function getProductSales($transactions)
-  {
-    $productSales = array();
-    foreach ($transactions as $key => $transaction) {
-      # code...
-      foreach ($transaction->transaksi_detail as $key => $td) {
-        # code...
-        foreach ($td->barang->barang_detail as $bd) {
-          $productID = $bd->id_barang_fk;
-          $qty = $bd->qty;
-          $product = barang::where('id', $bd->id_barang_fk)->first();
+  // public function getProductSales($transactions)
+  // {
+  //   $productSales = array();
+  //   foreach ($transactions as $key => $transaction) {
+  //     # code...
+  //     foreach ($transaction->details as $key => $td) {
+  //       # code...
+  //       foreach ($td->barang->barang_detail as $bd) {
+  //         $productID = $bd->product_uuid;
+  //         $qty = $bd->qty;
+  //         // $product = barang::where('id', $bd->id_barang_fk)->first();
 
-          if (isset($productSales[$productID])) {
-            $productSales[$productID]['qty'] += $bd->qty * $td->qty;
-            $productSales[$productID]['total'] += $bd->qty * $product->harga_1;
-          } else {
-            $productSales[$productID]['name'] = $product->nama;
-            $productSales[$productID]['qty'] = $bd->qty * $td->qty;
-            $productSales[$productID]['total'] = $bd->qty * $product->harga_1;
-          }
-        }
-      }
-    }
+  //         if (isset($productSales[$productID])) {
+  //           $productSales[$productID]['qty'] += $bd->qty * $td->qty;
+  //           $productSales[$productID]['total'] += $bd->qty * $product->harga_1;
+  //         } else {
+  //           $productSales[$productID]['name'] = $product->nama;
+  //           $productSales[$productID]['qty'] = $bd->qty * $td->qty;
+  //           $productSales[$productID]['total'] = $bd->qty * $product->harga_1;
+  //         }
+  //       }
+  //     }
+  //   }
 
-    return $productSales;
-  }
+  //   return $productSales;
+  // }
 
   public function getLeaf($jbid, $position)
   {
@@ -2429,191 +2480,63 @@ class Helper extends Model
     }
   }
 
-  public function addMember($user, $username, $spid, $upid = null, $status = 0, $starter = false, $min_bv, $reg_fee)
-  {
+  public function addMember(
+    $member_uuid,
+    $first_name,
+    $last_name,
+    $user_id,
+    $user_uuid,
+    $sponsor_id,
+    $sponsor_uuid,
+    $placement_id = null,
+    $placement_uuid = null,
+    $status = 0,
+    $membership_status = 1,
+    $starter = false,
+    $min_bv,
+    $reg_fee
+  ) {
 
-    $jbid = now()->format('ym') . $user->id . rand(11, 99);
-    while (Member::where('jbid', $jbid)->first()) {
-      $jbid = now()->format('ym') . $user->id . rand(11, 99);
+    while (Member::where('uuid', $member_uuid)->first()) {
+      $member_uuid = Carbon::now()->format('ym') . $member_uuid . rand(11, 99);
     }
 
-    $membership = Member::create(['owner' => $user->uid, 'username' => $username]);
-    $membership->uid = Str::uuid();
-    $membership->jbid = now()->format('ym') . $membership->user->id . rand(11, 99);
-    $membership->spid = $spid;
-    $membership->upid = $upid;
-    $membership->flag = 1;
+    $membership = Member::create([
+      'uuid' => $member_uuid,
+      'user_id' => $user_id,
+      'user_uuid' => $user_uuid
+    ]);
+    $membership->uuid = Str::uuid();
+    // $membership->member_uuid = Carbon::now()->format('ym') . $membership->user->id . rand(11, 99);;
+    $membership->sponsor_id = $sponsor_id;
+    $membership->sponsor_uuid = $sponsor_uuid;
+    $membership->placement_id = $placement_id;
+    $membership->placement_uuid = $placement_uuid;
+    $membership->first_name = $first_name;
+    $membership->last_name = $last_name;
     $membership->status = $status;
+    $membership->membership_status = $membership_status;
     $membership->starter = $starter;
     $membership->min_bv = $min_bv;
+    $membership->created_by = $user_uuid;
+    $membership->created_at = Carbon::now();
     $membership->save();
+
     return $membership;
   }
 
-  public function topUpMember($user, $status, $starter, $formation = 1, $min_bv = 0, $reg_fee = false)
+  public function getDownlineStatus($member_uuid)
   {
 
-    // dd($formation);
-    $memberships = Member::where('owner', $user->uid)->orderBy('id', 'asc')->get();
-    $count = $memberships->count();
-    $username = $user->username . ($count + 1);
-
-    if ($count < 7 && $count < 3) {
-      $sponsor = $memberships[0];
-      $upline = $sponsor;
-      $membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter, $min_bv, $reg_fee);
-      if ($count == 1 && $upline->left == null) {
-        $upline->left = $membership->jbid;
-      } elseif ($count == 2 && $upline->right == null) {
-        $upline->right = $membership->jbid;
-      }
-    } elseif ($count < 7 && $count < 5) {
-
-      if ($formation == 1) {
-        $sponsor = $memberships[1];
-        $upline = $sponsor;
-        $membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter, $min_bv, $reg_fee);
-
-        if ($count == 3 && $upline->left == null) {
-          $upline->left = $membership->jbid;
-        } elseif ($count == 4 && $upline->right == null) {
-          $upline->right = $membership->jbid;
-        }
-      }
-      if ($formation == 2) {
-        if ($count == 3) {
-          $sponsor = $memberships[1];
-          $upline = $sponsor;
-          $membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter, $min_bv, $reg_fee);
-
-          if ($upline->left == null) {
-            $upline->left = $membership->jbid;
-          }
-        } elseif ($count == 4) {
-          $sponsor = $memberships[2];
-          $upline = $sponsor;
-          $membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter, $min_bv, $reg_fee);
-
-          if ($upline->right == null) {
-            $upline->right = $membership->jbid;
-          }
-        }
-      }
-    } elseif ($count < 7 && $count < 7) {
-
-      if ($formation == 1) {
-        $sponsor = $memberships[2];
-        $upline = $sponsor;
-        $membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter, $min_bv, $reg_fee);
-
-        if ($count == 5 && $upline->left == null) {
-          $upline->left = $membership->jbid;
-        } elseif ($count == 6 && $upline->right == null) {
-          $upline->right = $membership->jbid;
-        }
-      }
-      if ($formation == 2) {
-        if ($count == 5) {
-          $sponsor = $memberships[3];
-          $upline = $sponsor;
-          $membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter, $min_bv, $reg_fee);
-
-          if ($upline->left == null) {
-            $upline->left = $membership->jbid;
-          }
-        } elseif ($count == 6) {
-          $sponsor = $memberships[4];
-          $upline = $sponsor;
-          $membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter, $min_bv, $reg_fee);
-
-          if ($upline->right == null) {
-            $upline->right = $membership->jbid;
-          }
-        }
-      }
-    }
-
-    $upline->save();
-  }
-
-  // public function topup137Existing($user, $status, $starter, $formation = 1){
-
-  // 	$memberships = Member::where('owner',$user->uid)->orderBy('id','asc')->get();
-  // 	$count = $memberships->count();
-
-  // 	$sponsor_username = $count > 1 ? $user->username.($count-1) : $user->username; 									
-  // 	$username = $user->username.$count;
-
-
-  // 	if($formation == 1){
-  // 		$sponsor = Member::where('username',$sponsor_username)->first();
-  // 		$upline = $sponsor;	
-  // 		$membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter);
-
-  // 		if($count % 2 == 1){
-  // 			$upline->left = $membership->jbid;
-  // 		} else {
-  // 			$upline->right = $membership->jbid;
-  // 		}
-  // 		$upline->save();
-
-  // 	} elseif($formation == 2) {
-  // 		switch ($count) {
-  // 			case 1:
-  // 				$sponsor = $membership[0];
-  // 				$upline = $sponsor;
-  // 				$membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter);
-  // 				$upline->left = $membership->jbid;
-  // 				break;
-  // 			case 2:
-  // 				$sponsor = $membership[0];
-  // 				$upline = $sponsor;
-  // 				$membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter);
-  // 				$upline->right = $membership->jbid;
-  // 			  	break;
-  // 			case 3:
-  // 				$sponsor = $membership[1];
-  // 				$upline = $sponsor;
-  // 				$membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter);
-  // 				$upline->left = $membership->jbid;
-  // 			  	break;
-  // 			case 4:
-  // 				$sponsor = $membership[1];
-  // 				$upline = $sponsor;
-  // 				$membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter);
-  // 				$upline->right = $membership->jbid;
-  // 				break;
-  // 			case 3:
-  // 				$sponsor = $membership[1];
-  // 				$upline = $sponsor;
-  // 				$membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter);
-  // 				$upline->left = $membership->jbid;
-  // 				break;
-  // 			case 4:
-  // 				$sponsor = $membership[1];
-  // 				$upline = $sponsor;
-  // 				$membership = $this->addMember($user, $username, $sponsor->jbid, $upline->jbid, $status, $starter);
-  // 				$upline->right = $membership->jbid;
-  // 				break;				  	
-
-  // 			default:
-  // 			  code to be executed if n is different from all labels;
-  // 		}
-
-  // 		$upline->save();
-  // 	}
-
-  // 	return $membership;
-  // }
-
-  public function getDownlineStatus($jbid)
-  {
-
-    $downlines = Member::where('upid', $jbid)->get();
+    $downlines = Member::where('placement_uuid', $member_uuid)->get();
     foreach ($downlines as $downline) {
-      logger($downline->username . ";" . $downline->user->nama . ";" . $downline->user->handphone . ";" . ($downline->dormant ? 'Dormant at ' . $downline->dormant : 'Active'));
-      $result = $this->getDownlineStatus($downline->jbid);
+      Log::info($downline->uuid . ";" .
+        $downline->first_name . ";" .
+        $downline->phone . ";" .
+        ($downline->status ? 'Dormant at ' . $downline->will_dormant_at : 'Active'));
+      $result = $this->getDownlineStatus($downline->member_uuid);
     }
-    // return $result;		
+
+    return $result;
   }
 }

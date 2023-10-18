@@ -67,8 +67,9 @@ return new class extends Migration
         Schema::create('bonus_rank_logs', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->uuid('process_uuid');
+            $table->uuid('process_uuid')->nullable();
             $table->uuid('member_uuid')->comment('Member uuid based from table members');
+            $table->integer('rank_id')->comment('Rank id based from table ranks')->nullable();
             $table->uuid('rank_uuid')->comment('Rank uuid based from table ranks')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
