@@ -178,6 +178,7 @@ return new class extends Migration
       $table->integer('srank')->default(0);
       $table->integer('erank')->default(0);
       $table->timestamps();
+      $table->softDeletes();
     });
     // ================== End Plan Biz ==================
 
@@ -218,9 +219,8 @@ return new class extends Migration
       $table->string('code');
       $table->string('debit');
       $table->string('credit');
-      $table->timestamps();
-      $table->softDeletes();
       $table->text('note');
+      $table->timestamps();
       $table->softDeletes();
     });
 
@@ -233,7 +233,6 @@ return new class extends Migration
       $table->decimal('amount', 12, 2)->default(0);
       $table->string('encrypted_amount')->nullable();
       $table->timestamps();
-      $table->softDeletes();
       $table->softDeletes();
     });
 
@@ -250,7 +249,6 @@ return new class extends Migration
       $table->string('description')->nullable();
       $table->string('transaction_code')->nullable();
       $table->timestamps();
-      $table->softDeletes();
       $table->softDeletes();
     });
 
@@ -276,9 +274,8 @@ return new class extends Migration
       $table->string('code');
       $table->string('debit');
       $table->string('credit');
-      $table->timestamps();
-      $table->softDeletes();
       $table->text('note');
+      $table->timestamps();
       $table->softDeletes();
     });
   }

@@ -55,23 +55,28 @@ class OrderService
         // New Order Header;
         $newOrderHeader = [
           'uuid' => Str::uuid()->toString(),
-          'price_code_uuid' => $orderHeader['price_code_uuid'],
           'member_uuid' => $orderHeader['member_uuid'],
+          'price_code_uuid' => $orderHeader['price_code_uuid'],
           'remarks' => $orderHeader['remarks'],
-          'total_discount_value' => $orderHeader['total_discount_value'],
+          // 'total_discount_value' => $orderHeader['total_discount_value'],
           'total_discount_value_amount' => $orderHeader['total_discount_value_amount'],
-          'total_price_after_discount' => $orderHeader['total_price_after_discount'],
-          'total_amount' => $orderHeader['total_amount'],
           'total_voucher_amount' => $orderHeader['total_voucher_amount'],
+          'total_amount' => $orderHeader['total_amount'],
+          'total_amount_after_discount' => $orderHeader['total_amount'] - $orderHeader['total_discount_value_amount'],
           'total_cashback' => $orderHeader['total_cashback'],
           'total_cashback_reseller' => $orderHeader['total_cashback_reseller'],
           'total_shipping_charge' => $orderHeader['total_shipping_charge'],
+          'total_shipping_discount' => $orderHeader['total_shipping_discount'],
+          'total_shipping_nett' => $orderHeader['total_shipping_charge'] - $orderHeader['total_shipping_discount'],
           'total_payment_charge' => $orderHeader['total_payment_charge'],
-          'total_amount_summary' => $orderHeader['total_amount_summary'],
+          'tax_amount' => $orderHeader['tax_amount'],
+          'total_charge' => ($orderHeader['total_shipping_charge'] - $orderHeader['total_shipping_discount']) + $orderHeader['total_payment_charge'],
+          'total_amount_summary' => $orderHeader['total_amount'] - ($orderHeader['total_discount_value_amount'] + $orderHeader['total_voucher_amount'] + $orderHeader['total_shipping_discount']),
           'total_pv' => $orderHeader['total_pv'],
           'total_xv' => $orderHeader['total_xv'],
           'total_bv' => $orderHeader['total_bv'],
           'total_rv' => $orderHeader['total_rv'],
+          'ship_type' => $orderHeader['ship_type'],
           'status' => "0",
           'airway_bill_no' => $orderHeader['airway_bill_no'],
           'transaction_date' => Carbon::now(),
@@ -105,6 +110,7 @@ class OrderService
           $newOrderDetail = [
             'uuid' => Str::uuid()->toString(),
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
+            'product_uuid' => $orderDetail['product_uuid'],
             'product_price_uuid' => $orderDetail['product_price_uuid'],
             'qty' => $orderDetail['qty'],
             'price' => $orderDetail['price'],
@@ -151,9 +157,10 @@ class OrderService
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
             'payment_type_uuid' => $orderPayment['payment_type_uuid'],
             'voucher_uuid' => $orderPayment['voucher_uuid'],
-            'total_amount' => $orderPayment['total_amount'],
-            'total_discount' => $orderPayment['total_discount'],
-            'total_amount_after_discount' => $orderPayment['total_amount_after_discount'],
+            'voucher_code' => $orderPayment['voucher_uuid'],
+            'amount' => $orderPayment['amount'],
+            // 'total_discount' => $orderPayment['total_discount'],
+            // 'total_amount_after_discount' => $orderPayment['total_amount_after_discount'],
             'remarks' => $orderPayment['remarks'],
             // 'created_by' => $user->uuid,
           ];
@@ -187,17 +194,18 @@ class OrderService
             'uuid' => Str::uuid()->toString(),
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
             'courier_uuid' => $shippingInfo['courier_uuid'],
+            'member_shipping_address_uuid' => $shippingInfo['address_uuid'],
             'shipping_charge' => $orderHeader['total_shipping_charge'],
+            'discount_shipping_charge' =>
+            $orderHeader['total_shipping_discount']
+              ? $orderHeader['total_shipping_discount']
+              : 0,
             'province' => $shippingInfo['province'],
             'city' => $shippingInfo['city'],
             'district' => $shippingInfo['district'],
             'village' => $shippingInfo['village'],
             'details' => $shippingInfo['details'],
             'notes' => $shippingInfo['notes'],
-            'discount_shipping_charge' =>
-            $shippingInfo['discount_shipping_charge']
-              ? $shippingInfo['discount_shipping_charge']
-              : 0,
             // 'created_by' => $user->uuid,
           ];
 
@@ -463,9 +471,9 @@ class OrderService
           '*.member_uuid' => 'required|max:140|min:5',
           '*.description' => 'string|max:150',
           '*.remarks' => 'string|max:150',
-          '*.total_discount_value' => 'required|numeric',
+          // '*.total_discount_value' => 'required|numeric',
           '*.total_discount_value_amount' => 'required|numeric',
-          '*.total_price_after_discount' => 'required|numeric',
+          // '*.total_amount_after_discount' => 'required|numeric',
           '*.total_voucher_amount' => 'numeric',
           '*.total_cashback' => 'numeric',
           '*.total_cashback_reseller' => 'numeric',
@@ -496,14 +504,15 @@ class OrderService
 
           '*.payments.*.payment_type_uuid' => 'required|uuid',
           '*.payments.*.voucher_uuid' => 'string',
+          '*.payments.*.voucher_code' => 'string;',
           '*.payments.*.total_amount' => 'required|numeric|min:1',
-          '*.payments.*.total_discount' => 'required|numeric',
-          '*.payments.*.total_amount_after_discount' => 'required|numeric',
+          // '*.payments.*.total_discount' => 'required|numeric',
+          // '*.payments.*.total_amount_after_discount' => 'required|numeric',
           '*.payments.*.remarks' => 'string',
 
           '*.shipping_info.*.courier_uuid' => 'required|uuid',
-          '*.shipping_info.*.shipping_charge' => 'required|numeric',
-          '*.shipping_info.*.discount_shipping_charge' => 'required|numeric',
+          // '*.shipping_info.*.shipping_charge' => 'required|numeric',
+          // '*.shipping_info.*.discount_shipping_charge' => 'required|numeric',
 
 
         ];

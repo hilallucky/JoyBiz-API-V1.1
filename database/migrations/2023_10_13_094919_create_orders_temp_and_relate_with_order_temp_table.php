@@ -77,6 +77,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->uuid('order_header_temp_uuid')->comment('Get from table order_headers_temp');
+            $table->uuid('product_uuid')->comment('Get from table products');
             $table->uuid('product_price_uuid')->comment('Get from table product_prices');
             $table->integer('qty')->default(1);
             $table->decimal('price', 10, 2)->default(0);
@@ -102,6 +103,7 @@ return new class extends Migration
 
             $table->foreign('order_header_temp_uuid')->references('uuid')->on('order_headers_temp')->onDelete('cascade');
             $table->foreign('product_price_uuid')->references('uuid')->on('product_prices')->onDelete('cascade');
+            $table->foreign('product_uuid')->references('uuid')->on('products')->onDelete('cascade');
 
             $table->softDeletes();
             $table->timestamps();
@@ -116,9 +118,9 @@ return new class extends Migration
             $table->uuid('payment_type_uuid')->comment('Get from table payment_types');
             $table->uuid('voucher_uuid')->nullable()->comment('Voucher reference if payment using voucher.');
             $table->uuid('voucher_code')->nullable()->comment('Voucher code reference if payment using voucher.');
-            $table->decimal('total_amount', 10, 2)->default(0);
-            $table->decimal('total_discount', 10, 2)->default(0);
-            $table->decimal('total_amount_after_discount', 10, 2)->default(0);
+            $table->decimal('amount', 10, 2)->default(0);
+            $table->decimal('discount', 10, 2)->default(0);
+            $table->decimal('amount_after_discount', 10, 2)->default(0);
             $table->text('remarks')->comment('Notes of payment type')->nullable();
             $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();

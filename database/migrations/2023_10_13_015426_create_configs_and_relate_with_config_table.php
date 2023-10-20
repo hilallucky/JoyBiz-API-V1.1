@@ -46,6 +46,8 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->uuid('country_uuid')->nullable();
+            $table->string('price_code')->nullable();
+            $table->uuid('price_code_uuid')->nullable();
             $table->string('area_code', 30)->nullable();
             $table->string('zip_code', 10)->nullable();
             $table->string('province', 100);

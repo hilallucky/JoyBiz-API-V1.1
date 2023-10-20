@@ -147,50 +147,50 @@ return new class extends Migration
         });
 
 
-        Schema::create('eranks', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uuid');
-            $table->integer('member_uuid'); //jbid
-            $table->integer('sponsor_uuid')->nullable(); //spid
-            $table->integer('placement_uuid')->nullable(); //upid
-            $table->decimal('ppv', 12, 2)->default(0);
-            $table->decimal('gpv', 12, 2)->default(0);
-            $table->integer('mid')->nullable();
-            $table->integer('erank')->default(0);
-            $table->timestamps();
-        });
+        // Schema::create('eranks', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->uuid('uuid');
+        //     $table->integer('member_uuid'); //jbid
+        //     $table->integer('sponsor_uuid')->nullable(); //spid
+        //     $table->integer('placement_uuid')->nullable(); //upid
+        //     $table->decimal('ppv', 12, 2)->default(0);
+        //     $table->decimal('gpv', 12, 2)->default(0);
+        //     $table->integer('mid')->nullable();
+        //     $table->integer('erank')->default(0);
+        //     $table->timestamps();
+        // });
 
-        Schema::create('sranks', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uuid');
-            $table->integer('member_uuid'); //jbid
-            $table->integer('sponsor_uuid')->nullable(); //spid
-            $table->integer('placement_uuid')->nullable(); //upid
-            $table->decimal('appv', 12, 2)->default(0);
-            $table->decimal('apbv', 12, 2)->default(0);
-            $table->integer('jbp')->default(0);
-            $table->integer('bj')->default(0);
-            $table->integer('vj')->default(0);
-            $table->integer('srank')->default(0);
-            $table->integer('bj_active')->default(0);
-            $table->integer('vj_active')->default(0);
-            $table->timestamps();
-        });
+        // Schema::create('sranks', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->uuid('uuid');
+        //     $table->integer('member_uuid'); //jbid
+        //     $table->integer('sponsor_uuid')->nullable(); //spid
+        //     $table->integer('placement_uuid')->nullable(); //upid
+        //     $table->decimal('appv', 12, 2)->default(0);
+        //     $table->decimal('apbv', 12, 2)->default(0);
+        //     $table->integer('jbp')->default(0);
+        //     $table->integer('bj')->default(0);
+        //     $table->integer('vj')->default(0);
+        //     $table->integer('srank')->default(0);
+        //     $table->integer('bj_active')->default(0);
+        //     $table->integer('vj_active')->default(0);
+        //     $table->timestamps();
+        // });
 
 
-        Schema::create('effective_rank', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uuid');
-            $table->integer('member_uuid')->nullable();
-            $table->decimal('ppv', 12, 2)->nullable();
-            $table->decimal('pgv', 12, 2)->nullable();
-            $table->integer('month')->nullable();
-            $table->integer('year')->nullable();
-            $table->date('date_start')->nullable();
-            $table->date('date_end')->nullable();
-            $table->integer('effective_rank')->nullable(); //PERUBAHAN DARI STRING KE INTEGER
-            $table->timestamps();
-        });
+        // Schema::create('effective_rank', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->uuid('uuid');
+        //     $table->integer('member_uuid')->nullable();
+        //     $table->decimal('ppv', 12, 2)->nullable();
+        //     $table->decimal('pgv', 12, 2)->nullable();
+        //     $table->integer('month')->nullable();
+        //     $table->integer('year')->nullable();
+        //     $table->date('date_start')->nullable();
+        //     $table->date('date_end')->nullable();
+        //     $table->integer('effective_rank')->nullable(); //PERUBAHAN DARI STRING KE INTEGER
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -205,8 +205,8 @@ return new class extends Migration
         Schema::dropIfExists('bonus_rank_logs');
         Schema::dropIfExists('bonus_ranks');
         Schema::dropIfExists('bonus_weeklies');
-        Schema::dropIfExists('eranks');
-        Schema::dropIfExists('sranks');
-        Schema::drop('effective_rank');
+        // Schema::dropIfExists('eranks');
+        // Schema::dropIfExists('sranks');
+        // Schema::drop('effective_rank');
     }
 };

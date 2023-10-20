@@ -19,6 +19,8 @@ class City extends Model
     protected $fillable = [
         'uuid',
         'country_uuid',
+        'price_code',
+        'price_code_uuid',
         'area_code',
         'zip_code',
         'province',
@@ -28,6 +30,7 @@ class City extends Model
         'latitude',
         'longitude',
         'elevation',
+        'status',
         'created_by',
         'updated_by',
         'deleted_by',

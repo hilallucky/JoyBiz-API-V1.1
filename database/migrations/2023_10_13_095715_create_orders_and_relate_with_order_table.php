@@ -90,6 +90,7 @@ return new class extends Migration
       $table->uuid('uuid')->unique();
       $table->uuid('order_detail_temp_uuid');
       $table->uuid('order_header_uuid');
+      $table->uuid('product_uuid')->comment('Get from table products');
       $table->uuid('product_price_uuid')->comment('Get from table product_prices');
       $table->integer('qty')->default(1);
       $table->decimal('price', 10, 2)->default(0);
@@ -103,14 +104,19 @@ return new class extends Migration
       $table->decimal('xv', 10, 2)->default(0);
       $table->decimal('bv', 10, 2)->default(0);
       $table->decimal('rv', 10, 2)->default(0);
-      $table->enum('status', [0, 1, 2, 3, 4])->nullable()->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
-      $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
-      $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
-      $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+      $table->enum('status', [0, 1, 2, 3, 4])->nullable()
+        ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
+      $table->enum('do_status', [0, 1, 2, 3, 4])->nullable()
+        ->comment('Status DO Product : 0 = Pending, 1 = Processed DO, 2 = Hold, 3 = Canceled')->default(0);
+      $table->string('do_n;umber')->nullable()->comment('Only if warehouse process th DO (do_status = 1)')->nullable();
+      $table->string('created_by')->comment('Created By in order_details (User ID from table user')->nullable();
+      $table->string('updated_by')->comment('Updated By in order_details (User ID from table user')->nullable();
+      $table->uuid('deleted_by')->comment('Deleted By in order_details (User ID from table user')->nullable();
 
       $table->foreign('order_detail_temp_uuid')->references('uuid')->on('order_details_temp'); //->onDelete('cascade');
       $table->foreign('order_header_uuid')->references('uuid')->on('order_headers'); //->onDelete('cascade');
-      $table->foreign('product_price_uuid')->references('uuid')->on('product_prices'); //->onDelete('cascade');
+      $table->foreign('product_uuid')->references('uuid')->on('products')->onDelete('cascade');
+      $table->foreign('product_price_uuid')->references('uuid')->on('product_prices')->onDelete('cascade');
 
       // $table->foreign('created_by')->references('uuid')->on('users');
       // $table->foreign('updated_by')->references('uuid')->on('users');
@@ -130,9 +136,9 @@ return new class extends Migration
       $table->uuid('payment_type_uuid')->comment('Get from table payment_types');
       $table->uuid('voucher_uuid')->nullable()->comment('Voucher reference if payment using voucher.');
       $table->uuid('voucher_code')->nullable()->comment('Voucher code reference if payment using voucher.');
-      $table->decimal('total_amount', 10, 2)->default(0);
-      $table->decimal('total_discount', 10, 2)->default(0);
-      $table->decimal('total_amount_after_discount', 10, 2)->default(0);
+      $table->decimal('amount', 10, 2)->default(0);
+      $table->decimal('discount', 10, 2)->default(0);
+      $table->decimal('amount_after_discount', 10, 2)->default(0);
       $table->text('remarks')->comment('Notes of payment type')->nullable();
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();

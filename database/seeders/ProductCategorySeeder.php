@@ -4,52 +4,41 @@ namespace Database\Seeders;
 
 use App\Models\Products\ProductCategory;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Ramsey\Uuid\Nonstandard\Uuid;
-use Ramsey\Uuid\Provider\Node\RandomNodeProvider;
+use Illuminate\Support\Str;
 
 class ProductCategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        // ProductCategory::factory()->create();
-        $nodeProvider = new RandomNodeProvider();
+  /**
+   * Run the database seeds.
+   *
+   * @return void
+   */
+  public function run()
+  {
 
-        DB::table('product_categories')->insert([
-            [
-                "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
-                "name" => "Electronics",
-                "description" => "Electronics Desc",
-                "status" => "1",
-                "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
-                "created_by" => 'admin',
-                "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
-                "name" => "Clothing",
-                "description" => "Clothing Desc",
-                "status" => "1",
-                "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
-                "created_by" => 'admin',
-                "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                "uuid" => Uuid::uuid1($nodeProvider->getNode())->toString(),
-                "name" => "Books",
-                "description" => "Books Desc",
-                "status" => "1",
-                "created_at" => Carbon::now()->format('Y-m-d H:i:s'),
-                "created_by" => 'admin',
-                "updated_at" => Carbon::now()->format('Y-m-d H:i:s')
-            ],
+
+    ProductCategory::truncate();
+
+    $csvFile = fopen(base_path("other-files/dump/master/product_categories.csv"), "r");
+
+    $firstline = true;
+    while (($data = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+      if (!$firstline) {
+        ProductCategory::create([
+          "uuid" => $data['1'], //Str::uuid(),
+          "name" => isset($data['2']) ? $data['2'] : null,
+          "description" => isset($data['3']) ? $data['3'] : null,
+          "status" => isset($data['4']) ? $data['4'] : 1,
+          "remarks" => null,
+          'created_at' => Carbon::now(),
+          'created_by' => '02ff17f6-376f-49f8-adf7-3550d41ca884',
+
         ]);
+      }
+      $firstline = false;
     }
+
+    fclose($csvFile);
+  }
 }

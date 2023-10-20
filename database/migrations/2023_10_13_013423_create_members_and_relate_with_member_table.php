@@ -20,13 +20,13 @@ return new class extends Migration
       $table->string('first_name', 100)->comment('First Name');
       $table->string('last_name', 100)->comment('Last Name')->nullable();
       $table->string('id_no', 100)->comment('ID No')->nullable();
-      $table->integer('user_id')->unique(false)->nullable()->comment('User ID for login in users table');
       $table->string('phone', 100)->comment('Phone Number')->nullable();
       $table->integer('placement_id')->nullable()->comment('Upline id')->comment('Structurized genealogy');
       $table->string('placement_uuid')->nullable()->comment('Upline uuid')->comment('Structurized genealogy');
       $table->integer('sponsor_id')->nullable()
         ->comment('Sponsor ID - Direct Sponsor uuid, Recruiter genealogy');
       $table->string('sponsor_uuid')->nullable()->comment('Direct Sponsor uuid, Recruiter genealogy');
+      $table->integer('user_id')->unique(false)->nullable()->comment('User ID for login in users table');
       $table->string('user_uuid')->comment('User uuid (get from table users)')->nullable();
       $table->uuid('country_uuid')->comment('Country ID (get from table countries')->nullable();
       $table->enum('membership_status', [1, 2, 3])->nullable()
