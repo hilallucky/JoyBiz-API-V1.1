@@ -27,7 +27,7 @@ class CitySeeder extends Seeder
           "uuid" => $data['1'] ? $data['1'] : Str::uuid(),
           "country_uuid" => $data['2'] ? $data['2'] : null,
           "price_code" => $data['3'] ? $data['3'] : null,
-          "price_code_uuid" => null,
+          "price_code_uuid" =>$data['4'] ? $data['4'] : null,
           "area_code" => $data['5'] ? $data['5'] : null,
           "zip_code" => $data['6'] ? $data['6'] : null,
           "province" => $data['7'] ? $data['7'] : null,

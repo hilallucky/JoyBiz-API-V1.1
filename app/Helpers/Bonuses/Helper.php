@@ -849,8 +849,10 @@ class Helper extends Model
     $joyhelper = new JoyHelper;
 
     $userlogin = null;
-    $user = Auth::user();
-    $userlogin = $user->uuid;
+    if (Auth::check()) {
+        $user = Auth::user();
+        $userlogin = $user->uuid;
+    }
 
     $trx = OrderHeader::where('uuid', $uuid)
       ->with(['member.effectiveRank', 'details.productPrice.product'])
