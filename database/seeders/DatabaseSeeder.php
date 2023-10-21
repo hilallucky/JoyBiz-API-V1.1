@@ -2,12 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Members\Member;
-use App\Models\Users\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use Ramsey\Uuid\Nonstandard\Uuid;
-use Ramsey\Uuid\Provider\Node\RandomNodeProvider;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,6 +24,7 @@ class DatabaseSeeder extends Seeder
       ProductSeeder::class,
       ProductAttributeSeeder::class,
       CourierSeeder::class,
+      PaymentTypeSeeder::class,
       RankSeeder::class,
       CitySeeder::class,
     ]);

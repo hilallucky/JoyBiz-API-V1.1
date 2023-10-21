@@ -13,11 +13,71 @@ return new class extends Migration
    */
   public function up()
   {
+    // Table order_group_headers
+    Schema::create('order_group_headers', function (Blueprint $table) {
+      $table->id();
+      $table->uuid('uuid')->unique();
+      $table->uuid('order_group_header_temp_uuid')->unique();
+      $table->uuid('member_uuid')->comment('Get from table members');
+      $table->text('remarks')->comment('Notes of product prices')->nullable();
+      $table->decimal('total_discount_value', 10, 2)->default(0);
+      $table->decimal('total_discount_value_amount', 10, 2)->default(0);
+      $table->decimal('total_voucher_amount', 10, 2)->default(0);
+      // total_amount = total price product original 
+      $table->decimal('total_amount', 10, 2)->default(0);
+      // total_amount_after_discount = total price product original - total_discount_value_amount
+      $table->decimal('total_amount_after_discount', 10, 2)->default(0);
+      $table->decimal('total_cashback', 10, 2)->default(0);
+      $table->decimal('total_cashback_reseller', 10, 2)->default(0);
+      $table->decimal('total_shipping_charge', 10, 2)->default(0);
+      $table->decimal('total_shipping_discount', 10, 2)->default(0);
+      $table->decimal('total_shipping_nett', 10, 2)->default(0);
+      $table->decimal('total_payment_charge', 10, 2)->default(0);
+      $table->decimal('tax_amount', 10, 2)->default(0);
+      // total_charge = total_shipping_nett + total_payment_charge
+      $table->decimal('total_charge', 10, 2)->default(0);
+      // total_amount_summary = (total_amount_after_discount + tax_amount)  - (total_voucher_amount + total_payment_charge)
+      $table->decimal('total_amount_summary', 10, 2)->default(0);
+      $table->decimal('total_pv', 10, 2)->default(0);
+      $table->decimal('total_xv', 10, 2)->default(0);
+      $table->decimal('total_bv', 10, 2)->default(0);
+      $table->decimal('total_rv', 10, 2)->default(0);
+      $table->decimal('total_order_to_shipped', 10, 2)->default(0);
+      $table->decimal('total_order_to_picked_up', 10, 2)->default(0);
+      $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Pending, 1 = Paid, 2 = Posted, 3 = Rejected')->default(0);
+      $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
+      $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
+      $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+      $table->date('transaction_date')->comment('Transaction date');
+      $table->softDeletes();
+      $table->timestamps();
+    });
+
+    // Table order_group_payments
+    Schema::create('order_group_payments', function (Blueprint $table) {
+      $table->id();
+      $table->uuid('uuid')->unique();
+      $table->uuid('order_group_header_uuid');
+      $table->uuid('payment_type_uuid')->comment('Get from table payment_types');
+      $table->decimal('amount', 10, 2)->default(0);
+      $table->text('remarks')->comment('Notes of payment type')->nullable();
+      $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
+      $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
+      $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+
+      $table->foreign('order_group_header_uuid')->references('uuid')->on('order_group_headers')->onDelete('cascade');
+      $table->foreign('payment_type_uuid')->references('uuid')->on('payment_types')->onDelete('cascade');
+
+      $table->softDeletes();
+      $table->timestamps();
+    });
+
     // Table order_headers
     Schema::create('order_headers', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('order_header_temp_uuid')->unique();
+      $table->uuid('order_group_header_uuid');
       $table->uuid('member_uuid')->comment('Get from table members');
       $table->uuid('price_code_uuid')->comment('Get from table price_codes');
       $table->text('remarks')->comment('Notes of product prices')->nullable();

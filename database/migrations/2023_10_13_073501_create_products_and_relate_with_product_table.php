@@ -36,8 +36,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->uuid('category_uuid')
-                ->comment('Product category uuid (get from table product_categories')
-                ->nullable();
+                ->comment('Product category uuid (get from table product_categories');
             $table->string('name')->comment('Name of product');
             $table->text('description')->comment('Description of product')->nullable();
             $table->enum('is_product_group', [0, 1])

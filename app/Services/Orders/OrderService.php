@@ -504,8 +504,8 @@ class OrderService
 
           '*.payments.*.payment_type_uuid' => 'required|uuid',
           '*.payments.*.voucher_uuid' => 'string',
-          '*.payments.*.voucher_code' => 'string;',
-          '*.payments.*.total_amount' => 'required|numeric|min:1',
+          '*.payments.*.voucher_code' => 'string',
+          '*.payments.*.amount' => 'required|numeric|min:1',
           // '*.payments.*.total_discount' => 'required|numeric',
           // '*.payments.*.total_amount_after_discount' => 'required|numeric',
           '*.payments.*.remarks' => 'string',

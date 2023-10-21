@@ -8,23 +8,33 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PaymentType extends Model
 {
-    
-    use HasFactory, SoftDeletes;
 
-    protected $table = 'payment_types';
-    protected $primaryKey = 'id';
-    protected $fillable = [
-        'uuid',
-        'ref_uuid',
-        'code',
-        'name',
-        'description',
-        'status',
-        'remarks',
-        'created_by',
-        'updated_by',
-        'deleted_by',
-    ];
+  use HasFactory, SoftDeletes;
 
-    public $incrementing = false;
+  protected $table = 'payment_types';
+  protected $primaryKey = 'id';
+
+  protected $cast = [
+    'charge_percent' => 'float',
+    'charge_amount' => 'float',
+  ];
+
+  protected $fillable = [
+    'uuid',
+    'ref_uuid',
+    'code',
+    'name',
+    'description',
+    'charge_percent',
+    'charge_amount',
+    'effect',
+    'status_web',
+    'status',
+    'remarks',
+    'created_by',
+    'updated_by',
+    'deleted_by',
+  ];
+
+  public $incrementing = false;
 }

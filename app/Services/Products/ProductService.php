@@ -158,7 +158,7 @@ class ProductService
                     'show_status' => $product['show_status'],
                     'sc_show_status' => $product['sc_show_status'],
                     'weight' => $product['weight'],
-                    'remarks' => $product['remarks'] ? $product['remarks'] : null,
+                    // 'remarks' => $product['remarks'] ? $product['remarks'] : null,
                     // 'created_by' => $user->uuid,
                 ];
 
@@ -185,7 +185,7 @@ class ProductService
                         'xv' => $price['xv'],
                         'bv' => $price['bv'],
                         'rv' => $price['rv'],
-                        'remarks' => $price['remarks'] ? $price['remarks'] : null,
+                        // 'remarks' => $price['remarks'] ? $price['remarks'] : null,
                         // 'created_by' => $user->uuid,
                     ];
 
@@ -671,7 +671,7 @@ class ProductService
                     '*.name' => 'required|string|max:255|min:2',
                     '*.description' => 'required|max:140|min:5',
                     '*.is_product_group' => 'in:0,1,2',
-                    '*.is_register' => 'required|in:0,1',
+                    '*.is_register' => 'required|in:0,1|default:0',
                     '*.status' => 'in:0,1,2,3',
                     '*.show_status' => 'required|in:true,false',
                     '*.sc_show_status' => 'required|in:true,false',
