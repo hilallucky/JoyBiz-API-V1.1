@@ -1,0 +1,622 @@
+[2023-09-22 09:54:24] local.ERROR: foreach() argument must be of type array|object, null given {"exception":"[object] (ErrorException(code: 0): foreach() argument must be of type array|object, null given at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php:21)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RegistersExceptionHandlers.php(47): Laravel\\Lumen\\Application->handleError()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php(21): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php(35): App\\Services\\Calculation\\PointCalculationService->calculateRecursivePoints()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(19): App\\Services\\Calculation\\PointCalculationService->getMlmData()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->calculationPoint()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#26 {main}
+"} 
+[2023-09-22 09:56:21] local.ERROR: foreach() argument must be of type array|object, null given {"exception":"[object] (ErrorException(code: 0): foreach() argument must be of type array|object, null given at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php:21)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RegistersExceptionHandlers.php(47): Laravel\\Lumen\\Application->handleError()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php(21): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php(37): App\\Services\\Calculation\\PointCalculationService->calculateRecursivePoints()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(19): App\\Services\\Calculation\\PointCalculationService->getMlmData()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->calculationPoint()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#26 {main}
+"} 
+[2023-09-22 10:04:57] local.ERROR: Illuminate\Database\Connection::prepareBindings(): Argument #1 ($bindings) must be of type array, string given, called in /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php on line 417 {"exception":"[object] (TypeError(code: 0): Illuminate\\Database\\Connection::prepareBindings(): Argument #1 ($bindings) must be of type array, string given, called in /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php on line 417 at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:678)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(417): Illuminate\\Database\\Connection->prepareBindings()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(753): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/DatabaseManager.php(469): Illuminate\\Database\\Connection->select()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/support/Facades/Facade.php(338): Illuminate\\Database\\DatabaseManager->__call()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(25): Illuminate\\Support\\Facades\\Facade::__callStatic()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->getMlmData()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#27 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#28 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#29 {main}
+"} 
+[2023-09-22 10:08:19] local.ERROR: SQLSTATE[42P01]: Undefined table: 7 ERROR:  relation "recursivepoints" does not exist
+LINE 21:             RecursivePoints r ON m.id = r.parent_id) AS rp o...
+                     ^ (SQL: select "mlm_data"."id", "mlm_data"."parent_id", "mlm_data"."points", "rp"."akumulasi_points" from "mlm_data" left join (SELECT
+            id,
+            parent_id,
+            points,
+            points AS akumulasi_points
+        FROM
+            mlm_data
+        WHERE
+            parent_id IS NOT NULL
+
+        UNION ALL
+
+        SELECT
+            m.id,
+            m.parent_id,
+            m.points,
+            r.akumulasi_points + m.points AS akumulasi_points
+        FROM
+            mlm_data m
+        JOIN
+            RecursivePoints r ON m.id = r.parent_id) AS rp on "mlm_data"."id" = "rp"."id" where "mlm_data"."deleted_at" is null order by "mlm_data"."id" asc) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 42P01): SQLSTATE[42P01]: Undefined table: 7 ERROR:  relation \"recursivepoints\" does not exist
+LINE 21:             RecursivePoints r ON m.id = r.parent_id) AS rp o...
+                     ^ (SQL: select \"mlm_data\".\"id\", \"mlm_data\".\"parent_id\", \"mlm_data\".\"points\", \"rp\".\"akumulasi_points\" from \"mlm_data\" left join (SELECT
+            id,
+            parent_id,
+            points,
+            points AS akumulasi_points
+        FROM
+            mlm_data
+        WHERE
+            parent_id IS NOT NULL
+
+        UNION ALL
+
+        SELECT
+            m.id,
+            m.parent_id,
+            m.points,
+            r.akumulasi_points + m.points AS akumulasi_points
+        FROM
+            mlm_data m
+        JOIN
+            RecursivePoints r ON m.id = r.parent_id) AS rp on \"mlm_data\".\"id\" = \"rp\".\"id\" where \"mlm_data\".\"deleted_at\" is null order by \"mlm_data\".\"id\" asc) at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:760)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2706): Illuminate\\Database\\Connection->select()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2694): Illuminate\\Database\\Query\\Builder->runSelect()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(3230): Illuminate\\Database\\Query\\Builder->Illuminate\\Database\\Query\\{closure}()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2695): Illuminate\\Database\\Query\\Builder->onceWithColumns()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Builder.php(710): Illuminate\\Database\\Query\\Builder->get()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Builder.php(694): Illuminate\\Database\\Eloquent\\Builder->getModels()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(49): Illuminate\\Database\\Eloquent\\Builder->get()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->getMlmData()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#27 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#28 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#29 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#30 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#31 {main}
+
+[previous exception] [object] (PDOException(code: 42P01): SQLSTATE[42P01]: Undefined table: 7 ERROR:  relation \"recursivepoints\" does not exist
+LINE 21:             RecursivePoints r ON m.id = r.parent_id) AS rp o...
+                     ^ at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:419)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(419): PDOStatement->execute()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(753): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2706): Illuminate\\Database\\Connection->select()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2694): Illuminate\\Database\\Query\\Builder->runSelect()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(3230): Illuminate\\Database\\Query\\Builder->Illuminate\\Database\\Query\\{closure}()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2695): Illuminate\\Database\\Query\\Builder->onceWithColumns()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Builder.php(710): Illuminate\\Database\\Query\\Builder->get()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Builder.php(694): Illuminate\\Database\\Eloquent\\Builder->getModels()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(49): Illuminate\\Database\\Eloquent\\Builder->get()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->getMlmData()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#27 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#28 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#29 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#30 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#31 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#32 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#33 {main}
+"} 
+[2023-09-22 10:17:13] local.ERROR: SQLSTATE[42P01]: Undefined table: 7 ERROR:  missing FROM-clause entry for table "rp"
+LINE 29:               SUM(COALESCE(rp.akumulasi_points, 0)) AS akumu...
+                                    ^ (SQL: 
+            WITH RECURSIVE RecursivePoints AS (
+              SELECT
+                id,
+                parent_id,
+                points,
+                points AS akumulasi_points
+              FROM
+                mlm_data
+              WHERE
+                parent_id IS NULL
+
+              UNION ALL
+
+              SELECT
+                m.id,
+                m.parent_id,
+                m.points,
+                r.akumulasi_points AS akumulasi_points
+              FROM
+                mlm_data m
+              JOIN
+                RecursivePoints r ON m.id = r.parent_id
+            )
+            SELECT
+              mlm_data.id,
+              mlm_data.parent_id,
+              mlm_data.points,
+              SUM(COALESCE(rp.akumulasi_points, 0)) AS akumulasi_points
+            FROM
+              mlm_data
+            LEFT JOIN
+              RecursivePoints ON mlm_data.id = RecursivePoints.id
+            GROUP BY 
+                mlm.id,
+                mlm.parent_id,
+                mlm.points
+            ORDER BY
+              mlm_data.id;
+        ) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 42P01): SQLSTATE[42P01]: Undefined table: 7 ERROR:  missing FROM-clause entry for table \"rp\"
+LINE 29:               SUM(COALESCE(rp.akumulasi_points, 0)) AS akumu...
+                                    ^ (SQL: 
+            WITH RECURSIVE RecursivePoints AS (
+              SELECT
+                id,
+                parent_id,
+                points,
+                points AS akumulasi_points
+              FROM
+                mlm_data
+              WHERE
+                parent_id IS NULL
+
+              UNION ALL
+
+              SELECT
+                m.id,
+                m.parent_id,
+                m.points,
+                r.akumulasi_points AS akumulasi_points
+              FROM
+                mlm_data m
+              JOIN
+                RecursivePoints r ON m.id = r.parent_id
+            )
+            SELECT
+              mlm_data.id,
+              mlm_data.parent_id,
+              mlm_data.points,
+              SUM(COALESCE(rp.akumulasi_points, 0)) AS akumulasi_points
+            FROM
+              mlm_data
+            LEFT JOIN
+              RecursivePoints ON mlm_data.id = RecursivePoints.id
+            GROUP BY 
+                mlm.id,
+                mlm.parent_id,
+                mlm.points
+            ORDER BY
+              mlm_data.id;
+        ) at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:760)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/DatabaseManager.php(469): Illuminate\\Database\\Connection->select()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/support/Facades/Facade.php(338): Illuminate\\Database\\DatabaseManager->__call()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(26): Illuminate\\Support\\Facades\\Facade::__callStatic()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->getMlmData()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#27 {main}
+
+[previous exception] [object] (PDOException(code: 42P01): SQLSTATE[42P01]: Undefined table: 7 ERROR:  missing FROM-clause entry for table \"rp\"
+LINE 29:               SUM(COALESCE(rp.akumulasi_points, 0)) AS akumu...
+                                    ^ at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:419)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(419): PDOStatement->execute()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(753): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/DatabaseManager.php(469): Illuminate\\Database\\Connection->select()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/support/Facades/Facade.php(338): Illuminate\\Database\\DatabaseManager->__call()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(26): Illuminate\\Support\\Facades\\Facade::__callStatic()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->getMlmData()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#27 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#28 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#29 {main}
+"} 
+[2023-09-22 10:18:25] local.ERROR: SQLSTATE[42P01]: Undefined table: 7 ERROR:  missing FROM-clause entry for table "mlm"
+LINE 35:                 mlm.id,
+                         ^ (SQL: 
+            WITH RECURSIVE RecursivePoints AS (
+              SELECT
+                id,
+                parent_id,
+                points,
+                points AS akumulasi_points
+              FROM
+                mlm_data
+              WHERE
+                parent_id IS NULL
+
+              UNION ALL
+
+              SELECT
+                m.id,
+                m.parent_id,
+                m.points,
+                r.akumulasi_points AS akumulasi_points
+              FROM
+                mlm_data m
+              JOIN
+                RecursivePoints r ON m.id = r.parent_id
+            )
+            SELECT
+              mlm_data.id,
+              mlm_data.parent_id,
+              mlm_data.points,
+              SUM(COALESCE(rp.akumulasi_points, 0)) AS akumulasi_points
+            FROM
+              mlm_data
+            LEFT JOIN
+              RecursivePoints rp ON mlm_data.id = rp.id
+            GROUP BY 
+                mlm.id,
+                mlm.parent_id,
+                mlm.points
+            ORDER BY
+              mlm_data.id;
+        ) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 42P01): SQLSTATE[42P01]: Undefined table: 7 ERROR:  missing FROM-clause entry for table \"mlm\"
+LINE 35:                 mlm.id,
+                         ^ (SQL: 
+            WITH RECURSIVE RecursivePoints AS (
+              SELECT
+                id,
+                parent_id,
+                points,
+                points AS akumulasi_points
+              FROM
+                mlm_data
+              WHERE
+                parent_id IS NULL
+
+              UNION ALL
+
+              SELECT
+                m.id,
+                m.parent_id,
+                m.points,
+                r.akumulasi_points AS akumulasi_points
+              FROM
+                mlm_data m
+              JOIN
+                RecursivePoints r ON m.id = r.parent_id
+            )
+            SELECT
+              mlm_data.id,
+              mlm_data.parent_id,
+              mlm_data.points,
+              SUM(COALESCE(rp.akumulasi_points, 0)) AS akumulasi_points
+            FROM
+              mlm_data
+            LEFT JOIN
+              RecursivePoints rp ON mlm_data.id = rp.id
+            GROUP BY 
+                mlm.id,
+                mlm.parent_id,
+                mlm.points
+            ORDER BY
+              mlm_data.id;
+        ) at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:760)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/DatabaseManager.php(469): Illuminate\\Database\\Connection->select()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/support/Facades/Facade.php(338): Illuminate\\Database\\DatabaseManager->__call()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(26): Illuminate\\Support\\Facades\\Facade::__callStatic()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->getMlmData()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#27 {main}
+
+[previous exception] [object] (PDOException(code: 42P01): SQLSTATE[42P01]: Undefined table: 7 ERROR:  missing FROM-clause entry for table \"mlm\"
+LINE 35:                 mlm.id,
+                         ^ at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:419)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(419): PDOStatement->execute()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(753): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/DatabaseManager.php(469): Illuminate\\Database\\Connection->select()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/support/Facades/Facade.php(338): Illuminate\\Database\\DatabaseManager->__call()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(26): Illuminate\\Support\\Facades\\Facade::__callStatic()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->getMlmData()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#27 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#28 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#29 {main}
+"} 
+[2023-09-22 10:25:07] local.ERROR: SQLSTATE[42703]: Undefined column: 7 ERROR:  column mlm_data.deleted_at does not exist
+LINE 1: ..."id", "parent_id", "points" from "mlm_data" where "mlm_data"...
+                                                             ^ (SQL: select "id", "parent_id", "points" from "mlm_data" where "mlm_data"."deleted_at" is null) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 42703): SQLSTATE[42703]: Undefined column: 7 ERROR:  column mlm_data.deleted_at does not exist
+LINE 1: ...\"id\", \"parent_id\", \"points\" from \"mlm_data\" where \"mlm_data\"...
+                                                             ^ (SQL: select \"id\", \"parent_id\", \"points\" from \"mlm_data\" where \"mlm_data\".\"deleted_at\" is null) at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:760)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2706): Illuminate\\Database\\Connection->select()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2694): Illuminate\\Database\\Query\\Builder->runSelect()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(3230): Illuminate\\Database\\Query\\Builder->Illuminate\\Database\\Query\\{closure}()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2695): Illuminate\\Database\\Query\\Builder->onceWithColumns()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Builder.php(710): Illuminate\\Database\\Query\\Builder->get()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Builder.php(694): Illuminate\\Database\\Eloquent\\Builder->getModels()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php(45): Illuminate\\Database\\Eloquent\\Builder->get()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(21): App\\Services\\Calculation\\PointCalculationService->getMlmData()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->calculationPoint()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#27 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#28 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#29 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#30 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#31 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#32 {main}
+
+[previous exception] [object] (PDOException(code: 42703): SQLSTATE[42703]: Undefined column: 7 ERROR:  column mlm_data.deleted_at does not exist
+LINE 1: ...\"id\", \"parent_id\", \"points\" from \"mlm_data\" where \"mlm_data\"...
+                                                             ^ at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php:419)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(419): PDOStatement->execute()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(753): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Connection.php(422): Illuminate\\Database\\Connection->run()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2706): Illuminate\\Database\\Connection->select()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2694): Illuminate\\Database\\Query\\Builder->runSelect()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(3230): Illuminate\\Database\\Query\\Builder->Illuminate\\Database\\Query\\{closure}()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Query/Builder.php(2695): Illuminate\\Database\\Query\\Builder->onceWithColumns()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Builder.php(710): Illuminate\\Database\\Query\\Builder->get()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Builder.php(694): Illuminate\\Database\\Eloquent\\Builder->getModels()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php(45): Illuminate\\Database\\Eloquent\\Builder->get()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(21): App\\Services\\Calculation\\PointCalculationService->getMlmData()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->calculationPoint()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#27 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#28 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#29 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#30 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#31 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#32 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#33 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#34 {main}
+"} 
+[2023-09-22 10:25:42] local.ERROR: Class "App\MlmData" not found {"exception":"[object] (Error(code: 0): Class \"App\\MlmData\" not found at /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Concerns/HasRelationships.php:791)
+[stacktrace]
+#0 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Concerns/HasRelationships.php(388): Illuminate\\Database\\Eloquent\\Model->newRelatedInstance()
+#1 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Models/Calculation/MLMData.php(33): Illuminate\\Database\\Eloquent\\Model->hasMany()
+#2 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Concerns/HasAttributes.php(580): App\\Models\\Calculation\\MLMData->children()
+#3 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Concerns/HasAttributes.php(532): Illuminate\\Database\\Eloquent\\Model->getRelationshipFromMethod()
+#4 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Concerns/HasAttributes.php(457): Illuminate\\Database\\Eloquent\\Model->getRelationValue()
+#5 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/database/Eloquent/Model.php(2222): Illuminate\\Database\\Eloquent\\Model->getAttribute()
+#6 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Models/Calculation/MLMData.php(40): Illuminate\\Database\\Eloquent\\Model->__get()
+#7 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Services/Calculation/PointCalculationService.php(48): App\\Models\\Calculation\\MLMData->calculateAccumulatedPoints()
+#8 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Controllers/Calculation/PointCalculationController.php(21): App\\Services\\Calculation\\PointCalculationService->getMlmData()
+#9 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\Calculation\\PointCalculationController->calculationPoint()
+#10 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#11 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#12 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#13 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/container/Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#14 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#15 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(357): Laravel\\Lumen\\Application->callControllerCallable()
+#16 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(331): Laravel\\Lumen\\Application->callLumenController()
+#17 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#18 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(264): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#19 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#20 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/app/Http/Middleware/ClientAuthMiddleware.php(47): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#21 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(180): App\\Http\\Middleware\\ClientAuthMiddleware->handle()
+#22 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#23 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/illuminate/pipeline/Pipeline.php(116): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#24 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#25 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(265): Laravel\\Lumen\\Application->sendThroughPipeline()
+#26 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#27 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#28 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(177): Laravel\\Lumen\\Application->sendThroughPipeline()
+#29 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#30 /media/hilal/a16cd7f4-d146-4484-97ce-f3f0ba8e9840/Office-Data/Jobs/Joybiz/Applications/Joybiz/Backend/V3.0/JoyBiz-API-V1.0/public/index.php(28): Laravel\\Lumen\\Application->run()
+#31 {main}
+"} 
