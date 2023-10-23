@@ -1,0 +1,4 @@
+"id","uuid","code","name","description","status","remarks","created_by","updated_by","deleted_by","created_at","updated_at","deleted_at"
+1,"462c73d2-6e6b-11ee-8021-41422053e022","WIB","Harga Indonesia Barat","Harga Indonesia Barat Desc","1",,"6aaac24c-6e69-11ee-81d7-49ef5a23cf3a",,,2023-10-19 10:35:51.000,2023-10-19 10:35:51.000,
+2,"462f755a-6e6b-11ee-b7ad-fb7fa0f79d3e","WITA","Harga Indonesia Tengah","Harga Indonesia Tengah Desc","1",,"6aaac24c-6e69-11ee-81d7-49ef5a23cf3a",,,2023-10-19 10:35:51.000,2023-10-19 10:35:51.000,
+3,"463125da-6e6b-11ee-98a5-3f54d849a915","WIT","Harga Indonesia Timur","Harga Indonesia Timur Desc","1",,"6aaac24c-6e69-11ee-81d7-49ef5a23cf3a",,,2023-10-19 10:35:51.000,2023-10-19 10:35:51.000,

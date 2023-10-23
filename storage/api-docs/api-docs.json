@@ -1,0 +1,51 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "JoyBiz API",
+        "description": "This is an API for Register & Login Member",
+        "contact": {
+            "name": "Developer",
+            "email": "hilal.lucky@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "JoyBiz API"
+                ],
+                "operationId": "/latest_covid_data",
+                "parameters": [
+                    {
+                        "name": "first_name",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "USA"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns member data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "": {
+                                            "$ref": "#/"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

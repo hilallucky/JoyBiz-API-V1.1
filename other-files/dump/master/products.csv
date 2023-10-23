@@ -1,0 +1,4 @@
+"id","uuid","category_uuid","name","description","is_product_group","is_register","status","show_status","sc_show_status","weight","remarks","created_by","updated_by","deleted_by","created_at","updated_at","deleted_at"
+1,"080b6ed4-4d49-11ee-b49d-7d3eb780f12c","08035906-4d49-11ee-86b6-ad2cebea3db9","Laptop","Laptop Desc",0,0,1,1,1,0.4,,"06b2d09a-4d49-11ee-8ae0-0505c4668af5",,,"2023-09-07 06:37:35.000","2023-09-07 06:37:35.000",
+2,"081225e4-4d49-11ee-832e-574a75c84c35","08035d8e-4d49-11ee-a88d-5d704430b7bc","T-Shirt","T-Shirt Desc",0,0,1,1,1,0.4,,"06b2d09a-4d49-11ee-8ae0-0505c4668af5",,,"2023-09-07 06:37:35.000","2023-09-07 06:37:35.000",
+3,"082efd04-4d49-11ee-9bbe-01601eb00f7f","08035ffa-4d49-11ee-8e9b-1139e03b3a1c","Runaway","Runaway Desc",0,0,1,1,1,0.4,,"06b2d09a-4d49-11ee-8ae0-0505c4668af5",,,"2023-09-07 06:37:36.000","2023-09-07 06:37:36.000",

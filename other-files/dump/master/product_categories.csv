@@ -1,0 +1,4 @@
+"id","uuid","name","description","status","remarks","created_by","updated_by","deleted_by","created_at","updated_at","deleted_at"
+1,"08035906-4d49-11ee-86b6-ad2cebea3db9","Electronics","Electronics Desc","1",,"admin",,,2023-09-07 06:37:35.000,2023-09-07 06:37:35.000,
+2,"08035d8e-4d49-11ee-a88d-5d704430b7bc","Clothing","Clothing Desc","1",,"admin",,,2023-09-07 06:37:35.000,2023-09-07 06:37:35.000,
+3,"08035ffa-4d49-11ee-8e9b-1139e03b3a1c","Books","Books Desc","1",,"admin",,,2023-09-07 06:37:35.000,2023-09-07 06:37:35.000,
