@@ -148,7 +148,7 @@ class ProductService
             foreach ($products as $product) {
                 // Product
                 $newProduct = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'category_uuid' => $product['category_uuid'],
                     'name' => $product['name'],
                     'description' => $product['description'],
@@ -170,7 +170,7 @@ class ProductService
                 $prices = $product['prices'];
                 foreach ($prices as $price) {
                     $newPrice = [
-                        'uuid' => Str::uuid()->toString(),
+                        'uuid' => Str::uuid(),
                         'product_uuid' => $newProduct['uuid'],
                         'price_code_uuid' => $price['price_code_uuid'],
                         'price' => $price['price'],
@@ -214,7 +214,7 @@ class ProductService
                     $compositions = $product['composition'];
                     foreach ($compositions as $composition) {
                         $newComposition = [
-                            'uuid' => Str::uuid()->toString(),
+                            'uuid' => Str::uuid(),
                             'product_group_header_uuid' => $newProduct['uuid'],
                             'product_uuid' => $composition['product_uuid'],
                             'qty' => $composition['qty'],
@@ -440,7 +440,7 @@ class ProductService
                         if (!empty($priceFromDB)) {
                             $newPrice = $priceFromDB->update($priceData);
                         } else { // Add new record if doesn't exit
-                            $priceData['uuid'] = Str::uuid()->toString();
+                            $priceData['uuid'] = Str::uuid();
 
                             $newPrice = ProductPrice::create($priceData);
                         }
@@ -503,7 +503,7 @@ class ProductService
                                     ->update($compositionData)
                                     ->where('uuid', $compositionData['uuid']);
                             } else { // Add new record if doesn't exit
-                                $compositionData['uuid'] = Str::uuid()->toString();
+                                $compositionData['uuid'] = Str::uuid();
 
                                 $newComposition = ProductGroupComposition::create($compositionData);
                             }

@@ -152,7 +152,7 @@ class WarehouseService
                 }
 
                 $newWarehouse = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'code' => $warehouse['code'],
                     'name' => $warehouse['name'],
                     'phone' => $warehouse['phone'],

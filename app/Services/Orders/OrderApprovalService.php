@@ -57,7 +57,7 @@ class OrderApprovalService
       //     $orderHeader = $orderHeaderTemps->replicate();
 
       //     // $orderHeader->setTable('order_headers');
-      //     // $orderHeader->uuid = Str::uuid()->toString();
+      //     // $orderHeader->uuid = Str::uuid();
       //     // $orderHeader->order_header_temp_uuid = $orderHeaderTemps->uuid;
       //     // $orderHeader->created_by = $user;
       //     // $orderHeader->created_by = $user;
@@ -66,7 +66,7 @@ class OrderApprovalService
       //     $details = $orderHeaderTemps->details;
       //     // $newDetails = [];
       //     foreach ($details as $detail) {
-      //         $details->uuid = Str::uuid()->toString();
+      //         $details->uuid = Str::uuid();
       //         $details->order_details_temp_uuid = $detail->uuid;
       //         $details->order_header_uuid = $orderHeader->uuid;
       //         $details->created_by = $user;
@@ -91,7 +91,7 @@ class OrderApprovalService
       foreach ($orderTemp as $order) {
         // New Order Header;
         $newOrderHeader = [
-          'uuid' => Str::uuid()->toString(),
+          'uuid' => Str::uuid(),
           'order_header_temp_uuid' => $order->uuid,
           'price_code_uuid' => $order->price_code_uuid,
           'member_uuid' => $order->member_uuid,
@@ -148,7 +148,7 @@ class OrderApprovalService
 
         foreach ($orderDetails as $orderDetail) {
           $newOrderDetail = [
-            'uuid' => Str::uuid()->toString(),
+            'uuid' => Str::uuid(),
             'order_header_uuid' => $orderHeader->uuid,
             'order_details_temp_uuid' => $orderDetail->uuid,
             'product_price_uuid' => $orderDetail->product_price_uuid,
@@ -179,7 +179,7 @@ class OrderApprovalService
 
         foreach ($orderPayments as $orderPayment) {
           $newOrderPayment = [
-            'uuid' => Str::uuid()->toString(),
+            'uuid' => Str::uuid(),
             'order_payments_temp_uuid' => $orderPayment->uuid,
             'order_header_uuid' => $orderHeader->uuid,
             'payment_type_uuid' => $orderPayment->payment_type_uuid,
@@ -203,7 +203,7 @@ class OrderApprovalService
 
         foreach ($orderShipping as $shipping) {
           $newOrderShipping = [
-            'uuid' => Str::uuid()->toString(),
+            'uuid' => Str::uuid(),
             'order_shipping_temp_uuid' => $shipping->uuid,
             'order_header_uuid' => $orderHeader->uuid,
             'courier_uuid' => $shipping->courier_uuid,
@@ -230,7 +230,7 @@ class OrderApprovalService
 
         // Insert into order_statuses
         $newOrderStatus = [
-          'uuid' => Str::uuid()->toString(),
+          'uuid' => Str::uuid(),
           'order_header_uuid' => $orderHeader->uuid,
           'status' => 1,
           'reference_uuid' => $orderHeader->uuid,

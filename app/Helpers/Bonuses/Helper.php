@@ -1294,7 +1294,7 @@ class Helper extends Model
         $now = Carbon::now();
         $vcode = Str::random(2) . $now->second . Str::random(2) . $now->minute;
         $result = MonthlyRewardCoupon::create([
-          'uuid' => Str::uuid()->toString(),
+          'uuid' => Str::uuid(),
           'member_uuid' => $member->uuid,
           'voucher' => $vcode,
           'mid' => $mid

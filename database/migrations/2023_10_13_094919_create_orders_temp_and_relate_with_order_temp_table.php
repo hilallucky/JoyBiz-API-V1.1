@@ -201,8 +201,8 @@ return new class extends Migration
       $table->string('district')->comment('District Name');
       $table->string('village')->comment('Village Name');
       $table->string('details')->comment('Address Detail');
-      $table->string('notes')->comment('Address Notes');
-      $table->string('remarks')->comment('Address remarks');
+      $table->string('notes')->comment('Address Notes')->nullable();
+      $table->string('remarks')->comment('Address remarks')->nullable();
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

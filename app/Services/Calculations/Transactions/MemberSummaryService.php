@@ -111,13 +111,13 @@ class MemberSummaryService
         try {
             DB::beginTransaction();
 
-            $processUuid = Str::uuid()->toString();
+            $processUuid = Str::uuid();
             $getDatas = $this->getTransactionSummaries($start, $end);
 
             foreach ($getDatas as $data) {
                 // New Calculation;
                 $newCalculation = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'process_uuid' => $processUuid,
                     'start_date' => $start,
                     'end_date' => $end,

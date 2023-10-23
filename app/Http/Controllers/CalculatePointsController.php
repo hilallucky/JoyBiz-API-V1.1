@@ -45,7 +45,7 @@ class CalculatePointsController extends Controller
     {
         try {
             DB::beginTransaction();
-            $processUuid = Str::uuid()->toString();
+            $processUuid = Str::uuid();
             // Retrieve all members with their transactions
             $members = Member::with('transactions')
                 ->whereBetween(
@@ -74,7 +74,7 @@ class CalculatePointsController extends Controller
 
                 // Save the calculated points in the calculation_point_members table
                 CalculationPointMember::create([
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'process_uuid' => $processUuid,
                     'member_uuid' => $member->uuid,
                     'sponsor_uuid' => $member->sponsor_uuid,

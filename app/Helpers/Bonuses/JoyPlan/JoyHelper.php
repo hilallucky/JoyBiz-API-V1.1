@@ -195,7 +195,7 @@ class JoyHelper extends Model
     $user = Member::where('uuid', $member_uuid)->first();
     if ($member_uuid && $user) {
       $vs = VitalSign::firstOrCreate([
-        'uuid' => Str::uuid()->toString(),
+        'uuid' => Str::uuid(),
         'member_uuid' => $user->uuid,
         'year' => $year,
         'month' => $month

@@ -116,7 +116,7 @@ class CityService
                 }
 
                 $newCity = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     // 'country_uuid' => $city['country_uuid'],
                     'area_code' => $city['area_code'],
                     'zip_code' => $city['zip_code'],

@@ -122,7 +122,7 @@ class ProductAttributeService
                 }
 
                 $newAttribute = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'product_uuid' => $productAttribute['product_uuid'],
                     'name' => $productAttribute['name'],
                     'description' => $productAttribute['description'],

@@ -129,7 +129,7 @@ class CountryService
                 }
 
                 $newCountry = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     // 'code' => $country['code'],
                     'name' => $country['name'],
                     'status' => $status,

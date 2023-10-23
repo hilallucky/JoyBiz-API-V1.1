@@ -114,7 +114,7 @@ class ProductCategoryService
                 }
 
                 $newCategory = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'name' => $category['name'],
                     'description' => $category['description'],
                     'status' => $status,

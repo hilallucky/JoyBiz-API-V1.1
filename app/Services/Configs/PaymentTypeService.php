@@ -108,7 +108,7 @@ class PaymentTypeService
         }
 
         $newPaymentType = [
-          'uuid' => Str::uuid()->toString(),
+          'uuid' => Str::uuid(),
           'ref_uuid' => $paymentType['ref_uuid'] ? $paymentType['ref_uuid'] : null,
           'code' => $paymentType['code'],
           'name' => $paymentType['name'],

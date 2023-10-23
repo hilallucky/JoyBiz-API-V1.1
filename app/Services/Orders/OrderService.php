@@ -5,6 +5,7 @@ namespace App\Services\Orders;
 use app\Libraries\Core;
 use App\Models\Orders\OrderStatuses;
 use App\Models\Orders\Temporary\OrderDetailTemp;
+use App\Models\Orders\Temporary\OrderGroupHeaderTemp;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
 use App\Models\Orders\Temporary\OrderPaymentTemp;
 use App\Models\Orders\Temporary\OrderShippingTemp;
@@ -51,11 +52,101 @@ class OrderService
 
       $orderHeaders = $request->all();
 
+      $groupUuid = Str::uuid();
+      $groupOrderSeq = 0;
+      $groupTotalDiscountValue = 0;
+      $groupTotalDiscountValueAmount = 0;
+      $groupTotalVoucherAmount = 0;
+      $groupTotalAmount = 0;
+      $groupTotalAmountAfterDiscount = 0;
+      $groupTotalCashback = 0;
+      $groupTotalCashbackReseller = 0;
+      $groupTotalShippingCharge = 0;
+      $groupTotalShippingDiscount = 0;
+      $groupTotalShippingNett = 0;
+      $groupTotalPaymentCharge = 0;
+      $groupTaxAmount = 0;
+      $groupTotalCharge = 0;
+      $groupTotalAmountSummary = 0;
+      $groupTotalPv = 0;
+      $groupTotalXv = 0;
+      $groupTotalBv = 0;
+      $groupTotalRv = 0;
+      $groupTotalPv = 0;
+      $groupTotalOrderToShipped = 0;
+      $groupTotalOrderToPickedUp = 0;
+      $totalCharge = 0;
+      $totalAmountSummary = 0;
+
 
       foreach ($orderHeaders as $orderHeader) {
+
+        $totalCharge = ($orderHeader['total_shipping_charge'] - $orderHeader['total_shipping_discount']) + $orderHeader['total_payment_charge'];
+        $totalAmountSummary = $orderHeader['total_amount'] - ($orderHeader['total_discount_value_amount'] + $orderHeader['total_voucher_amount'] + $orderHeader['total_shipping_discount']);
+
+        $groupOrderSeq += 1;
+        $groupTotalDiscountValue += $orderHeader['total_discount_value'];
+        $groupTotalDiscountValueAmount += $orderHeader['total_discount_value_amount'];
+        $groupTotalVoucherAmount += $orderHeader['total_voucher_amount'];
+        $groupTotalAmount += $orderHeader['total_amount'];
+        $groupTotalAmountAfterDiscount += $orderHeader['total_amount_after_discount'];
+        $groupTotalCashback += $orderHeader['total_cashback'];
+        $groupTotalCashbackReseller += $orderHeader['total_cashback_reseller'];
+        $groupTotalShippingCharge += $orderHeader['total_shipping_charge'];
+        $groupTotalShippingDiscount += $orderHeader['total_shipping_discount'];
+        $groupTotalShippingNett += $orderHeader['total_shipping_nett'];
+        $groupTotalPaymentCharge += $orderHeader['total_payment_charge'];
+        $groupTaxAmount += $orderHeader['tax_amount'];
+        $groupTotalCharge += $totalCharge;
+        $groupTotalAmountSummary += $totalAmountSummary;
+        $groupTotalPv += $orderHeader['total_pv'];
+        $groupTotalXv += $orderHeader['total_xv'];
+        $groupTotalBv += $orderHeader['total_bv'];
+        $groupTotalRv += $orderHeader['total_rv'];
+        $groupTotalOrderToShipped += $orderHeader['ship_type'] == '1' ? $orderHeader['ship_type'] : 0;
+        $groupTotalOrderToPickedUp += 0;
+
+        //if count($orderHeaders) == $groupTransactionSeq then inser group header
+        if (count($orderHeaders) == $groupOrderSeq) {
+          $newGroupHeader = [
+            'uuid' => $groupUuid,
+            'member_uuid' => $orderHeader['member_uuid'],
+            'total_discount_value' => $groupTotalDiscountValue,
+            'total_discount_value_amount' => $groupTotalDiscountValueAmount,
+            'total_voucher_amount' => $groupTotalVoucherAmount,
+            'total_amount' => $groupTotalAmount,
+            'total_amount_after_discount' => $groupTotalAmountAfterDiscount,
+            'total_cashback' => $groupTotalCashback,
+            'total_cashback_reseller' => $groupTotalCashbackReseller,
+            'total_shipping_charge' => $groupTotalShippingCharge,
+            'total_shipping_discount' => $groupTotalShippingDiscount,
+            'total_shipping_nett' => $groupTotalShippingNett,
+            'total_payment_charge' => $groupTotalPaymentCharge,
+            'tax_amount' => $groupTaxAmount,
+            'total_charge' => $groupTotalCharge,
+            'total_amount_summary' => $groupTotalAmountSummary,
+            'total_pv' => $groupTotalPv,
+            'total_xv' => $groupTotalXv,
+            'total_bv' => $groupTotalBv,
+            'total_rv' => $groupTotalRv,
+            'total_order_to_shipped' => $groupTotalOrderToShipped,
+            'total_order_to_picked_up' => $groupTotalOrderToPickedUp,
+            'status' => "0",
+            'transaction_date' => Carbon::now(),
+            // 'created_by' => $user->uuid,
+          ];
+
+          // Insert into order_group_headers_temp
+          $newGroupHeaderAdd = new OrderGroupHeaderTemp($newGroupHeader);
+          $newGroupHeaderAdd->save();
+        }
+
+
+
         // New Order Header;
         $newOrderHeader = [
-          'uuid' => Str::uuid()->toString(),
+          'uuid' => Str::uuid(),
+          'order_group_header_temp_uuid' => $groupUuid,
           'member_uuid' => $orderHeader['member_uuid'],
           'price_code_uuid' => $orderHeader['price_code_uuid'],
           'remarks' => $orderHeader['remarks'],
@@ -71,8 +162,10 @@ class OrderService
           'total_shipping_nett' => $orderHeader['total_shipping_charge'] - $orderHeader['total_shipping_discount'],
           'total_payment_charge' => $orderHeader['total_payment_charge'],
           'tax_amount' => $orderHeader['tax_amount'],
-          'total_charge' => ($orderHeader['total_shipping_charge'] - $orderHeader['total_shipping_discount']) + $orderHeader['total_payment_charge'],
-          'total_amount_summary' => $orderHeader['total_amount'] - ($orderHeader['total_discount_value_amount'] + $orderHeader['total_voucher_amount'] + $orderHeader['total_shipping_discount']),
+          'total_charge' => $totalCharge,
+          // ($orderHeader['total_shipping_charge'] - $orderHeader['total_shipping_discount']) + $orderHeader['total_payment_charge'],
+          'total_amount_summary' => $totalAmountSummary,
+          // $orderHeader['total_amount'] - ($orderHeader['total_discount_value_amount'] + $orderHeader['total_voucher_amount'] + $orderHeader['total_shipping_discount']),
           'total_pv' => $orderHeader['total_pv'],
           'total_xv' => $orderHeader['total_xv'],
           'total_bv' => $orderHeader['total_bv'],
@@ -110,7 +203,7 @@ class OrderService
         foreach ($orderDetails as $orderDetail) {
 
           $newOrderDetail = [
-            'uuid' => Str::uuid()->toString(),
+            'uuid' => Str::uuid(),
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
             'product_uuid' => $orderDetail['product_uuid'],
             'product_price_uuid' => $orderDetail['product_price_uuid'],
@@ -155,7 +248,7 @@ class OrderService
 
         foreach ($orderPayments as $orderPayment) {
           $newOrderPayment = [
-            'uuid' => Str::uuid()->toString(),
+            'uuid' => Str::uuid(),
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
             'payment_type_uuid' => $orderPayment['payment_type_uuid'],
             'voucher_uuid' => $orderPayment['voucher_uuid'],
@@ -191,40 +284,46 @@ class OrderService
           );
         }
 
-        foreach ($orderShipping as $shippingInfo) {
-          $newOrderShipping = [
-            'uuid' => Str::uuid()->toString(),
-            'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
-            'courier_uuid' => $shippingInfo['courier_uuid'],
-            'member_shipping_address_uuid' => $shippingInfo['address_uuid'],
-            'shipping_charge' => $orderHeader['total_shipping_charge'],
-            'discount_shipping_charge' =>
-            $orderHeader['total_shipping_discount']
-              ? $orderHeader['total_shipping_discount']
-              : 0,
-            'province' => $shippingInfo['province'],
-            'city' => $shippingInfo['city'],
-            'district' => $shippingInfo['district'],
-            'village' => $shippingInfo['village'],
-            'details' => $shippingInfo['details'],
-            'notes' => $shippingInfo['notes'],
-            // 'created_by' => $user->uuid,
-          ];
+        // foreach ($orderShipping as $shippingInfo) {
+        $orderShipping = collect($orderShipping);
 
-          if (isset($shippingInfo['address_uuid']) && $shippingInfo['address_uuid'] !== "") {
-            $newOrderShipping['member_address_uuid'] = $shippingInfo['address_uuid'];
-          }
+        $newOrderShipping = [
+          'uuid' => Str::uuid(),
+          'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
+          'courier_uuid' => $orderShipping['courier_uuid'],
+          'member_shipping_address_uuid' => $orderShipping['address_uuid'],
+          'shipping_charge' => $orderHeader['total_shipping_charge'],
+          'discount_shipping_charge' =>
+          $orderHeader['total_shipping_discount']
+            ? $orderHeader['total_shipping_discount']
+            : 0,
+          'province' => $orderShipping['province'],
+          'city' => $orderShipping['city'],
+          'district' => $orderShipping['district'],
+          'village' => $orderShipping['village'],
+          'details' => $orderShipping['details'],
+          'notes' => $orderShipping['notes'],
+          // 'created_by' => $user->uuid,
+        ];
 
-          // Insert into order_shipping_temp
-          $newOrderShippingAdd = new OrderShippingTemp($newOrderShipping);
-          $newOrderShippingAdd->save();
-
-          $newOrderShippings[] = $newOrderShipping;
+        if ($orderShipping->has('address_uuid')) {
+          $newOrderShipping['member_shipping_address_uuid'] = $orderShipping['address_uuid'];
         }
+
+        if ($orderShipping->has('remarks')) {
+          $newOrderShipping['remarks'] = $orderShipping['remarks'];
+        }
+
+        // Insert into order_shipping_temp
+        $newOrderShippingAdd = new OrderShippingTemp($newOrderShipping);
+        $newOrderShippingAdd->save();
+
+        $newOrderShippings[] = $newOrderShipping;
+        // }
 
         // Insert into order_statuses
         $newOrderStatus = [
-          'uuid' => Str::uuid()->toString(),
+          'uuid' => Str::uuid(),
           'order_header_uuid' => $newOrderHeaderAdd['uuid'],
           'status' => "0",
           'reference_uuid' => $newOrderHeaderAdd['uuid'],
@@ -512,7 +611,8 @@ class OrderService
           // '*.payments.*.total_amount_after_discount' => 'required|numeric',
           '*.payments.*.remarks' => 'string',
 
-          '*.shipping_info.*.courier_uuid' => 'required|uuid',
+          '*.shipping_info.courier_uuid' => 'required|uuid',
+          '*.shipping_info.remarks' => 'string',
           // '*.shipping_info.*.shipping_charge' => 'required|numeric',
           // '*.shipping_info.*.discount_shipping_charge' => 'required|numeric',
 

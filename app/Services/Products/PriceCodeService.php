@@ -132,7 +132,7 @@ class PriceCodeService
                 }
 
                 $newPriceCode = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'code' => $priceCode['code'],
                     'name' => $priceCode['name'],
                     'description' => $priceCode['description'],

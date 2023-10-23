@@ -133,7 +133,7 @@ class GalleryService
                 }
 
                 $uploadedFiles[] = Gallery::create([
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'type' => $file->getClientOriginalExtension(),
                     'domain' => $request->getHost(),
                     'original_file_name' => $file->getClientOriginalName(),

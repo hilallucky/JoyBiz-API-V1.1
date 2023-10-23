@@ -108,7 +108,7 @@ class CourierService
                 }
 
                 $newCourier = [
-                    'uuid' => Str::uuid()->toString(),
+                    'uuid' => Str::uuid(),
                     'code' => $courier['code'],
                     'name' => $courier['name'],
                     'short_name' => $courier['short_name'],

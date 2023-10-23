@@ -114,7 +114,7 @@ class MemberShippingAddressService
 
       // Add Member Shipping Address
       $shippingAddress = new MemberShippingAddress;
-      $shippingAddress->uuid = Str::uuid()->toString();
+      $shippingAddress->uuid = Str::uuid();
       $shippingAddress->member_uuid = $request->member_uuid;
       $shippingAddress->receiver_name = $request->receiver_name;
       $shippingAddress->receiver_phone = $request->receiver_phone;

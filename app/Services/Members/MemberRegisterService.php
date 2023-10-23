@@ -62,7 +62,7 @@ class MemberRegisterService
 
       // Add 1st Level Member
       $member = new Member;
-      $member->uuid = Str::uuid()->toString();
+      $member->uuid = Str::uuid();
       $member->first_name = $request->first_name;
       $member->last_name = $request->last_name;
       $member->id_no = $request->has($request->id_no) ? $request->id_no : null;
@@ -123,7 +123,7 @@ class MemberRegisterService
         $currentSponsorUUID = $member->uuid;
 
         $newUser = new stdClass;
-        $newMemberUuid = Str::uuid()->toString();
+        $newMemberUuid = Str::uuid();
 
         $newUser->uuid = $newMemberUuid;
         $newUser->first_name = $member->first_name;
@@ -172,7 +172,7 @@ class MemberRegisterService
       for ($i = 0; $i < $numLegs; $i++) { // 2 (right & left)
 
         $newUser = new stdClass;
-        $newMemberUuid = Str::uuid()->toString();
+        $newMemberUuid = Str::uuid();
 
         $newUser->uuid = $newMemberUuid;
         $newUser->first_name = $member->first_name;

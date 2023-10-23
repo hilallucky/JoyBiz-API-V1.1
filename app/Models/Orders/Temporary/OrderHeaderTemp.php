@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderHeaderTemp extends Model
 {
-    use HasFactory, SoftDeletes; //, Uuids;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'order_headers_temp';
     protected $primaryKey = 'id';
