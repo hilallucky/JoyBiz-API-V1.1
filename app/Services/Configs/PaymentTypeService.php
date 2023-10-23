@@ -118,6 +118,7 @@ class PaymentTypeService
           'effect' => $paymentType['effect'],
           'status_web' => $paymentType['status_web'],
           'remarks' => $paymentType['remarks'],
+          'is_voucher' => $paymentType['is_voucher'],
           'status' => $status,
           // 'created_by' => $user->uuid,
         ];
@@ -245,6 +246,7 @@ class PaymentTypeService
           'effect' => $paymentTypeData['effect'],
           'status_web' => $paymentTypeData['status_web'],
           'remarks' => $paymentTypeData['remarks'],
+          'is_voucher' => $paymentType['is_voucher'],
           'status' => $status,
           // 'updated_by' => $user->uuid,
         ];

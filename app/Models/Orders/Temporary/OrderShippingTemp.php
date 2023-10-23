@@ -18,6 +18,7 @@ class OrderShippingTemp extends Model
         'uuid',
         'order_header_temp_uuid',
         'courier_uuid',
+        'member_shipping_address_uuid',
         'shipping_charge',
         'discount_shipping_charge',
         'member_address_uuid',

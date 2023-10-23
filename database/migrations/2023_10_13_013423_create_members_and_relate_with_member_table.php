@@ -79,6 +79,8 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('member_uuid')->comment('Get from table members');
+      $table->uuid('receiver_name')->comment('Receiver Name')->nullable();
+      $table->uuid('receiver_phone')->comment('Receiver Phone')->nullable();
       $table->uuid('city_uuid')->comment('Get from table cities')->nullable();
       $table->string('zip_code', 10);
       $table->string('province', 100);
@@ -88,6 +90,7 @@ return new class extends Migration
       $table->string('details')->nullable();
       $table->string('notes')->nullable();
       $table->string('remarks')->nullable();
+      $table->enum('status', [0, 1])->nullable()->comment('Status : 0 = Inactive, 1 = Active')->default(1);
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

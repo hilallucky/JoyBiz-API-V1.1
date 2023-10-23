@@ -17,6 +17,7 @@ class OrderDetailTemp extends Model
         'id',
         'uuid',
         'order_header_temp_uuid',
+        'product_uuid',
         'product_price_uuid',
         'qty',
         'price',

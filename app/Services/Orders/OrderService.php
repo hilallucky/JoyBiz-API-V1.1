@@ -51,6 +51,7 @@ class OrderService
 
       $orderHeaders = $request->all();
 
+
       foreach ($orderHeaders as $orderHeader) {
         // New Order Header;
         $newOrderHeader = [
@@ -107,6 +108,7 @@ class OrderService
         }
 
         foreach ($orderDetails as $orderDetail) {
+
           $newOrderDetail = [
             'uuid' => Str::uuid()->toString(),
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],

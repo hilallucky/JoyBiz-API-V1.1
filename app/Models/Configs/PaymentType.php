@@ -17,6 +17,7 @@ class PaymentType extends Model
   protected $cast = [
     'charge_percent' => 'float',
     'charge_amount' => 'float',
+    'is_voucher' => 'boolean',
   ];
 
   protected $fillable = [
@@ -29,6 +30,7 @@ class PaymentType extends Model
     'charge_amount',
     'effect',
     'status_web',
+    'is_voucher',
     'status',
     'remarks',
     'created_by',

@@ -128,7 +128,7 @@ class MemberRegisterService
         $newUser->uuid = $newMemberUuid;
         $newUser->first_name = $member->first_name;
         $newUser->last_name = $member->last_name;
-        $newUser->email = $i . $member->user->email;
+        $newUser->email = $i + 1 . $member->user->email;
         $newUser->password = null;
 
         $addNewUser = $this->createUser(
@@ -177,7 +177,7 @@ class MemberRegisterService
         $newUser->uuid = $newMemberUuid;
         $newUser->first_name = $member->first_name;
         $newUser->last_name = $member->last_name;
-        $newUser->email = $i . $member->user->email;
+        $newUser->email = $i + 1 . $member->user->email;
         $newUser->password = null;
 
         $addNewUser = $this->createUser(

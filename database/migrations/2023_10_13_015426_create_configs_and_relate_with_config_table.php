@@ -79,6 +79,7 @@ return new class extends Migration
       $table->decimal('charge_amount')->comment('Payment charge')->default('0.00');
       $table->string('effect', 2)->comment('Effect : -,+,/,*')->default('+');
       $table->enum('status_web', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active')->default(1);
+      $table->enum('is_voucher', [0, 1])()->comment('If Payment Type is voucher : 0 = Not A Voucher, 1 = Voucher')->default(0);
       $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Inactive, 1 = Active')->default(1);
       $table->text('remarks')->comment('Notes of payment type')->nullable();
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();

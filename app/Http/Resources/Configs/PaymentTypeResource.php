@@ -20,6 +20,7 @@ class PaymentTypeResource extends JsonResource
             "name" => $this->name,
             "short_name" => $this->short_name,
             "description" => $this->description,
+            "is_voucher" => $this->is_voucher,
             "status" => $this->status,
             "remarks" => $this->remarks,
             "created_by" => $this->created_by,
