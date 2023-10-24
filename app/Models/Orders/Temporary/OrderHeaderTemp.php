@@ -38,6 +38,7 @@ class OrderHeaderTemp extends Model
 
     protected $fillable = [
         'id',
+        'order_group_header_temp_uuid',
         'uuid',
         'price_code_uuid',
         'member_uuid',
@@ -106,6 +107,15 @@ class OrderHeaderTemp extends Model
     public function shipping()
     {
         return $this->hasMany(
+            OrderShippingTemp::class,
+            'order_header_temp_uuid',
+            'uuid'
+        );
+    }
+
+    public function groupOrderTemp()
+    {
+        return $this->hasOne(
             OrderShippingTemp::class,
             'order_header_temp_uuid',
             'uuid'

@@ -14,6 +14,9 @@ $router->group(['prefix' => 'orders', 'as' => 'orders'], function () use ($route
     /* Bulk delete Approved Order */
     $router->delete('/success', ['as' => 'delete', 'uses' => 'Orders\OrderController@destroyApprovedBulk']);
 
+    /* All Temporary Group Order can add request param status=0 or 1*/
+    $router->get('/temp/group-orders', ['as' => 'group order all', 'uses' => 'Orders\OrderController@getGroupOrderTempList']);
+
     /* All Temporary Order can add request param status=0 or 1*/
     $router->get('/temp', ['as' => 'all', 'uses' => 'Orders\OrderController@getOrderTempList']);
 

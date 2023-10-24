@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Models\Orders\Temporary;
+namespace App\Models\Orders\Production;
 
-use App\Models\Members\Member;
+use App\Models\Orders\Temporary\OrderGroupHeaderTemp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderGroupHeaderTemp extends Model
+class OrderGroupHeader extends Model
 {
 
   use HasFactory, SoftDeletes;
 
-  protected $table = 'order_group_headers_temp';
+  protected $table = 'order_group_headers';
   protected $primaryKey = 'id';
 
   protected $casts = [
@@ -86,11 +86,20 @@ class OrderGroupHeaderTemp extends Model
     );
   }
 
+  public function getGroupOrderTemp()
+  {
+    return $this->hasOne(
+      OrderGroupHeaderTemp::class,
+      'uuid',
+      'order_group_header_temp_uuid'
+    );
+  }
+
   public function headers()
   {
     return $this->hasMany(
-      OrderHeaderTemp::class,
-      'order_group_header_temp_uuid',
+      OrderHeader::class,
+      'order_group_header_uuid',
       'uuid'
     );
   }
@@ -98,8 +107,8 @@ class OrderGroupHeaderTemp extends Model
   public function payments()
   {
     return $this->hasMany(
-      OrderGroupPaymentTemp::class,
-      'order_group_header_temp_uuid',
+      OrderGroupPayment::class,
+      'order_group_header_uuid',
       'uuid'
     );
   }

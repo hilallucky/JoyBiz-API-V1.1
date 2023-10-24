@@ -6,6 +6,7 @@ use app\Libraries\Core;
 use App\Models\Orders\OrderStatuses;
 use App\Models\Orders\Temporary\OrderDetailTemp;
 use App\Models\Orders\Temporary\OrderGroupHeaderTemp;
+use App\Models\Orders\Temporary\OrderGroupPaymentTemp;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
 use App\Models\Orders\Temporary\OrderPaymentTemp;
 use App\Models\Orders\Temporary\OrderShippingTemp;
@@ -45,9 +46,11 @@ class OrderService
       DB::beginTransaction();
       DB::enableQueryLog();
 
-      // Check Auth & update user uuid to deleted_by
+      // Check Auth & update user uuid 
+      $userlogin = null;
       if (Auth::check()) {
         $user = Auth::user();
+        $userlogin = $user->uuid;
       }
 
       $orderHeaders = $request->all();
@@ -78,6 +81,7 @@ class OrderService
       $totalCharge = 0;
       $totalAmountSummary = 0;
 
+      $newOrder = collect();
 
       foreach ($orderHeaders as $orderHeader) {
 
@@ -133,15 +137,14 @@ class OrderService
             'total_order_to_picked_up' => $groupTotalOrderToPickedUp,
             'status' => "0",
             'transaction_date' => Carbon::now(),
-            // 'created_by' => $user->uuid,
+            'created_by' => $userlogin ? $userlogin : $orderHeader['member_uuid'],
           ];
 
           // Insert into order_group_headers_temp
           $newGroupHeaderAdd = new OrderGroupHeaderTemp($newGroupHeader);
           $newGroupHeaderAdd->save();
+          $newGroupHeaderTemp = $newGroupHeaderAdd->where('uuid', $groupUuid)->first();
         }
-
-
 
         // New Order Header;
         $newOrderHeader = [
@@ -174,8 +177,7 @@ class OrderService
           'status' => "0",
           'airway_bill_no' => $orderHeader['airway_bill_no'],
           'transaction_date' => Carbon::now(),
-
-          // 'created_by' => $user->uuid,
+          'created_by' => $userlogin ? $userlogin : $orderHeader['member_uuid'],
         ];
 
         // Insert into order_headers_temp
@@ -201,9 +203,9 @@ class OrderService
         }
 
         foreach ($orderDetails as $orderDetail) {
-
           $newOrderDetail = [
             'uuid' => Str::uuid(),
+            'order_group_header_temp_uuid' => $groupUuid,
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
             'product_uuid' => $orderDetail['product_uuid'],
             'product_price_uuid' => $orderDetail['product_price_uuid'],
@@ -220,7 +222,7 @@ class OrderService
             'bv' => $orderDetail['bv'],
             'rv' => $orderDetail['rv'],
             'status' => $orderDetail['status'],
-            // 'created_by' => $user->uuid,
+            'created_by' => $userlogin ? $userlogin : $orderHeader['member_uuid'],
           ];
 
           // Insert into order_details_temp
@@ -249,15 +251,16 @@ class OrderService
         foreach ($orderPayments as $orderPayment) {
           $newOrderPayment = [
             'uuid' => Str::uuid(),
+            'order_group_header_temp_uuid' => $groupUuid,
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
             'payment_type_uuid' => $orderPayment['payment_type_uuid'],
-            'voucher_uuid' => $orderPayment['voucher_uuid'],
-            'voucher_code' => $orderPayment['voucher_uuid'],
+            'voucher_uuid' => $orderPayment['voucher_uuid'] ? $orderPayment['voucher_uuid'] : null,
+            'voucher_code' => $orderPayment['voucher_code'] ? $orderPayment['voucher_code'] : null,
             'amount' => $orderPayment['amount'],
             // 'total_discount' => $orderPayment['total_discount'],
             // 'total_amount_after_discount' => $orderPayment['total_amount_after_discount'],
             'remarks' => $orderPayment['remarks'],
-            // 'created_by' => $user->uuid,
+            'created_by' => $userlogin ? $userlogin : $orderHeader['member_uuid'],
           ];
 
           // Insert into order_payments_temp
@@ -289,6 +292,7 @@ class OrderService
 
         $newOrderShipping = [
           'uuid' => Str::uuid(),
+          'order_group_header_temp_uuid' => $groupUuid,
           'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
           'courier_uuid' => $orderShipping['courier_uuid'],
           'member_shipping_address_uuid' => $orderShipping['address_uuid'],
@@ -303,7 +307,7 @@ class OrderService
           'village' => $orderShipping['village'],
           'details' => $orderShipping['details'],
           'notes' => $orderShipping['notes'],
-          // 'created_by' => $user->uuid,
+          'created_by' => $userlogin ? $userlogin : $orderHeader['member_uuid'],
         ];
 
         if ($orderShipping->has('address_uuid')) {
@@ -329,7 +333,7 @@ class OrderService
           'reference_uuid' => $newOrderHeaderAdd['uuid'],
           'description' => 'Pending',
           'remarks' => 'New transaction, incomplete payment',
-          // 'created_by' => $user->uuid,
+          'created_by' => $userlogin ? $userlogin : $orderHeader['member_uuid'],
         ];
 
         // Insert into order_statuses
@@ -337,25 +341,53 @@ class OrderService
         $newOrderStatusAdd->save();
 
         $newOrderStatuses[] = $newOrderStatus;
+
+        //Result
+        $newHeader = OrderHeaderTemp::where('uuid', array_column($newOrderHeaders, 'uuid'))->get();
+
+        $newDetails = OrderDetailTemp::where('order_header_temp_uuid', array_column($newOrderHeaders, 'uuid'))->get();
+
+        $newPayments = OrderPaymentTemp::where('order_header_temp_uuid', array_column($newOrderHeaders, 'uuid'))->get();
+
+        $newShippings = OrderShippingTemp::where('order_header_temp_uuid', array_column($newOrderHeaders, 'uuid'))->get();
+
+        $newStatuses = OrderStatuses::where('order_header_uuid', array_column($newOrderHeaders, 'uuid'))->get();
+
+        $newOrder->push([
+          "header" => $newHeader,
+          "detail" => $newDetails,
+          "payment" => $newPayments,
+          "shipping" => $newShippings,
+          "status" => $newStatuses,
+        ]);
       }
 
-      $newHeader = OrderHeaderTemp::whereIn('uuid', array_column($newOrderHeaders, 'uuid'))->get();
+      // $newStatuses = OrderGroupHeaderTemp::where('order_header_uuid', array_column($newOrderHeaders, 'uuid'))->get();
 
-      $newDetails = OrderDetailTemp::whereIn('uuid', array_column($newOrderDetails, 'uuid'))->get();
+      $newOrder["group_header"] = $newGroupHeaderTemp;
 
-      $newPayments = OrderPaymentTemp::whereIn('uuid', array_column($newOrderPayments, 'uuid'))->get();
+      $groupPayments = OrderPaymentTemp::select(
+        'order_group_header_temp_uuid',
+        'payment_type_uuid',
+        DB::raw('SUM(amount) as amount'),
+      )
+        ->where('order_group_header_temp_uuid', $groupUuid)
+        ->groupBy('order_group_header_temp_uuid', 'payment_type_uuid')
+        ->get();
 
-      $newShippings = OrderShippingTemp::whereIn('uuid', array_column($newOrderShippings, 'uuid'))->get();
+      $groupPaymentAdd = $groupPayments->map(function ($groupPayment) use ($userlogin, $orderHeader) {
+        $groupPayment->uuid = Str::uuid()->toString();
+        $groupPayment->created_by = $userlogin ? $userlogin : $orderHeader['member_uuid'];
+        $groupPayment->updated_by = $userlogin ? $userlogin : $orderHeader['member_uuid'];
+        $groupPayment->created_at = Carbon::now();
+        $groupPayment->updated_at = Carbon::now();;
+        return $groupPayment;
+      });
 
-      $newStatuses = OrderStatuses::whereIn('uuid', array_column($newOrderStatuses, 'uuid'))->get();
+      $newGroupPayments = new OrderGroupPaymentTemp();
+      $newGroupPayments->insert($groupPaymentAdd->toArray());
 
-      $newOrder = [
-        "header" => $newHeader,
-        "detail" => $newDetails,
-        "payment" => $newPayments,
-        "shipping" => $newShippings,
-        "status" => $newStatuses,
-      ];
+      $newOrder["group_header_payments"] = $newGroupPayments->where('order_group_header_temp_uuid', $groupUuid)->get();
 
       DB::commit();
     } catch (\Exception $e) {
@@ -375,6 +407,54 @@ class OrderService
       $newOrder,
       false,
       201
+    );
+  }
+
+
+  //Get list of orders
+  public function getGroupOrderList($request)
+  {
+    DB::enableQueryLog();
+
+    // Get order list
+    $groupOrders = OrderGroupHeaderTemp::query();
+
+    if ($request->input('start') && $request->input('end')) {
+      $start = $request->input('start');
+      $end = $request->input('end');
+
+      $groupOrders = $groupOrders->whereBetween(DB::raw('created_at::date'), [$start, $end]);
+    }
+
+    if ($request->input('status') !== null) {
+      $status = $request->input('status');
+
+      $groupOrders = $groupOrders->where('status', $status);
+    }
+
+    if ($request->input('member_uuid') !== null) {
+      $member_uuid = $request->input('member_uuid');
+
+      $groupOrders = $groupOrders->where('member_uuid', $member_uuid);
+    }
+
+
+    $groupOrders = $groupOrders->with('payments', 'headers.member', 'headers.details', 'headers.payments', 'headers.shipping')->orderBy('created_at', 'asc')->get();
+
+    if (!$groupOrders) {
+      return $this->core->setResponse(
+        'error',
+        'Group Order not exist.',
+        NULL,
+        FALSE,
+        400
+      );
+    }
+
+    return $this->core->setResponse(
+      'success',
+      'Group Order list.',
+      $groupOrders,
     );
   }
 

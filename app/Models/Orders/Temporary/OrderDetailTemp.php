@@ -16,6 +16,7 @@ class OrderDetailTemp extends Model
     protected $fillable = [
         'id',
         'uuid',
+        'order_group_header_temp_uuid',
         'order_header_temp_uuid',
         'product_uuid',
         'product_price_uuid',

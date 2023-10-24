@@ -17,7 +17,7 @@ return new class extends Migration
     Schema::create('order_group_headers', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('order_group_header_temp_uuid')->unique();
+      $table->uuid('order_group_header_temp_uuid')->nullable();
       $table->uuid('member_uuid')->comment('Get from table members');
       $table->text('remarks')->comment('Notes of product prices')->nullable();
       $table->decimal('total_discount_value', 10, 2)->default(0);
@@ -57,7 +57,8 @@ return new class extends Migration
     Schema::create('order_group_payments', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('order_group_header_uuid');
+      $table->uuid('order_group_header_uuid')->nullable();
+      $table->uuid('order_group_header_temp_uuid')->nullable();
       $table->uuid('payment_type_uuid')->comment('Get from table payment_types');
       $table->decimal('amount', 10, 2)->default(0);
       $table->text('remarks')->comment('Notes of payment type')->nullable();
@@ -77,7 +78,8 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('order_header_temp_uuid')->unique();
-      $table->uuid('order_group_header_uuid');
+      $table->uuid('order_group_header_uuid')->nullable();
+      $table->uuid('order_group_header_temp_uuid')->nullable();
       $table->uuid('member_uuid')->comment('Get from table members');
       $table->uuid('price_code_uuid')->comment('Get from table price_codes');
       $table->text('remarks')->comment('Notes of product prices')->nullable();
@@ -149,6 +151,8 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('order_detail_temp_uuid');
+      $table->uuid('order_group_header_uuid')->nullable();
+      $table->uuid('order_group_header_temp_uuid')->nullable();
       $table->uuid('order_header_uuid');
       $table->uuid('product_uuid')->comment('Get from table products');
       $table->uuid('product_price_uuid')->comment('Get from table product_prices');
@@ -192,6 +196,8 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('order_payment_temp_uuid');
+      $table->uuid('order_group_header_uuid')->nullable();
+      $table->uuid('order_group_header_temp_uuid')->nullable();
       $table->uuid('order_header_uuid');
       $table->uuid('payment_type_uuid')->comment('Get from table payment_types');
       $table->uuid('voucher_uuid')->nullable()->comment('Voucher reference if payment using voucher.');
@@ -222,6 +228,8 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('order_shipping_temp_uuid');
+      $table->uuid('order_group_header_uuid')->nullable();
+      $table->uuid('order_group_header_temp_uuid')->nullable();
       $table->uuid('order_header_uuid');
       $table->uuid('courier_uuid')->comment('Get from table couriers');
       $table->decimal('shipping_charge', 10, 2)->default(0);
@@ -261,6 +269,8 @@ return new class extends Migration
    */
   public function down()
   {
+    Schema::dropIfExists('order_group_headers');
+    Schema::dropIfExists('order_group_payments');
     Schema::dropIfExists('order_headers');
     Schema::dropIfExists('order_details');
     Schema::dropIfExists('order_payments');

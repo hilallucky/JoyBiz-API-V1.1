@@ -16,6 +16,7 @@ class OrderShippingTemp extends Model
     protected $fillable = [
         'id',
         'uuid',
+        'order_group_header_temp_uuid',
         'order_header_temp_uuid',
         'courier_uuid',
         'member_shipping_address_uuid',

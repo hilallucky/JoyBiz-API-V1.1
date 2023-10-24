@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Orders\Temporary;
+namespace App\Models\Orders\Production;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderGroupPaymentTemp extends Model
+class OrderGroupPayment extends Model
 {
   use HasFactory, SoftDeletes;
 
@@ -20,6 +20,7 @@ class OrderGroupPaymentTemp extends Model
   protected $fillable = [
     'id',
     'uuid',
+    'order_group_header_uuid',
     'order_group_header_temp_uuid',
     'payment_type_uuid',
     'amount',

@@ -36,6 +36,12 @@ class OrderController extends Controller
         return $this->orderService->destroyBulk($request);
     }
 
+    public function getGroupOrderTempList(Request $request)
+    {
+        return $this->orderService->getGroupOrderList($request);
+    }
+
+
     public function getOrderTempList(Request $request)
     {
         return $this->orderService->getOrderList($request);
