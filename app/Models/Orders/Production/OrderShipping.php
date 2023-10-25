@@ -10,7 +10,7 @@ class OrderShipping extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'order_shipping';
+    protected $table = 'order_shippings';
     protected $primaryKey = 'id';
 
     protected $fillable = [

@@ -20,6 +20,7 @@ class OrderGroupPaymentTemp extends Model
   protected $fillable = [
     'id',
     'uuid',
+    'order_group_header_uuid',
     'order_group_header_temp_uuid',
     'payment_type_uuid',
     'amount',

@@ -10,7 +10,7 @@ class OrderGroupPayment extends Model
 {
   use HasFactory, SoftDeletes;
 
-  protected $table = 'order_group_payments_temp';
+  protected $table = 'order_group_payments';
   protected $primaryKey = 'id';
 
   protected $casts = [

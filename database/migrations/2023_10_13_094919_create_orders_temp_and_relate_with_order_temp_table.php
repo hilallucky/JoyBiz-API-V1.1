@@ -187,7 +187,7 @@ return new class extends Migration
 
 
     // Table order_shipping_temp
-    Schema::create('order_shipping_temp', function (Blueprint $table) {
+    Schema::create('order_shippings_temp', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('order_group_header_temp_uuid')->nullable();

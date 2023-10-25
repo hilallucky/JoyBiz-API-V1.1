@@ -8,39 +8,53 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderDetailTemp extends Model
 {
-    use HasFactory, SoftDeletes; //, Uuids;
+  use HasFactory, SoftDeletes; //, Uuids;
 
-    protected $table = 'order_details_temp';
-    protected $primaryKey = 'id';
+  protected $table = 'order_details_temp';
+  protected $primaryKey = 'id';
 
-    protected $fillable = [
-        'id',
-        'uuid',
-        'order_group_header_temp_uuid',
-        'order_header_temp_uuid',
-        'product_uuid',
-        'product_price_uuid',
-        'qty',
-        'price',
-        'discount_type',
-        'discount_value',
-        'discount_value_amount',
-        'cashback',
-        'cashback_reseller',
-        'price_after_discount',
-        'pv',
-        'xv',
-        'bv',
-        'rv',
-        'created_by',
-        'updated_by',
-        'deleted_by',
-    ];
+  protected $casts = [
+    'qty' => 'integer',
+    'price' => 'float',
+    'discount_value' => 'float',
+    'discount_value_amount' => 'float',
+    'cashback' => 'float',
+    'cashback_reseller' => 'float',
+    'price_after_discount' => 'float',
+    'pv' => 'float',
+    'xv' => 'float',
+    'bv' => 'float',
+    'rv' => 'float',
+  ];
 
-    /**
-     * Indicates if the IDs are UUID's.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+  protected $fillable = [
+    'id',
+    'uuid',
+    'order_group_header_temp_uuid',
+    'order_header_temp_uuid',
+    'product_uuid',
+    'product_price_uuid',
+    'qty',
+    'price',
+    'discount_type',
+    'discount_value',
+    'discount_value_amount',
+    'cashback',
+    'cashback_reseller',
+    'price_after_discount',
+    'pv',
+    'xv',
+    'bv',
+    'rv',
+    'created_by',
+    'updated_by',
+    'deleted_by',
+  ];
+
+  /**
+   * Indicates if the IDs are UUID's.
+   *
+   * @var bool
+   */
+  public $incrementing = false;
 }

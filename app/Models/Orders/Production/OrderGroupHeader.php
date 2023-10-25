@@ -52,7 +52,6 @@ class OrderGroupHeader extends Model
     'total_cashback_reseller',
     'total_shipping_charge',
     'total_shipping_discount',
-    'total_shipping_charge',
     'total_shipping_nett',
     'total_payment_charge',
     'tax_amount',
