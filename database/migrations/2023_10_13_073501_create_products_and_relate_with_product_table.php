@@ -51,6 +51,10 @@ return new class extends Migration
             $table->boolean('show_status')->comment('Show Status : true = Not Show, false = Show')->default(true);
             $table->boolean('sc_show_status')->comment('SC Show Status : true = Not Show, false = Show')->default(true);
             $table->decimal('weight', 10, 2)->comment('Status : 0 = Not Show, 1 = Show')->default(1);
+            $table->string('allow_from_rank')->comment('Allow from rank start')->nullabel();
+            $table->integer('allow_from_rank_id')->comment('Allow from rank (id) start')->nullabel();
+            $table->string('allow_to_rank')->comment('Allow to rank start')->nullabel();
+            $table->integer('allow_to_rank_id')->comment('Allow to rank (id) start')->nullabel();
             $table->text('remarks')->comment('Notes of products')->nullable();
             $table->string('created_by')->comment('Created By products (User ID from table user')->nullable();
             $table->string('updated_by')->comment('Updated By products (User ID from table user')->nullable();
@@ -165,11 +169,12 @@ return new class extends Migration
             $table->uuid('price_code_uuid');
             $table->enum('status', [0, 1, 2, 3])
                 ->nullable()->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
-            $table->decimal('price', 10, 2)->default(0);
+            $table->decimal('price_consument', 10, 2)->default(0);
+            $table->decimal('price_member', 10, 2)->default(0);
             $table->enum('discount_type', ['percentage', 'amount'])->nullable();
             $table->decimal('discount_value', 10, 2)->nullable()->default(0);
             $table->decimal('discount_value_amount', 10, 2)->default(0);
-            $table->decimal('price_after_discount', 10, 2)->default(0);
+            $table->decimal('price_member_after_discount', 10, 2)->default(0);
             $table->decimal('cashback', 10, 2)->default(0);
             $table->decimal('cashback_reseller', 10, 2)->default(0);
             $table->decimal('shipping_budget', 10, 2)->default(0);

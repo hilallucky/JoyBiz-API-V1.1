@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers\Bonuses;
+namespace App\Helpers\Bonuses\JoyPlan;
 
 use App\Models\Bonuses\Joys\JoyCarryForward;
 use App\Models\Bonuses\Joys\JoyData;

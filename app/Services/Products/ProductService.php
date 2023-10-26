@@ -64,6 +64,34 @@ class ProductService
                 $is_product_group
             );
         }
+        
+        $allow_from_rank = null;
+        if ($request->has('allow_from')) {
+            $allow_from_rank = $request->input('allow_from');
+
+            $query->where('allow_from_rank', $allow_from_rank);
+        }
+
+        $allow_from_rank_id = null;
+        if ($request->has('allow_from')) {
+            $allow_from_rank_id = $request->input('allow_from_id');
+
+            $query->where('allow_from_rank', $allow_from_rank_id);
+        }
+
+        $allow_to_rank = null;
+        if ($request->has('allow_to')) {
+            $allow_to_rank = $request->input('allow_to');
+
+            $query->where('allow_from_rank', $allow_to_rank);
+        }
+
+        $allow_to_rank_id = null;
+        if ($request->has('allow_to_id')) {
+            $allow_to_rank_id = $request->input('allow_to_id');
+
+            $query->where('allow_to_rank_id', $allow_to_rank_id);
+        }
 
         if ($request->has('name')) {
             $param = $request->input('name');
@@ -158,6 +186,10 @@ class ProductService
                     'show_status' => $product['show_status'],
                     'sc_show_status' => $product['sc_show_status'],
                     'weight' => $product['weight'],
+                    'allow_from_rank' => $product['allow_from'],
+                    'allow_from_rank_id' => $product['allow_from_id'],
+                    'allow_to_rank' => $product['allow_to'],
+                    'allow_to_rank_id' => $product['allow_to_id'],
                     // 'remarks' => $product['remarks'] ? $product['remarks'] : null,
                     // 'created_by' => $user->uuid,
                 ];
@@ -173,11 +205,12 @@ class ProductService
                         'uuid' => Str::uuid(),
                         'product_uuid' => $newProduct['uuid'],
                         'price_code_uuid' => $price['price_code_uuid'],
-                        'price' => $price['price'],
+                        'price_member' => $price['price_member'],
+                        'price_consument' => $price['price_consument'],
                         'discount_type' => $price['discount_type'],
                         'discount_value' => $price['discount_value'],
                         'discount_value_amount' => $price['discount_value_amount'],
-                        'price_after_discount' => $price['price_after_discount'],
+                        'price_member_after_discount' => $price['price_member_after_discount'],
                         'cashback' => $price['cashback'],
                         'cashback_reseller' => $price['cashback_reseller'],
                         'shipping_budget' => $price['shipping_budget'],
@@ -419,11 +452,12 @@ class ProductService
                         $priceData = [
                             'product_uuid' => $productData['uuid'],
                             'price_code_uuid' => $price['price_code_uuid'],
-                            'price' => $price['price'],
+                            'price_member' => $price['price_member'],
+                            'price_consument' => $price['price_consument'],
                             'discount_type' => $price['discount_type'],
                             'discount_value' => $price['discount_value'],
                             'discount_value_amount' => $price['discount_value_amount'],
-                            'price_after_discount' => $price['price_after_discount'],
+                            'price_member_after_discount' => $price['price_member_after_discount'],
                             'cashback' => $price['cashback'],
                             'cashback_reseller' => $price['cashback_reseller'],
                             'shipping_budget' => $price['shipping_budget'],
@@ -658,6 +692,10 @@ class ProductService
                     'composition.product_uuid' => 'uuid',
                     'composition.qty' => 'numeric',
                     'composition.status' => 'integer|in:0,1,2,3',
+                    'composition.allow_from_rank' => 'string',
+                    'composition.allow_from_rank_id' => 'numeric',
+                    'composition.allow_to_rank' => 'string',
+                    'composition.allow_to_rank_id' => 'numeric',
                     '*.status' => 'in:0,1,2,3',
                     // '*.created_by' => 'required|string|min:4',
                     '*.category_uuid' => 'required|uuid',
@@ -682,16 +720,21 @@ class ProductService
                     //'required|array',
                     'composition.product_uuid' => 'uuid',
                     'composition.qty' => 'numeric',
+                    'composition.allow_from_rank' => 'string',
+                    'composition.allow_from_rank_id' => 'numeric',
+                    'composition.allow_to_rank' => 'string',
+                    'composition.allow_to_rank_id' => 'numeric',
                     'composition.status' => 'integer|in:0,1,2,3',
                     // '*.created_by' => 'required|string|min:4',
                     '*.category_uuid' => 'required|uuid',
                     '*.prices' => 'required|array',
                     'prices.price_code_uuid' => 'required|uuid',
-                    'prices.price' => 'required|numeric',
+                    'prices.price_member' => 'required|numeric',
+                    'prices.price_consument' => 'required|numeric',
                     'prices.discount_type' => 'required|in:percentage,amount',
                     'prices.discount_value' => 'required|numeric',
                     'prices.discount_value_amount' => 'required|numeric',
-                    'prices.price_after_discount' => 'required|numeric',
+                    'prices.price_member_after_discount' => 'required|numeric',
                     'prices.cashback' => 'required|numeric',
                     'prices.cashback_reseller' => 'required|numeric',
                     'prices.shipping_budget' => 'required|numeric',

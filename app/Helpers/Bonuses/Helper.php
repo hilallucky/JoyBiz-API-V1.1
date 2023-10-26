@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Bonuses;
 
+use App\Helpers\Bonuses\JoyPlan\JoyHelper;
 use app\Libraries\Core;
 use App\Models\Bonuses\BonusRankLog;
 use App\Models\Bonuses\BonusWeekly;
@@ -850,14 +851,16 @@ class Helper extends Model
 
     $userlogin = null;
     if (Auth::check()) {
-        $user = Auth::user();
-        $userlogin = $user->uuid;
+      $user = Auth::user();
+      $userlogin = $user->uuid;
     }
 
     $trx = OrderHeader::where('uuid', $uuid)
       ->with(['member.effectiveRank', 'details.productPrice.product'])
       ->first();
 
+
+      dd('break');
     /*joybiz v1
 		//paket Registrasi SC yang mengandung biaya reg dan selisih
 		$scRegisterSpecialCase = array('RSC01','RSC02');
@@ -868,13 +871,8 @@ class Helper extends Model
       $trx->transaction_date = $date;
       $trx->save();
 
-      if ($trx->member_uuid) {
-        $user = Member::where('uuid', $trx->member_uuid)->with(['sponsor', 'srank'])->first();
-      } else {
-        $user = Member::where('uuid', $trx->member_uuid)->with(['sponsor', 'srank'])->first();
-      }
-
-      $membership = Member::where('uuid', $trx->member_uuid)->first();
+      $user = Member::where('uuid', $trx->member_uuid)->with(['sponsor', 'srank'])->first();
+      $membership = $user->uuid;
 
       $srank = isset($user->srank) ? $user->srank : null;
 
@@ -882,8 +880,6 @@ class Helper extends Model
       $totalHargaWIB = 0;
       $selisihRetail = 0;
       $hasRegister = false;
-      // $qudu = 0;
-      // $quduBVG = 0;
       // $hargaAsliCod = 0;
 
       // foreach ($trx['transaksi_detail'] as $trxd) {
@@ -980,14 +976,15 @@ class Helper extends Model
 
       $trx->approved_date = Carbon::now();
       $trx->approved_by = $userlogin;
+      $trx->updated_date = Carbon::now();
+      $trx->updated_by = $userlogin;
       $trx->save();
 
       if ($trx->total_pv >= 100 && $user->status == 3) { // status = 3 is dormant
         $member = Member::where('uuid', $trx->member_uuid);
-        $member->will_dormant_at = Carbon::parse($trx->transaction_date)->addMonths(6)->toDateString();
+        $member->will_dormant_at = Carbon::parse($trx->transaction_date)->addMonths(12)->toDateString();
         $member->save();
       }
-
 
       if (
         $membership->status != 1
@@ -1096,10 +1093,10 @@ class Helper extends Model
       // 	$trx->save();
       // }
 
-      //abodemen
-      $transaction = new OrderHeader;
+      // abodemen
+      // $transaction = new OrderHeader;
       // $result = 
-      $transaction->generateAbodemenChild($trx->code_trans);
+      // $transaction->generateAbodemenChild($trx->code_trans);
 
       // #$userCoupon = User::where('id',$trx->id_cust_fk)->first();
       // #$RewardCoupon = $this->monthyRewardCoupon($userCoupon);
@@ -1118,7 +1115,7 @@ class Helper extends Model
       // 	// if($trxd->id_barang_fk == 720){
       // 	// 	$product = barang::where('id',$trxd->id_barang_fk)->first();
       // 	// 	$cashback_amount = 90000 * $trxd->qty;
-      // 	// 	$description = "Cashback ".$product->nama." dari Transaksi ".$trx->code_trans;
+      // 	// 	$description = "Cashback ".$product->n;ama." dari Transaksi ".$trx->code_trans;
 
       // 	// 	$money->money("cashback",$membership, $cashback_amount, false, $description,false,$trx->code_trans);
       // 	// } elseif($trxd->id_barang_fk == 721){
@@ -1267,7 +1264,6 @@ class Helper extends Model
 
     $mid = $this->getMid($curr['end_date']);
     $trxs = OrderHeader::where('member_uuid', $member->uuid)
-      // ->whereNotIn('status', ['WP', 'P'])
       ->whereBetween('transaction_date', [$curr['start_date'], $curr['end_date']])
       ->get();
 

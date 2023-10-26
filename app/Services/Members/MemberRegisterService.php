@@ -123,9 +123,8 @@ class MemberRegisterService
         $currentSponsorUUID = $member->uuid;
 
         $newUser = new stdClass;
-        $newMemberUuid = Str::uuid();
 
-        $newUser->uuid = $newMemberUuid;
+        $newUser->uuid = Str::uuid();
         $newUser->first_name = $member->first_name;
         $newUser->last_name = $member->last_name;
         $newUser->email = $i + 1 . $member->user->email;
@@ -139,15 +138,15 @@ class MemberRegisterService
         for ($j = 0; $j < $legs; $j++) {
           // Add New downline
           $downline = Member::create([
-            'uuid' => $newMemberUuid,
+            'uuid' => Str::uuid(),
             'first_name' => $member->first_name, //'Downline ' . ($no++),
             'last_name' => $member->last_name,
             'id_no' => $member->id_no,
             'phone' => $member->phone,
-            'sponsor_id' => $currentSponsorId,
-            'sponsor_uuid' => $currentSponsorUUID,
-            'placement_id' => $member->placement_id,
-            'placement_uuid' => $member->placement_uuid,
+            'sponsor_id' => $member->placement_id, //$currentSponsorId,
+            'sponsor_uuid' => $member->placement_uuid, //$currentSponsorUUID,
+            'placement_id' => $currentSponsorId, //$member->placement_id,
+            'placement_uuid' => $currentSponsorUUID, //$member->placement_uuid,
             'user_id' => $addNewUser->id,
             'user_uuid' => $addNewUser->uuid,
             'min_bv' => $member->min_bv,
@@ -192,10 +191,10 @@ class MemberRegisterService
             'last_name' => $member->last_name,
             'id_no' => $member->id_no,
             'phone' => $member->phone,
-            'sponsor_id' => $currentSponsorId,
-            'sponsor_uuid' => $currentSponsorUUID,
-            'placement_id' => $member->placement_id,
-            'placement_uuid' => $member->placement_uuid,
+            'sponsor_id' => $member->placement_id, //$currentSponsorId,
+            'sponsor_uuid' => $member->placement_uuid, //$currentSponsorUUID,
+            'placement_id' => $currentSponsorId, //$member->placement_id,
+            'placement_uuid' => $currentSponsorUUID, //$member->placement_uuid,
             'user_id' => $addNewUser->id,
             'user_uuid' => $addNewUser->uuid,
             'min_bv' => $member->min_bv,
@@ -224,10 +223,10 @@ class MemberRegisterService
               'last_name' => $member->last_name,
               'id_no' => $member->id_no,
               'phone' => $member->phone,
-              'sponsor_id' => $leftSponsorId,
-              'sponsor_uuid' => $leftSponsorUUID,
-              'placement_id' => $member->placement_id,
-              'placement_uuid' => $member->placement_uuid,
+              'sponsor_id' => $member->placement_id, //$leftSponsorId,
+              'sponsor_uuid' => $member->placement_uuid, //$leftSponsorUUID,
+              'placement_id' => $leftSponsorId, //$member->placement_id,
+              'placement_uuid' => $leftSponsorUUID, //$member->placement_uuid,
               'user_id' => $addNewUser->id,
               'user_uuid' => $addNewUser->uuid,
               'min_bv' => $member->min_bv,
@@ -242,10 +241,10 @@ class MemberRegisterService
               'last_name' => $member->last_name,
               'id_no' => $member->id_no,
               'phone' => $member->phone,
-              'sponsor_id' => $rightSponsorId,
-              'sponsor_uuid' => $rightSponsorUUID,
-              'placement_id' => $member->placement_id,
-              'placement_uuid' => $member->placement_uuid,
+              'sponsor_id' => $member->placement_id, //$rightSponsorId,
+              'sponsor_uuid' => $member->placement_uuid, //$rightSponsorUUID,
+              'placement_id' => $rightSponsorId, //$member->placement_id,
+              'placement_uuid' => $rightSponsorUUID, //$member->placement_uuid,
               'user_id' => $addNewUser->id,
               'user_uuid' => $addNewUser->uuid,
               'min_bv' => $member->min_bv,
