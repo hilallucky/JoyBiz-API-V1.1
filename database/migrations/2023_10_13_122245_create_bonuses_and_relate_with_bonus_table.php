@@ -83,13 +83,14 @@ return new class extends Migration
         Schema::create('bonus_ranks', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->uuid('process_uuid');
+            $table->uuid('process_uuid')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->integer('month')->nullable();
             $table->integer('year')->nullable();
             $table->uuid('member_uuid')->comment('Member uuid based from table members');
             $table->uuid('rank_uuid')->comment('Rank uuid based from table ranks')->nullable();
+            $table->integer('rank_id')->comment('Rank id based from table ranks')->nullable()->default(0);
             $table->uuid('sponsor_uuid')->comment('Sponsor uuid based from table members')->nullable();
             $table->integer('sponsor_id')->default(0);
             $table->decimal('ppv', 12, 2)->nullable();
@@ -126,7 +127,7 @@ return new class extends Migration
             $table->integer('wid');
             $table->integer('year');
             $table->uuid('user_uuid');
-            $table->uuid('owner');
+            $table->uuid('member_uuid');
             $table->decimal('express', 12, 2)->default(0);
             $table->decimal('productivity', 12, 2)->default(0);
             $table->decimal('team', 12, 2)->default(0);
@@ -144,6 +145,7 @@ return new class extends Migration
             $table->integer('published_by')->nullable();
             $table->integer('vouchered_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
 
@@ -158,7 +160,8 @@ return new class extends Migration
         //     $table->integer('mid')->nullable();
         //     $table->integer('erank')->default(0);
         //     $table->timestamps();
-        // });
+            // $table->softDeletes();
+            // });
 
         // Schema::create('sranks', function (Blueprint $table) {
         //     $table->id();
@@ -175,7 +178,8 @@ return new class extends Migration
         //     $table->integer('bj_active')->default(0);
         //     $table->integer('vj_active')->default(0);
         //     $table->timestamps();
-        // });
+            // $table->softDeletes();
+            // });
 
 
         // Schema::create('effective_rank', function (Blueprint $table) {
@@ -190,7 +194,8 @@ return new class extends Migration
         //     $table->date('date_end')->nullable();
         //     $table->integer('effective_rank')->nullable(); //PERUBAHAN DARI STRING KE INTEGER
         //     $table->timestamps();
-        // });
+            // $table->softDeletes();
+            // });
     }
 
     /**
@@ -201,7 +206,8 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('calculation_point_members');
-        Schema::dropIfExists('week_periodes');
+        Schema::dropIfExists('week_periods');
+        // Schema::dropIfExists('week_periodes');
         Schema::dropIfExists('bonus_rank_logs');
         Schema::dropIfExists('bonus_ranks');
         Schema::dropIfExists('bonus_weeklies');

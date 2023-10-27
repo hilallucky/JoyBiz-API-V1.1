@@ -17,30 +17,33 @@ return new class extends Migration
 
     Schema::create('eranks', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //jbid
       $table->uuid('sponsor_uuid')->nullable(); //spid
       $table->uuid('placement_uuid')->nullable(); //upid
       $table->decimal('ppv', 12, 2)->default(0);
       $table->decimal('gpv', 12, 2)->default(0);
       $table->integer('mid')->nullable();
+      $table->uuid('mid_uuid')->nullable();
       $table->integer('erank')->default(0);
+      $table->uuid('erank_uuid')->nullable();
       $table->timestamps();
       $table->softDeletes();
     });
 
     Schema::create('sranks', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //jbid
-      $table->integer('sponsor_uuid')->nullable(); //spid
-      $table->integer('placement_uuid')->nullable(); //upid
+      $table->uuid('sponsor_uuid')->nullable(); //spid
+      $table->uuid('placement_uuid')->nullable(); //upid
       $table->decimal('appv', 12, 2)->default(0);
       $table->decimal('apbv', 12, 2)->default(0);
       $table->integer('jbp')->default(0);
       $table->integer('bj')->default(0);
       $table->integer('vj')->default(0);
       $table->integer('srank')->default(0);
+      $table->string('srank_uuid')->nullable();
       $table->integer('bj_active')->default(0);
       $table->integer('vj_active')->default(0);
       $table->timestamps();
@@ -50,7 +53,7 @@ return new class extends Migration
 
     Schema::create('effective_rank', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid')->nullable();
       $table->decimal('ppv', 12, 2)->nullable();
       $table->decimal('pgv', 12, 2)->nullable();
@@ -59,6 +62,7 @@ return new class extends Migration
       $table->date('date_start')->nullable();
       $table->date('date_end')->nullable();
       $table->integer('effective_rank')->nullable(); //PERUBAHAN DARI STRING KE INTEGER
+      $table->uuid('effective_rank_uuid')->nullable(); //PERUBAHAN DARI STRING KE INTEGER
       $table->timestamps();
       $table->softDeletes();
     });
@@ -66,8 +70,9 @@ return new class extends Migration
 
     Schema::create('carry_forward_details', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->integer('wid');
+      $table->uuid('wid_uuid')->nullable();
       $table->uuid('member_uuid');
       $table->decimal('gpvj');
       $table->decimal('gbvj');
@@ -78,8 +83,9 @@ return new class extends Migration
 
     Schema::create('prepared_data_joys', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->integer('wid');
+      $table->uuid('wid_uuid')->nullable();
       $table->uuid('member_uuid'); //jbid
       $table->uuid('sponsor_uuid')->nullable(); //spid
       $table->uuid('placement_uuid')->nullable(); //upid
@@ -94,8 +100,11 @@ return new class extends Migration
       $table->decimal('grvj', 12, 2)->default(0);
       $table->decimal('omzet', 12, 2)->default(0);
       $table->decimal('ozj', 12, 2)->default(0);
+      $table->decimal('opc', 12, 2)->default(0);
       $table->integer('srank')->default(0);
+      $table->uuid('srank_uuid')->nullable();
       $table->integer('erank')->default(0);
+      $table->uuid('erank_uuid')->nullable();
       $table->timestamps();
       $table->softDeletes();
     });
@@ -103,7 +112,7 @@ return new class extends Migration
 
     Schema::create('joy_carry_forwards', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->date('date');
       $table->uuid('member_uuid'); //owner
       $table->integer('big_leg')->nullable();
@@ -117,7 +126,7 @@ return new class extends Migration
 
     Schema::create('joy_rv_forwards', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->date('date');
       $table->uuid('member_uuid'); //owner
       $table->integer('big_leg')->nullable();
@@ -130,9 +139,10 @@ return new class extends Migration
 
 
     Schema::create('joy_point_rewards', function (Blueprint $table) {
-      $table->increments('id');
+      $table->id();
+      $table->uuid('uuid')->nullable();
       $table->date('date');
-      $table->uuid('owner');
+      $table->uuid('member_uuid');
       $table->integer('joy')->default(0);
       $table->integer('biz')->default(0);
       $table->integer('joy_rv')->default(0);
@@ -144,7 +154,7 @@ return new class extends Migration
 
     Schema::create('vital_signs', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->integer('year');
       $table->integer('month');
       $table->uuid('member_uuid'); //owner
@@ -160,11 +170,12 @@ return new class extends Migration
     // ================== Start Plan Biz ==================
 
     Schema::create('prepared_data_bizs', function (Blueprint $table) {
-      $table->increments('id');
+      $table->id();
+      $table->uuid('uuid')->nullable();
       $table->integer('mid');
-      $table->integer('member_uuid');
-      $table->integer('sponsor_uuid')->nullable();
-      $table->integer('placement_uuid')->nullable();
+      $table->uuid('member_uuid');
+      $table->uuid('sponsor_uuid')->nullable();
+      $table->uuid('placement_uuid')->nullable();
       $table->decimal('ppv', 12, 2)->default(0);
       $table->decimal('pbv', 12, 2)->default(0);
       $table->decimal('gpv', 12, 2)->default(0);
@@ -175,8 +186,12 @@ return new class extends Migration
       $table->decimal('gbvb', 12, 2)->default(0);
       $table->decimal('omzet', 12, 2)->default(0);
       $table->decimal('ozb', 12, 2)->default(0);
+      $table->decimal('gpvb_under_100', 12, 2)->default(0);
+      $table->decimal('gbvb_under_100', 12, 2)->default(0);
       $table->integer('srank')->default(0);
+      $table->uuid('srank_uuid')->nullable();
       $table->integer('erank')->default(0);
+      $table->uuid('erank_uuid')->nullable();
       $table->timestamps();
       $table->softDeletes();
     });
@@ -187,7 +202,7 @@ return new class extends Migration
 
     Schema::create('monthly_reward_coupons', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
       // $table->uuid('owner');
       $table->string('voucher');
@@ -202,7 +217,7 @@ return new class extends Migration
 
     Schema::create('vouchers', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
       // $table->uuid('owner');
       $table->string('saldo');
@@ -213,7 +228,7 @@ return new class extends Migration
 
     Schema::create('voucher_details', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
       // $table->uuid('owner');
       $table->string('code');
@@ -227,7 +242,7 @@ return new class extends Migration
 
     Schema::create('voucher_cashbacks', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
       // $table->uuid('owner_id');
       $table->decimal('amount', 12, 2)->default(0);
@@ -239,7 +254,7 @@ return new class extends Migration
 
     Schema::create('voucher_cashback_details', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
       // $table->uuid('owner_id');
       $table->string('code');
@@ -257,7 +272,7 @@ return new class extends Migration
 
     Schema::create('wallets', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
       // $table->uuid('owner');
       $table->string('saldo');
@@ -268,7 +283,7 @@ return new class extends Migration
 
     Schema::create('wallet_details', function (Blueprint $table) {
       $table->id();
-      $table->uuid('uuid');
+      $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
       // $table->uuid('owner');
       $table->string('code');
@@ -289,7 +304,7 @@ return new class extends Migration
   {
     Schema::dropIfExists('eranks');
     Schema::dropIfExists('sranks');
-    Schema::drop('effective_rank');
+    Schema::dropIfExists('effective_rank');
     Schema::dropIfExists('vital_signs');
     Schema::dropIfExists('carry_forward_details');
     Schema::dropIfExists('prepared_data_joys');

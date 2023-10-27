@@ -26,7 +26,7 @@ class BonusWeekly extends Model
     protected $fillable = [
         'wid',
         'user_uuid',
-        'owner',
+        'member_uuid',
         'express',
         'productivity',
         'team',
@@ -43,7 +43,7 @@ class BonusWeekly extends Model
     ];
     protected $hidden = [
         'id',
-        'owner',
+        'member_uuid',
         'created_at',
         'updated_at',
         'confirmed',
@@ -61,7 +61,7 @@ class BonusWeekly extends Model
 
     public function membership()
     {
-        return $this->hasOne(Member::class, 'uid', 'owner');
+        return $this->hasOne(Member::class, 'uuid', 'member_uuid');
     }
 
     // public function bonus_express()

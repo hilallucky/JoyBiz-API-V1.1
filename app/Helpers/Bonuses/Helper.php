@@ -66,7 +66,6 @@ class Helper extends Model
 
   public function check_Rank($apbv, $leg_jbp, $bj, $vj, $user)
   {
-
     $srank = SRank::where('member_uuid', $user->uuid)->first();
     $srank = isset($srank) ? $srank->srank : 0;
     $childs = SRank::where('sponsor_uuid', $user->uuid)->get();
@@ -559,7 +558,7 @@ class Helper extends Model
       //if ppvb or gpvb not null
       if ($ppvb || $gpvb) {
         $preparedDataBiz = PreparedDataBiz::firstOrCreate(
-          ['member_uuid' => $member_uuid, 'mid' => $mid],
+          ['member_uuid' => $member_uuid, 'mid' => $mid, 'wid_uuid' => $wid->uuid],
           ['spid' => $spid, 'upid' => $upid]
         );
         $preparedDataBiz->ppv += $ppv;
@@ -640,7 +639,8 @@ class Helper extends Model
     $grv
   ) {
     $user = Member::select('id', 'uuid', 'sponsor_uuid', 'placement_uuid')
-      ->where('member_uuid', $member_uuid)
+      ->with('user')
+      ->where('uuid', $member_uuid)
       ->first();
 
     //Log::info($user->username);
@@ -652,7 +652,8 @@ class Helper extends Model
         ['start_date', '<=', $updated_at],
         ['end_date', '>=', $updated_at]
       ])->first(['id', 'start_date', 'end_date']);
-      $mid = date('Ym', strtotime($wid->eDate));
+
+      $mid = date('Ym', strtotime($wid->end_date));
 
       /* update status rank */
       $srank = SRank::firstOrCreate(
@@ -753,7 +754,6 @@ class Helper extends Model
       $erank->gpv += $gbv;
       $erank->erank = $this->check_eRank($member_uuid, $erank->ppv + $ppv, $mid);
       $erank->save();
-
 
       $preparedDataJoy = PreparedDataJoy::firstOrCreate(
         ['member_uuid' => $member_uuid, 'wid' => $wid->id],
@@ -859,8 +859,6 @@ class Helper extends Model
       ->with(['member.effectiveRank', 'details.productPrice.product'])
       ->first();
 
-
-      dd('break');
     /*joybiz v1
 		//paket Registrasi SC yang mengandung biaya reg dan selisih
 		$scRegisterSpecialCase = array('RSC01','RSC02');
@@ -872,7 +870,7 @@ class Helper extends Model
       $trx->save();
 
       $user = Member::where('uuid', $trx->member_uuid)->with(['sponsor', 'srank'])->first();
-      $membership = $user->uuid;
+      $membership = $user;
 
       $srank = isset($user->srank) ? $user->srank : null;
 
@@ -968,15 +966,10 @@ class Helper extends Model
       }
 
       $trx->transaction_date = $date;
-      if ($trx->status == 'COD') {
-        $trx->status = 'S';
-      } else {
-        $trx->status = $indent ? 'I' : 'PC';
-      }
-
+      $trx->status = '1';
       $trx->approved_date = Carbon::now();
       $trx->approved_by = $userlogin;
-      $trx->updated_date = Carbon::now();
+      $trx->updated_at = Carbon::now();
       $trx->updated_by = $userlogin;
       $trx->save();
 
@@ -987,15 +980,15 @@ class Helper extends Model
       }
 
       if (
-        $membership->status != 1
-        && $membership->membership_status == 1
+        $membership->status != '1'
+        && $membership->membership_status == '1'
         && $trx->total_bv >= $membership->min_bv
       ) {
-        $membership->activated_at = $membership->status == 1 && $trx->pv_total >= $membership->min_bv
+        $membership->activated_at = $membership->status == '1' && $trx->pv_total >= $membership->min_bv
           ? $membership->activated_at
           : $trx->transaction_date;
-        $membership->status = 1; // Active
-        $membership->membership_status = 1; // Member
+        $membership->status = '1'; // Active
+        $membership->membership_status = '1'; // Member
         $membership->save();
       }
 
@@ -1004,14 +997,15 @@ class Helper extends Model
         $sCTrx = $this->calculateSCAmount($trx->uuid);
 
         if ($trx->total_pv > 0) {
-
-          if ($membership->membership_status == 2 || $hasRegister) {
+          if ($membership->membership_status == '2' || $hasRegister) {
 
             //if Customer buy with retail once change to SC
-            $user->membership_status = 2;
+            $user->membership_status = '2';
             $user->status = 1;
             $user->activated_at = $date;
             $user->save();
+
+
 
             // #jika customer tidak upgrade membership
             // if ($user->membership_status == 2) {
@@ -1200,7 +1194,7 @@ class Helper extends Model
         );
       }
 
-      // $result = 
+      // $result =
       $joyhelper->syncJoyDatabyCode($uuid);
 
       $status = true;
@@ -1446,7 +1440,7 @@ class Helper extends Model
       $erank->save();
 
       $preparedDataJoy = PreparedDataJoy::firstOrCreate(
-        ['member_uuid' => $member_uuid, 'wid' => $wid->id],
+        ['member_uuid' => $member_uuid, 'wid' => $wid->id, 'wid_uuid' => $wid->uuid],
         ['sponsor_uuid' => $spid, 'placement_uuid' => $upid]
       );
 

@@ -64,9 +64,9 @@ class ProductSeeder extends Seeder
           "show_status" => $data['8'] ? $data['8'] : 1,
           "sc_show_status" => $data['9'] ? $data['9'] : 1,
           "weight" => $data['10'] ? $data['10'] : 0.4,
-          "allow_from_rank" => null, //$data['11'] ? $data['11'] : 
+          "allow_from_rank" => $data['11'] ? $data['11'] :  null,
           "allow_from_rank_id" => $data['12'] ? $data['12'] : 0,
-          "allow_to_rank" => null, //$data['13'] ? $data['13'] : 
+          "allow_to_rank" => $data['13'] ? $data['13'] :  null,
           "allow_to_rank_id" => $data['14'] ? $data['14'] : 15,
           "remarks" => null,
           'created_at' => Carbon::now(),

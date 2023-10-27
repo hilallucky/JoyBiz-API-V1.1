@@ -2,6 +2,7 @@
 
 namespace App\Models\Bonuses\Ranks;
 
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -29,6 +30,7 @@ class SRank extends Model
         'bj',
         'vj',
         'srank',
+        'srank_uuid',
         'bj_active',
         'vj_active',
     ];

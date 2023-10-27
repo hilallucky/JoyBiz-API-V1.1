@@ -4,6 +4,7 @@ namespace App\Models\Orders\Production;
 
 use App\Models\Members\Member;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

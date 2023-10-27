@@ -9,7 +9,7 @@ class PreparedDataBiz extends Model
 {
   use SoftDeletes;
 
-  protected $table = 'sranks';
+  protected $table = 'prepared_data_bizs';
   protected $primaryKey = 'id';
 
   protected $casts = [
@@ -38,7 +38,9 @@ class PreparedDataBiz extends Model
     'gpvb_under_100',
     'gbvb_under_100',
     'srank',
-    'erank'
+    'srank_uuid',
+    'erank',
+    'erank_uuid'
   ];
 
   public function user()

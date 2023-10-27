@@ -307,7 +307,7 @@ class OrderApprovalService
       return $this->core->setResponse(
         'success',
         'Order(s) approved.',
-        [$uuids, $resultCalculation],
+        $uuids,
         false,
         200
       );

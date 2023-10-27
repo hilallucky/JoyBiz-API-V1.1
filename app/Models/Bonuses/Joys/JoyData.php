@@ -15,6 +15,7 @@ class JoyData extends Model
 
     protected $fillable = [
         'id',
+        'uuid',
         'date',
         'member_uuid',
         'sponsor_uuid',

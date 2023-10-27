@@ -2,6 +2,7 @@
 
 namespace App\Models\Bonuses\Ranks;
 
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,6 +28,7 @@ class ERank extends Model
         'gpv',
         'mid',
         'erank',
+        'erank_uuid',
     ];
 
     public function user()

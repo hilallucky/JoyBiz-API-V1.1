@@ -102,9 +102,11 @@ class JoyHelper extends Model
       }
 
       $joydata = JoyData::firstOrCreate([
+        // 'uuid' => null,
         'date' => $t->transaction_date,
         'member_uuid' => $user->uuid
       ]);
+
       $joydata->sponsor_uuid = $user->sponsor_uuid;
       $joydata->placement_uuid = $user->placement_uuid;
       $joydata->ppv += $t->total_pv_plan_joy;
@@ -128,8 +130,6 @@ class JoyHelper extends Model
     }
   }
 
-
-
   public function pushJoyData($date, $upid, $gpv, $gbv, $grv)
   {
     $user = Member::where('uuid', $upid)->with('srank')->first();
@@ -143,8 +143,8 @@ class JoyHelper extends Model
       } else {
         $jrank = 0;
       }
-
-      $joydata = JoyData::firstOrCreate(['date' => $date, 'member_uuid' => $user->member_uuid]);
+      
+      $joydata = JoyData::firstOrCreate(['date' => $date, 'member_uuid' => $user->uuid]);
       $joydata->sponsor_uuid = $user->sponsor_uuid;
       $joydata->placement_uuid = $user->placement_uuid;
       $joydata->gpv += $gpv;

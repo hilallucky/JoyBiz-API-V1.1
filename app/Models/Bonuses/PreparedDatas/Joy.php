@@ -2,6 +2,9 @@
 
 namespace App\Models\Bonuses\PreparedDatas;
 
+use App\Models\Bonuses\Ranks\ERank;
+use App\Models\Members\MemberShippingAddress;
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -9,7 +12,7 @@ class Joy extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'sranks';
+    protected $table = 'prepared_data_joys';
     protected $primaryKey = 'id';
 
     protected $casts = [
@@ -26,6 +29,7 @@ class Joy extends Model
 
     protected $fillable = [
         'wid',
+        'wid_uuid',
         'member_uuid', //jbid;
         'sponsor_uuid', //'spid',
         'placement_uuid', //'upid',
@@ -37,7 +41,9 @@ class Joy extends Model
         'gpvj',
         'gbvj',
         'srank',
-        'erank'
+        'srank_uuid',
+        'erank',
+        'erank_uuid'
     ];
 
     public function user()
@@ -47,7 +53,7 @@ class Joy extends Model
 
     public function membership()
     {
-        return $this->hasOne(Membership::class, 'uuid', 'member_uuid');
+        return $this->hasOne(MemberShippingAddress::class, 'uuid', 'member_uuid');
     }
 
     public function effectiveRank()
