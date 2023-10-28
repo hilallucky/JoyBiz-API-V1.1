@@ -26,6 +26,7 @@ class JoyHelper extends Model
     $transactions = OrderHeader::where('transaction_date', $date)
       ->with('user', 'member')
       ->get();
+
     foreach ($transactions as $key => $t) {
       echo $key;
       Log::debug($t->code_trans);
@@ -143,7 +144,7 @@ class JoyHelper extends Model
       } else {
         $jrank = 0;
       }
-      
+
       $joydata = JoyData::firstOrCreate(['date' => $date, 'member_uuid' => $user->uuid]);
       $joydata->sponsor_uuid = $user->sponsor_uuid;
       $joydata->placement_uuid = $user->placement_uuid;

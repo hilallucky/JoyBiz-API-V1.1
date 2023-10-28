@@ -15,12 +15,11 @@ class VoucherHelper extends Model
 {
   public function getByMember($member_uuid)
   {
-    $voucher = Voucher::where('member_uuid', $member_uuid)->first();
-    $saldo = decrypt($voucher->saldo);
-    return $saldo;
+    $voucher = Voucher::with('member')->where('member_uuid', $member_uuid)->first();
+    return ['saldo' => $voucher ? $voucher->saldo : 0];
   }
 
-  public function useVoucher($member_uuid, $amount, $code_trans)
+  public function use($member_uuid, $amount, $code_trans)
   {
     $userlogin = null;
     if (Auth::check()) {
@@ -28,9 +27,7 @@ class VoucherHelper extends Model
       $userlogin = $user->uuid;
     }
 
-    $voucher = Voucher::where('member_uuid', $member_uuid)->first();
-    $saldo = decrypt($voucher->saldo);
-
+    $voucher = Voucher::where('member_uuid', $member_uuid)->first()->lockForUpdate();
     $now = Carbon::now();
     $sDate = Carbon::now()->startOfMonth();
     $eDate = $now->endOfMonth();
@@ -38,19 +35,28 @@ class VoucherHelper extends Model
       'created_at',
       DB::raw('created_at::date'),
       [$sDate, $eDate]
-    ) //('created_at', [$sDate, $eDate])
+    )
       ->count() + 1;
 
     $code = "UVCI" . $now->year . $now->format('m') . $index;
-    $note = "Voucher dipakai oleh " . $user->first_name . " pada " . $now . " untuk transaksi " . $code_trans . " issued_by " . $userlogin->first_name;
+    $fullName = $user->first_name . ($user->last_name ? ' ' . $user->last_name : '');
+    $note = "Voucher dipakai oleh " . $fullName .
+      " pada " . $now . " untuk transaksi " . $code_trans . " issued_by " . $fullName;
 
     try {
       DB::beginTransaction();
-      $result = VoucherDetail::create(['member_uuid' => $member_uuid, 'code' => $code, 'debit' => encrypt(0), 'credit' => encrypt($amount), 'note' => $note]);
 
-      $new_saldo = $saldo - $amount;
-      $voucher->saldo = encrypt($new_saldo);
+      VoucherDetail::create([
+        'member_uuid' => $member_uuid,
+        'code' => $code, 'debit' => encrypt(0),
+        'credit' => encrypt($amount),
+        'note' => $note,
+        'transaction_uuid' => $code_trans
+      ]);
+
+      $voucher->saldo = encrypt(decrypt($voucher->saldo) - $amount);
       $voucher->save();
+
       DB::commit();
     } catch (\Exception $e) {
       DB::rollBack();
@@ -58,9 +64,5 @@ class VoucherHelper extends Model
     }
 
     return $code;
-  }
-
-  public function useByMember()
-  {
   }
 }

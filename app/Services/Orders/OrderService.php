@@ -2,6 +2,7 @@
 
 namespace App\Services\Orders;
 
+use App\Helpers\Bonuses\VoucherHelper;
 use app\Libraries\Core;
 use App\Models\Orders\OrderStatuses;
 use App\Models\Orders\Temporary\OrderDetailTemp;
@@ -249,6 +250,16 @@ class OrderService
         }
 
         foreach ($orderPayments as $orderPayment) {
+          // Start check if payment include voucher cash/product
+          $voucherHelper = new VoucherHelper;
+          if (
+            $orderPayment['payment_type_uuid'] == '92851148-5dd6-4360-a644-7948e9aaf54e' || // Voucher Cash
+            $orderPayment['payment_type_uuid'] == '1ce39ab0-068c-4d2e-89c3-5d21eeae6175' // Voucher ;Product
+          ) {
+            $voucherHelper->use($orderHeader['member_uuid'], $orderPayment['amount'], $groupUuid);
+          }
+          // End check if payment include voucher cash/product
+
           $newOrderPayment = [
             'uuid' => Str::uuid(),
             'order_group_header_temp_uuid' => $groupUuid,

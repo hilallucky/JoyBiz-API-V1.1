@@ -9,7 +9,7 @@ class VoucherDetail extends Model
 { 
     use SoftDeletes;
 
-    protected $table = 'vouchers';
+    protected $table = 'voucher_details';
     protected $primaryKey = 'id';
 
     protected $casts = [
@@ -23,6 +23,7 @@ class VoucherDetail extends Model
         'code',
         'debit',
         'credit',
+        'transaction_uuid',
         'note',
     ];
 

@@ -41,11 +41,11 @@ class Money extends Model
       'created_at',
       DB::raw('created_at::date'),
       [$sDate, $eDate]
-    ) //('created_at', [$sDate, $eDate])
+    )
       ->count() + 1;
     $code = "VCI" . $now->year . $now->format('m') . $index;
 
-    $voucher = Voucher::firstOrCreate(['member_uuid' => $member_uuid], ['saldo' => encrypt(0)]);
+    $voucher = Voucher::firstOrCreate(['member_uuid' => $member_uuid], ['saldo' => encrypt(0)])->lockForUpdate();
 
     $saldo = decrypt($voucher->saldo);
     $new_saldo = $amount + $saldo;

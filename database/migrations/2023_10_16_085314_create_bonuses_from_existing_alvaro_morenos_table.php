@@ -204,7 +204,6 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
-      // $table->uuid('owner');
       $table->string('voucher');
       $table->string('mid');
       $table->boolean('active')->default(true);
@@ -218,9 +217,10 @@ return new class extends Migration
     Schema::create('vouchers', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->nullable();
+      $table->enum('type', [1, 2, 3])->comment('Type : 1 = V-Cash, 2 = V-Product, 3 = V-Promo')->default(1);
       $table->uuid('member_uuid'); //owner
-      // $table->uuid('owner');
       $table->string('saldo');
+      $table->date('expired_date');
       $table->timestamps();
       $table->softDeletes();
     });
@@ -230,10 +230,10 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
-      // $table->uuid('owner');
       $table->string('code');
       $table->string('debit');
       $table->string('credit');
+      $table->uuid('transaction_uuid')->nullable();
       $table->text('note');
       $table->timestamps();
       $table->softDeletes();
@@ -244,7 +244,6 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
-      // $table->uuid('owner_id');
       $table->decimal('amount', 12, 2)->default(0);
       $table->string('encrypted_amount')->nullable();
       $table->timestamps();
@@ -256,8 +255,8 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
-      // $table->uuid('owner_id');
       $table->string('code');
+      $table->uuid('transaction_uuid')->nullable();
       $table->boolean('credit')->default('true');
       $table->string('amount')->nullable();
       $table->string('encrypted_amount')->nullable();
@@ -274,7 +273,6 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
-      // $table->uuid('owner');
       $table->string('saldo');
       $table->timestamps();
       $table->softDeletes();
@@ -285,8 +283,8 @@ return new class extends Migration
       $table->id();
       $table->uuid('uuid')->nullable();
       $table->uuid('member_uuid'); //owner
-      // $table->uuid('owner');
       $table->string('code');
+      $table->uuid('transaction_uuid')->nullable();
       $table->string('debit');
       $table->string('credit');
       $table->text('note');

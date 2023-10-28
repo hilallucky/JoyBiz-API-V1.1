@@ -2,6 +2,8 @@
 
 namespace App\Models\Bonuses\CouponsAndRewards;
 
+use App\Models\Members\Member;
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

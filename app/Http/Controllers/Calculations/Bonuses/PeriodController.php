@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Calculations\Bonus;
+namespace App\Http\Controllers\Calculations\Bonuses;
 
 use App\Http\Controllers\Controller;
-use App\Services\Calculations\Bonus\PeriodService;
+use App\Services\Calculations\Bonuses\PeriodService;
 use Illuminate\Http\Request;
 
 class PeriodController extends Controller
