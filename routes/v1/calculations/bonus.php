@@ -2,6 +2,7 @@
 
 $router->group(['prefix' => 'bonus', 'as' => 'bonus'], function () use ($router) {
 
-    $router->post('/weekly', ['as' => 'all', 'uses' => 'Calculations\Bonuses\PeriodController@generateWeekPeriods']);
-    $router->get('/voucher/{member_uuid}', ['as' => 'get data voucher', 'uses' => 'Calculations\Bonuses\VoucherController@getByMember']);
+  $router->post('/weekly', ['as' => 'all', 'uses' => 'Calculations\Bonuses\PeriodController@generateWeekPeriods']);
+  $router->get('/voucher/{member_uuid}', ['as' => 'get data voucher', 'uses' => 'Calculations\Bonuses\VoucherController@getByMember']);
+  $router->post('/voucher/use', ['as' => 'use voucher', 'uses' => 'Calculations\Bonuses\VoucherController@usedByMember']);
 });

@@ -18,19 +18,6 @@ class VoucherService
     $this->core = new Core();
   }
 
-  public function getByMember($request)
-  {
-    // Get voucher cash/product
-    $voucherHelper = new VoucherHelper();
-    $voucher = $voucherHelper->getByMember($request->member_uuid);
-    return $this->core->setResponse(
-      'success',
-      'Voucher generated.',
-      $voucher,
-      false,
-      200
-    );
-  }
   public function generateVouchers($request)
   {
     return $this->core->setResponse(
@@ -42,13 +29,58 @@ class VoucherService
     );
   }
 
+  public function getByMember($request)
+  {
+    // Get voucher cash/product
+    $voucherHelper = new VoucherHelper();
+    $voucher = $voucherHelper->getByMember($request->member_uuid);
+    return $this->core->setResponse(
+      'success',
+      'Voucher for member = ' . $request->member_uuid . '.',
+      $voucher,
+      false,
+      200
+    );
+  }
+
+  public function usedByMember($request)
+  {
+    $validator = $this->validation(
+      'usedByMember',
+      $request
+    );
+
+    if ($validator->fails()) {
+      return $this->core->setResponse(
+        'error',
+        $validator->messages()->first(),
+        null,
+        false,
+        422
+      );
+    }
+
+    // Get voucher cash/product
+    $voucherHelper = new VoucherHelper();
+    $voucher = $voucherHelper->use($request->member_uuid, $request->amount, $request->order_uuid);
+    return $this->core->setResponse(
+      'success',
+      'Voucher used for member ' . $request->member_uuid . '.',
+      $voucher,
+      false,
+      200
+    );
+  }
+
   private function validation($type = null, $request)
   {
     switch ($type) {
 
-      case 'getByMember':
+      case 'usedByMember':
         $validator = [
           'member_uuid' => 'required|uuid',
+          'amount' => 'required|numeric',
+          'order_uuid' => 'required|uuid',
         ];
 
         break;

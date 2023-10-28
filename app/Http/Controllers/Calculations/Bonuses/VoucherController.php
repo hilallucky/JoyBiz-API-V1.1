@@ -16,13 +16,18 @@ class VoucherController extends Controller
     $this->voucherService = $voucherService;
   }
 
-  public function getByMember(Request $request)
-  {
-    return $this->voucherService->getByMember($request);
-  }
-
   public function generateVouchers(Request $request)
   {
     return $this->voucherService->generateVouchers($request);
+  }
+
+  public function usedByMember(Request $request)
+  {
+    return $this->voucherService->usedByMember($request);
+  }
+
+  public function getByMember(Request $request)
+  {
+    return $this->voucherService->getByMember($request);
   }
 }
