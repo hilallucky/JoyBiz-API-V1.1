@@ -86,7 +86,7 @@ class Member extends Model
     return $this->hasMany(MemberAddress::class, 'member_uuid');
   }
 
-  function getUplineCode($uuid, $type)
+  public function getUplineCode($uuid, $type)
   {
     $member = Member::where('uuid', $uuid)->first();
 
@@ -113,7 +113,7 @@ class Member extends Model
     return $uplines;
   }
 
-  function checkNetwork($uuid1, $uuid2)
+  public function checkNetwork($uuid1, $uuid2)
   {
     $member = Member::where('uuid', $uuid1)->first();
 

@@ -129,7 +129,9 @@ return new class extends Migration
       $table->uuid('deleted_by')->comment('Deleted By in order_headers (User ID from table user')->nullable();
       $table->date('transaction_date')->comment('Transaction date');
       $table->date('approved_date')->comment('Approved date')->nullable();
-      $table->string('approved_by')->comment('Approved By (User ID from table user')->nullable();
+      $table->uuid('deleted_by')->comment('Deleted By in order_headers (User ID from table user')->nullable();
+      $table->date('data_transfered_to_wms')->comment('Date get_date to wms if already processed get to wms')->nullable();
+      $table->string('do_uuid')->comment('Do Number if already processed')->nullable();
 
       // $table->foreign('created_by')->references('uuid')->on('users');
       // $table->foreign('updated_by')->references('uuid')->on('users');

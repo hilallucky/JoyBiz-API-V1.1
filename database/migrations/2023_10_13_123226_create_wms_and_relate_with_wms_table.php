@@ -45,8 +45,8 @@ return new class extends Migration
     Schema::create('wms_stock_processes', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->date('process_date');
-      $table->uuid('process_by_uuid')->nullable();
+      $table->date('processed_date');
+      $table->uuid('processed_by_uuid')->nullable();
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
@@ -68,7 +68,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->string('weight', 150);
+      $table->integer('weight')->default(0);
       $table->integer('stock_in')->default(0);
       $table->integer('stock_out')->default(0);
       $table->integer('stock_previous')->default(0);
@@ -97,14 +97,14 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->string('weight', 150);
+      $table->integer('weight')->default(0);
       $table->integer('stock_in')->default(0);
       $table->integer('stock_out')->default(0);
       $table->integer('stock_previous')->default(0);
       $table->integer('stock_current')->default(0);
       $table->integer('stock_to_sale')->default(0);
       $table->integer('indent')->default(0);
-      $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, ;2 = Stock Out')->default(1);
+      $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, 2 = Stock Out')->default(1);
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
@@ -129,7 +129,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->string('weight', 150);
+      $table->integer('weight')->default(0);
       $table->integer('stock_in')->default(0);
       $table->integer('stock_out')->default(0);
       $table->integer('stock_previous')->default(0);
@@ -162,7 +162,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->string('weight', 150);
+      $table->integer('weight')->default(0);
       $table->integer('stock_in')->default(0);
       $table->integer('stock_out')->default(0);
       $table->integer('stock_previous')->default(0);
@@ -197,7 +197,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->string('weight', 150);
+      $table->integer('weight')->default(0);
       $table->integer('stock_in')->default(0);
       $table->integer('stock_out')->default(0);
       $table->integer('stock_previous')->default(0);
@@ -212,10 +212,14 @@ return new class extends Migration
       $table->foreign('stock_process_uuid')->references('uuid')->on('wms_stock_processes')->onDelete('cascade');
     });
 
-    // Table wms orders
-    Schema::create('wms_orders', function (Blueprint $table) {
+    // Table wms_transactions
+    Schema::create('wms_get_transactions', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
+      $table->date('get_date');
+      $table->uuid('wms_do_header_uuid')->nullable();
+      $table->date('wms_do_date')->nullable();
+      $table->enum('transaction_type', [1, 2, 3, 4, 5])->comment('Transaction type : 1 = Sales, 2 = PO')->default(1);
       $table->date('transaction_date');
       $table->uuid('transaction_header_uuid')->nullable(); // could be order_header_uuid or purchasing_order_uuid
       $table->uuid('transaction_detail_uuid')->nullable(); // could be order_header_uuid or purchasing_order_uuid
@@ -227,17 +231,75 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->string('weight', 150);
+      $table->integer('weight')->default(0);
       $table->integer('stock_in')->default(0);
       $table->integer('stock_out')->default(0);
-      $table->integer('indent')->default(0);
-      $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, ;2 = Stock Out')->default(1);
+      $table->integer('qty')->nullable();
+      $table->integer('qty_indent')->default(0);
+      $table->enum('product_status', [0, 1, 2, 3, 4])->nullable()
+        ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
+      $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, 2 = Stock Out')->default(1);
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
       $table->timestamps();
       $table->softDeletes();
-      $table->foreign('stock_process_uuid')->references('uuid')->on('wms_stock_processes')->onDelete('cascade');
+    });
+
+    // Table wms_do_headers
+    Schema::create('wms_do_headers', function (Blueprint $table) {
+      $table->id();
+      $table->uuid('uuid')->unique();
+      $table->date('do_date');
+      $table->uuid('warehouse_uuid')->nullable();
+      $table->enum('sent_to', [1, 2, 3, 4, 5])->comment('Sent to : 1 = Warehouse, 2 = Member, 3 = PUC')->default(2);
+      $table->uuid('to_uuid')->nullable(); // could be member/PUC/warehouse
+      $table->string('name')->nullable();
+      $table->text('remarks')->nullable();
+      $table->text('notes')->nullable();
+      $table->text('description')->nullable();
+      $table->integer('total_weight');
+      $table->integer('stock_in')->default(0);
+      $table->integer('stock_out')->default(0);
+      $table->integer('total_transaction')->default(0); // total transaction count
+      $table->integer('total_qty')->default(0); // total product from transaction by do number
+      $table->integer('total_qty_sent')->default(0);
+      $table->integer('total_qty_indent')->default(0);
+      $table->integer('total_qty_remain')->default(0);
+      $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, 2 = Stock Out')->default(1);
+      $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
+      $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
+      $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+      $table->timestamps();
+      $table->softDeletes();
+    });
+
+    // Table wms_do_details
+    Schema::create('wms_do_details', function (Blueprint $table) {
+      $table->id();
+      $table->uuid('uuid')->unique();
+      $table->uuid('wms_do_header_uuid')->nullable();
+      $table->uuid('product_uuid');
+      $table->uuid('product_attribute_uuid')->nullable();
+      $table->uuid('product_header_uuid')->nullable();
+      $table->string('name')->nullable();
+      $table->string('attribute_name')->nullable();
+      $table->text('description')->nullable();
+      $table->enum('is_register', [0, 1]);
+      $table->enum('product_status', [0, 1, 2, 3, 4])->nullable()
+        ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
+      $table->integer('weight')->default(0);
+      $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, 2 = Stock Out')->default(1);
+      $table->integer('qty_order')->default(0);
+      $table->integer('qty_sent')->default(0);
+      $table->integer('qty_indent')->default(0);
+      $table->integer('qty_remain')->default(0);
+      $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
+      $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
+      $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
+      $table->timestamps();
+      $table->softDeletes();
+      $table->foreign('wms_do_header_uuid')->references('uuid')->on('wms_do_headers')->onDelete('cascade');
     });
   }
 
@@ -255,6 +317,8 @@ return new class extends Migration
     Schema::dropIfExists('wms_stock_summary_weekly_headers');
     Schema::dropIfExists('wms_stock_summary_monthly_headers');
     Schema::dropIfExists('wms_stock_summary_yearly_headers');
-    Schema::dropIfExists('wms_orders');
+    Schema::dropIfExists('wms_get_transactions');
+    Schema::dropIfExists('wms_do_headers');
+    Schema::dropIfExists('wms_do_details');
   }
 };

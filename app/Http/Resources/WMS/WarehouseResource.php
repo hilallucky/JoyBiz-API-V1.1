@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Warehouses;
+namespace App\Http\Resources\WMS;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

@@ -35,8 +35,8 @@ $router->group(['prefix' => 'v1/public', 'as' => 'v1'], function () use ($router
         });
 
         /* v1/warehouses group */
-        $router->group(['prefix' => 'v1/warehouses', 'as' => 'v1'], function () use ($router) {
-            Core::renderRoutes('v1/warehouses', $router);
+        $router->group(['prefix' => 'v1/wms', 'as' => 'v1'], function () use ($router) {
+            Core::renderRoutes('v1/wms', $router);
         });
 
         /* v1/products group */
