@@ -2,6 +2,9 @@
 
 namespace App\Models\Orders\Temporary;
 
+use App\Models\Products\ProductAttribute;
+use App\Models\Products\ProductGroupComposition;
+use App\Models\Products\ProductPrice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -33,7 +36,9 @@ class OrderDetailTemp extends Model
     'order_group_header_temp_uuid',
     'order_header_temp_uuid',
     'product_uuid',
+    'product_attribute_uuid',
     'product_price_uuid',
+    'is_product_group',
     'qty',
     'price',
     'discount_type',
@@ -57,4 +62,40 @@ class OrderDetailTemp extends Model
    * @var bool
    */
   public $incrementing = false;
+
+  public function productPrice()
+  {
+    return $this->belongsTo(
+      ProductPrice::class,
+      'product_price_uuid',
+      'uuid'
+    );
+  }
+
+  public function attributes()
+  {
+    return $this->hasMany(
+      ProductAttribute::class,
+      'uuid',
+      'product_attribute_uuid'
+    );
+  }
+
+  public function compositions()
+  {
+    return $this->belongsToMany(
+      ProductGroupComposition::class,
+      'product_uuid',
+      'uuid'
+    );
+  }
+
+  public function group()
+  {
+    return $this->belongsToMany(
+      ProductGroupComposition::class,
+      'product_uuid',
+      'uuid'
+    );
+  }
 }

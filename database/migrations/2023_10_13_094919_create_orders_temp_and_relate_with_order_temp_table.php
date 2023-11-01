@@ -133,7 +133,9 @@ return new class extends Migration
       $table->uuid('order_group_header_temp_uuid')->nullable();
       $table->uuid('order_header_temp_uuid')->comment('Get from table order_headers_temp');
       $table->uuid('product_uuid')->comment('Get from table products');
+      $table->uuid('product_attribute_uuid')->comment('Get from table product_attributes')->nullable();
       $table->uuid('product_price_uuid')->comment('Get from table product_prices');
+      $table->tinyInteger('is_product_group')->default(0)->nullable();
       $table->integer('qty')->default(1);
       $table->decimal('price', 10, 2)->default(0);
       $table->enum('discount_type', ['percentage', 'amount'])->nullable();
@@ -187,7 +189,7 @@ return new class extends Migration
 
 
     // Table order_shipping_temp
-    Schema::create('order_shippings_temp', function (Blueprint $table) {
+    Schema::create('order_shipping_temp', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('order_group_header_temp_uuid')->nullable();

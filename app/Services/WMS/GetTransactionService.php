@@ -82,46 +82,54 @@ class GetTransactionService
     }
 
     try {
+      DB::enableQueryLog();
       DB::beginTransaction();
 
       $start = $request->input('start');
       $end = $request->input('end');
       // get only paid and not yet processed by warehouse
-      $orders = OrderHeader::with('details.productPrice.product')
+      $orders = OrderHeader::with('details.productPrice.product.attributes', 'details.group')
         ->whereBetween(DB::raw('transaction_date::date'), [$start, $end])
         ->whereIn('status', ['1'])->lockForUpdate()->get();
+
+      $query = DB::getQueryLog();
+      dd($query);
 
       $newDatas = [];
       $getDate = Carbon::now();
       $stockOut = 0;
       foreach ($orders as $order) {
-        $newDatas[] = [
+        $newDatas = [
           'uuid' => Str::uuid(),
           'get_date' => $order->uuid,
           'transaction_type' => '1',
           'transaction_date' => $order->transaction_date,
           'transaction_header_uuid' => $order->uuid,
-          'transaction_detail_uuid' => $order->details->uuid,
         ];
 
-        foreach ($orders->details as $detail) {
-          $stockOut = $detail->product_price->product->status == '1' ? $detail->qty : 0;
-          $indent = $detail->product_price->product->status == '4' ? $detail->qty : 0;
-          $newDatas[] = [
-            'product_uuid' => $detail->product_uuid,
-            // 'product_attribute_uuid' => $detail->product_attribute_uuid,
-            // 'product_header_uuid' => $detail->product_header_uuid,
-            'name' => $detail->name,
-            'attribute_name' => $detail->attribute_name,
-            'description' => $detail->description,
-            'is_register' => $detail->is_register,
-            'weight' => $detail->weight,
-            'stock_in' => 0,
-            'stock_out' => $detail->qty,
-            'qty' => $detail->qty,
-            'qty_indent' => $detail->qty_indent,
-          ];
+        foreach ($order->details as $detail) {
+          // $isGroupProduct= $detail->productPrice->product->attributes->count();
+          // $isGroupProduct= $detail->group;
+          return($detail->group);
+
+          $stockOut = $detail->productPrice->product->status == '1' ? $detail->qty : 0;
+          $indent = $detail->productPrice->product->status == '4' ? $detail->qty : 0;
+          $newDatas['product_uuid'] = $detail->uuid;
+          $newDatas['product_attribute_uuid'] = $detail->uuid;
+          $newDatas['product_header_uuid'] = $detail->uuid;
+          $newDatas['name'] = $detail->productPrice->product->name;
+          // $newDatas['attribute_name'] = $detail->productPrice->product;
+          $newDatas['description'] = $detail->productPrice->product->description;
+          $newDatas['is_register'] = $detail->productPrice->product->is_register;
+          $newDatas['weight'] = $detail->productPrice->product->weight;
+          $newDatas['stock_in'] = 0;
+          $newDatas['stock_out'] = $stockOut;
+          $newDatas['qty_order'] = $detail->qty;
+          $newDatas['qty_indent'] = $indent;
+          $newDatas['product_status'] = $detail->status;
+          $newDatas['stock_type'] = '2';
         }
+        return $newDatas;
       }
 
       // $warehouseList = Warehouse::whereIn(

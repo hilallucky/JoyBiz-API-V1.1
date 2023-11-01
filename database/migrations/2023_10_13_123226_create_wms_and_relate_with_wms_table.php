@@ -234,7 +234,7 @@ return new class extends Migration
       $table->integer('weight')->default(0);
       $table->integer('stock_in')->default(0);
       $table->integer('stock_out')->default(0);
-      $table->integer('qty')->nullable();
+      $table->integer('qty_order')->nullable();
       $table->integer('qty_indent')->default(0);
       $table->enum('product_status', [0, 1, 2, 3, 4])->nullable()
         ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);

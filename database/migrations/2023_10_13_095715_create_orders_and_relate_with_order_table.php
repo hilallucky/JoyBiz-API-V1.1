@@ -128,9 +128,10 @@ return new class extends Migration
       $table->string('updated_by')->comment('Updated By in order_headers (User ID from table user')->nullable();
       $table->uuid('deleted_by')->comment('Deleted By in order_headers (User ID from table user')->nullable();
       $table->date('transaction_date')->comment('Transaction date');
+      $table->date('approved_by')->comment('Approved By')->nullable();
       $table->date('approved_date')->comment('Approved date')->nullable();
-      $table->uuid('deleted_by')->comment('Deleted By in order_headers (User ID from table user')->nullable();
-      $table->date('data_transfered_to_wms')->comment('Date get_date to wms if already processed get to wms')->nullable();
+      $table->uuid('transfered_to_wms_by')->comment('Transfered data to wms User ID from table user')->nullable();
+      $table->date('date_transfered_to_wms')->comment('Date get_date to wms if already processed get to wms')->nullable();
       $table->string('do_uuid')->comment('Do Number if already processed')->nullable();
 
       // $table->foreign('created_by')->references('uuid')->on('users');
@@ -157,7 +158,9 @@ return new class extends Migration
       $table->uuid('order_group_header_temp_uuid')->nullable();
       $table->uuid('order_header_uuid');
       $table->uuid('product_uuid')->comment('Get from table products');
+      $table->uuid('product_attribute_uuid')->comment('Get from table product_attributes')->nullable();
       $table->uuid('product_price_uuid')->comment('Get from table product_prices');
+      $table->tinyInteger('is_product_group')->default(0)->nullable();
       $table->integer('qty')->default(1);
       $table->decimal('price', 10, 2)->default(0);
       $table->enum('discount_type', ['percentage', 'amount'])->nullable();
@@ -174,7 +177,7 @@ return new class extends Migration
         ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
       $table->enum('do_status', [0, 1, 2, 3, 4])->nullable()
         ->comment('Status DO Product : 0 = Pending, 1 = Processed DO, 2 = Hold, 3 = Canceled')->default(0);
-      $table->string('do_n;umber')->nullable()->comment('Only if warehouse process th DO (do_status = 1)')->nullable();
+      $table->string('do_number')->nullable()->comment('Only if warehouse process th DO (do_status = 1)')->nullable();
       $table->string('created_by')->comment('Created By in order_details (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By in order_details (User ID from table user')->nullable();
       $table->uuid('deleted_by')->comment('Deleted By in order_details (User ID from table user')->nullable();
@@ -226,7 +229,7 @@ return new class extends Migration
 
 
     // Table order_shipping
-    Schema::create('order_shippings', function (Blueprint $table) {
+    Schema::create('order_shipping', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('order_shipping_temp_uuid');

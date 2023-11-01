@@ -172,7 +172,7 @@ return new class extends Migration
         ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
       $table->enum('do_status', [0, 1, 2, 3, 4])->nullable()
         ->comment('Status DO Product : 0 = Pending, 1 = Processed DO, 2 = Hold, 3 = Canceled')->default(0);
-      $table->string('do_n;umber')->nullable()->comment('Only if warehouse process th DO (do_status = 1)')->nullable();
+      $table->string('do_number')->nullable()->comment('Only if warehouse process th DO (do_status = 1)')->nullable();
       $table->string('created_by')->comment('Created By in order_details (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By in order_details (User ID from table user')->nullable();
       $table->uuid('deleted_by')->comment('Deleted By in order_details (User ID from table user')->nullable();

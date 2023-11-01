@@ -31,6 +31,9 @@ class VoucherHelper extends Model
     }
 
     $voucher = Voucher::with('member')->where('member_uuid', $member_uuid)->lockForUpdate()->first();
+
+    throw_if(!$voucher, 'Invalid voucher code for this member = ' . $member_uuid);
+
     $now = Carbon::now();
     $sDate = Carbon::now()->startOfMonth();
     $eDate = $now->endOfMonth();

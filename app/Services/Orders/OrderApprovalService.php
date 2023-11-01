@@ -51,6 +51,7 @@ class OrderApprovalService
       DB::beginTransaction();
       DB::enableQueryLog();
 
+
       // Check Auth & update user uuid to deleted_by
       $user =  null;
       if (Auth::check()) {
@@ -59,7 +60,7 @@ class OrderApprovalService
       }
 
       $groupOrderTemp = OrderGroupHeaderTemp::with('payments', 'headers.member', 'headers.details', 'headers.payments', 'headers.shipping')
-        ->where([['uuid', $uuids], ['status', 0]])->orderBy('created_at', 'asc')->get();
+        ->whereIn('uuid', $uuids)->where('status', '0')->orderBy('created_at', 'asc')->get();
 
       // Compare the count of found UUIDs with the count from the request array
       if (
@@ -201,7 +202,9 @@ class OrderApprovalService
               'order_group_header_temp_uuid' => $groupOrder->uuid,
               'order_detail_temp_uuid' => $orderDetail->uuid,
               'product_price_uuid' => $orderDetail->product_price_uuid,
+              'product_attribute_uuid' => $orderDetail->product_attribute_uuid ? $orderDetail->product_attribute_uuid : null,
               'product_uuid' => $orderDetail->product_uuid,
+              'is_product_group' => $orderDetail->is_product_group ? $orderDetail->is_product_group : 0,
               'qty' => $orderDetail->qty,
               'price' => $orderDetail->price,
               'discount_type' => $orderDetail->discount_type,

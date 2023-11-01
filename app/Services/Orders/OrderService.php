@@ -209,7 +209,9 @@ class OrderService
             'order_group_header_temp_uuid' => $groupUuid,
             'order_header_temp_uuid' => $newOrderHeaderAdd['uuid'],
             'product_uuid' => $orderDetail['product_uuid'],
+            'product_attribute_uuid' => $orderDetail['product_attribute_uuid'] ? $orderDetail['product_attribute_uuid'] : null,
             'product_price_uuid' => $orderDetail['product_price_uuid'],
+            'is_product_group' => $orderDetail['is_product_group'],
             'qty' => $orderDetail['qty'],
             'price' => $orderDetail['price'],
             'discount_type' => $orderDetail['discount_type'],
@@ -248,13 +250,12 @@ class OrderService
             400
           );
         }
-
         foreach ($orderPayments as $orderPayment) {
           // Start check if payment include voucher cash/product
           $voucherHelper = new VoucherHelper;
           if (
             $orderPayment['payment_type_uuid'] == '92851148-5dd6-4360-a644-7948e9aaf54e' || // Voucher Cash
-            $orderPayment['payment_type_uuid'] == '1ce39ab0-068c-4d2e-89c3-5d21eeae6175' // Voucher ;Product
+            $orderPayment['payment_type_uuid'] == '1ce39ab0-068c-4d2e-89c3-5d21eeae6175' // Voucher Product
           ) {
             $voucherHelper->use($orderHeader['member_uuid'], $orderPayment['amount'], $groupUuid);
           }
@@ -374,7 +375,6 @@ class OrderService
       }
 
       // $newStatuses = OrderGroupHeaderTemp::where('order_header_uuid', array_column($newOrderHeaders, 'uuid'))->get();
-
       $newOrder["group_header"] = $newGroupHeaderTemp;
 
       $groupPayments = OrderPaymentTemp::select(

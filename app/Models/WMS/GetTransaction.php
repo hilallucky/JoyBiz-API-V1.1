@@ -22,7 +22,7 @@ class GetTransaction extends Model
     'weight' => 'float',
     'stock_in' => 'integer',
     'stock_out' => 'integer',
-    'qty' => 'integer',
+    'qty_order' => 'integer',
     'qty_indent' => 'integer',
     'indent' => 'integer',
   ];
@@ -48,7 +48,7 @@ class GetTransaction extends Model
     'weight',
     'stock_in',
     'stock_out',
-    'qty',
+    'qty_order',
     'qty_indent',
     'product_status',
     'stock_type',
