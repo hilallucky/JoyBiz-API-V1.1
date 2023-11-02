@@ -35,22 +35,21 @@ return new class extends Migration
     Schema::create('products', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('category_uuid')
-        ->comment('Product category uuid (get from table product_categories');
+      $table->uuid('category_uuid')->comment('Product category uuid (get from table product_categories');
       $table->string('name')->comment('Name of product');
       $table->text('description')->comment('Description of product')->nullable();
       $table->enum('is_product_group', [0, 1])
-        ->comment('Status : 0 = Single, 1 = Group/Bundling/Package')
-        ->default(0);
+        ->comment('Product Group : 0 = Single, 1 = Group/Bundling/Package')->default(0);
+      $table->enum('is_master_product', [0, 1])->comment('Master Product : 0 = No, 1 = Yes')->default(1);
+      $table->uuid('product_header_uuid')->nullable();
       $table->enum('is_register', [0, 1])
         ->comment('Type Product for register : 0 = Non Register Product, 1 = Regular (Non Register) Product')
         ->default(0);
       $table->enum('status', [0, 1, 2, 3, 4])
-        ->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')
-        ->default(1);
+        ->comment('Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
       $table->boolean('show_status')->comment('Show Status : true = Not Show, false = Show')->default(true);
       $table->boolean('sc_show_status')->comment('SC Show Status : true = Not Show, false = Show')->default(true);
-      $table->decimal('weight', 10, 2)->comment('Status : 0 = Not Show, 1 = Show')->default(1);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3);
       $table->string('allow_from_rank')->comment('CreatedAllow from rank start')->nullable();
       $table->integer('allow_from_rank_id')->comment('CreatedAllow from rank (id) start')->nullable()->default(0);
       $table->string('allow_to_rank')->comment('CreatedAllow to rank end')->nullable();
@@ -68,15 +67,11 @@ return new class extends Migration
     Schema::create('product_attributes', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('product_uuid')
-        ->comment('Product uuid in product_attributes (get from table products')
-        ->nullable();
+      $table->uuid('product_uuid')->comment('Product uuid in product_attributes (get from table products')->nullable();
       $table->string('name')->comment('Name of product attribute')->nullable();
       $table->string('description')->comment('Description of product attribute')->nullable();
-      $table->enum('status', [0, 1, 2, 3])
-        ->nullable()
-        ->comment('Status product_attributes : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')
-        ->default(1);
+      $table->enum('status', [0, 1, 2, 3])->nullable()
+        ->comment('Status product_attributes : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
       $table->text('remarks')->comment('Notes of product attributes')->nullable();
       $table->string('created_by')->comment('Created By product_attributes (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By product_attributes (User ID from table user')->nullable();
@@ -93,20 +88,15 @@ return new class extends Migration
       $table->uuid('product_uuid')->comment('Product uuid (get from table products')->nullable();
       $table->string('name')->comment('Name of product category');
       $table->text('description')->comment('Description of product category')->nullable();
-      $table->enum('status', [0, 1, 2, 3])
-        ->nullable()
-        ->comment('Status product_group_headers : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')
-        ->default(1);
+      $table->enum('status', [0, 1, 2, 3])->nullable()
+        ->comment('Status product_group_headers : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')->default(1);
       $table->text('remarks')->comment('Notes of product group headers')->nullable();
       $table->string('created_by')
-        ->comment('Created By product_group_headers (User ID from table user')
-        ->nullable();
+        ->comment('Created By product_group_headers (User ID from table user')->nullable();
       $table->string('updated_by')
-        ->comment('Updated By product_group_headers (User ID from table user')
-        ->nullable();
+        ->comment('Updated By product_group_headers (User ID from table user')->nullable();
       $table->uuid('deleted_by')
-        ->comment('Deleted By product_group_headers (User ID from table user')
-        ->nullable();
+        ->comment('Deleted By product_group_headers (User ID from table user')->nullable();
       $table->foreign('product_uuid')->references('uuid')->on('products')->onDelete('cascade');
       $table->timestamps();
       $table->softDeletes();
@@ -117,23 +107,18 @@ return new class extends Migration
     Schema::create('product_group_compositions', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('product_group_header_uuid')
-        ->comment('Product uuid (get from table product_group_headers')
+      $table->uuid('product_group_header_uuid')->comment('Product uuid (get from table product_group_headers')
         ->nullable();
       $table->uuid('product_uuid')->comment('Product uuid (get from table products')->nullable();
       $table->decimal('qty', 10, 2)->default(1);
-      $table->enum('status', [0, 1, 2, 3])
-        ->nullable()
+      $table->enum('status', [0, 1, 2, 3])->nullable()
         ->comment('Status product_group_compositions : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated')
         ->default(1);
-      $table->string('created_by')
-        ->comment('Created By product_group_compositions (User ID from table user')
+      $table->string('created_by')->comment('Created By product_group_compositions (User ID from table user')
         ->nullable();
-      $table->string('updated_by')
-        ->comment('Updated By product_group_compositions (User ID from table user')
+      $table->string('updated_by')->comment('Updated By product_group_compositions (User ID from table user')
         ->nullable();
-      $table->uuid('deleted_by')
-        ->comment('Deleted By product_group_compositions (User ID from table user')
+      $table->uuid('deleted_by')->comment('Deleted By product_group_compositions (User ID from table user')
         ->nullable();
       $table->foreign('product_uuid')->references('uuid')->on('products')->onDelete('cascade');
       $table->timestamps();

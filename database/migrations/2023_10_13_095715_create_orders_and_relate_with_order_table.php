@@ -48,7 +48,7 @@ return new class extends Migration
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
-      $table->date('transaction_date')->comment('Transaction date');
+      $table->timestamp('transaction_date', 0)->comment('Transaction date');
       $table->softDeletes();
       $table->timestamps();
     });
@@ -127,11 +127,11 @@ return new class extends Migration
       $table->string('created_by')->comment('Created By in order_headers (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By in order_headers (User ID from table user')->nullable();
       $table->uuid('deleted_by')->comment('Deleted By in order_headers (User ID from table user')->nullable();
-      $table->date('transaction_date')->comment('Transaction date');
-      $table->date('approved_by')->comment('Approved By')->nullable();
-      $table->date('approved_date')->comment('Approved date')->nullable();
+      $table->timestamp('transaction_date', 0)->comment('Transaction date');
+      $table->string('approved_by')->comment('Approved By')->nullable();
+      $table->timestamp('approved_date', 0)->comment('Approved date')->nullable();
       $table->uuid('transfered_to_wms_by')->comment('Transfered data to wms User ID from table user')->nullable();
-      $table->date('date_transfered_to_wms')->comment('Date get_date to wms if already processed get to wms')->nullable();
+      $table->timestamp('date_transfered_to_wms', 0)->comment('Date get_date to wms if already processed get to wms')->nullable();
       $table->string('do_uuid')->comment('Do Number if already processed')->nullable();
 
       // $table->foreign('created_by')->references('uuid')->on('users');

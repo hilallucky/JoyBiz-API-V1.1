@@ -24,14 +24,18 @@ class Product extends Model
         'show_status' => 'boolean',
         'sc_show_status' => 'boolean',
         'weight' => 'float',
+        'is_product_group' => 'boolean',
+        'is_master_product' => 'boolean',
     ];
     
     protected $fillable = [
         'uuid',
+        'product_header_uuid',
         'category_uuid',
         'name',
         'description',
         'is_product_group',
+        'is_master_product',
         'is_register',
         'status',
         'show_status',

@@ -20,12 +20,15 @@ class GetTransaction extends Model
     'transaction_date' => 'date',
     'is_register' => 'boolean',
     'weight' => 'float',
+    'sub_weight' => 'float',
     'stock_in' => 'integer',
     'stock_out' => 'integer',
     'qty_order' => 'integer',
     'qty_indent' => 'integer',
     'indent' => 'integer',
   ];
+
+  // Status : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent
 
   protected $fillable = [
     'id',
@@ -46,6 +49,7 @@ class GetTransaction extends Model
     'description',
     'is_register',
     'weight',
+    'sub_weight',
     'stock_in',
     'stock_out',
     'qty_order',

@@ -2,14 +2,10 @@
 
 namespace App\Services\WMS;
 
-use App\Http\Resources\Warehouses\WarehouseResource;
-use App\Http\Resources\WMS\GetTransactionResource;
 use app\Libraries\Core;
 use App\Models\Orders\Production\OrderHeader;
 use App\Models\WMS\GetTransaction;
-use App\Models\WMS\Warehouse;
 use Carbon\Carbon;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -30,9 +26,9 @@ class GetTransactionService
   {
     // DB::enableQueryLog();
 
-    $query = GetTransaction::query();
+    $query = new GetTransaction;
+    // Apply filters based on request parameters'transaction_header_uuid',
 
-    // Apply filters based on request parameters
     if ($request->input('start') && $request->input('end')) {
       $start = $request->input('start');
       $end = $request->input('end');
@@ -40,29 +36,35 @@ class GetTransactionService
       $query = $query->whereBetween(DB::raw('get_date::date'), [$start, $end]);
     }
 
-    if ($request->input('wh_name')) {
-      $whName = $request->input('wh_name');
+    if ($request->input('do_no')) {
+      $query->where('wms_do_header_uuid', $request->input('do_no'));
     }
 
-    $query = $query->with(
-      'doHeader',
-      ['warehouse' => function ($query) use ($whName) {
-        return $query->where('name', 'ilike', '%' . $whName . '%');
-      }]
-    )->orderBy('get_date', 'asc')->get();
+    $query = $query //->with('doHeader')
+      ->select(DB::raw("deleted_at, get_date, transaction_date, transaction_header_uuid, " .
+        "product_uuid, product_attribute_uuid, product_header_uuid, name, attribute_name, description, " .
+        "is_register, sum(weight) as weight, sum(sub_weight) as sub_weight, sum(stock_in) as stock_in, ".
+        "sum(stock_out) as stock_out, sum(qty_order) as qty_order, sum(qty_indent) as qty_indent, ".
+        "product_status, stock_type"))
+      ->groupBy('deleted_at', 'get_date', 'transaction_date', 'transaction_header_uuid', 'product_uuid',
+        'product_attribute_uuid', 'product_header_uuid', 'name', 'attribute_name', 'description',
+        'is_register', 'product_status', 'stock_type')
+      ->orderBy('get_date', 'asc')
+      ->orderBy('transaction_date', 'asc')
+      ->get();
 
-    // $query = DB::getQueryLog();
-    // dd($query);
+    $query->setVisible([
+      'get_date', 'transaction_date', 'transaction_header_uuid', 'product_uuid', 'product_attribute_uuid',
+      'product_header_uuid', 'name', 'attribute_name', 'description', 'is_register', 'weight', 'sub_weight',
+      'stock_in', 'stock_out', 'qty_order', 'qty_indent','product_status', 'stock_type']);
 
-    $queryList = GetTransactionResource::collection($query);
-
-    return $this->core->setResponse('success', 'Transactions', $queryList);
+    return $this->core->setResponse('success', 'Get order transactions', $query);
   }
 
   // Get new Transaction
   public function store(Request $request)
   {
-    $validator = $this->validation('create', $request);
+    $validator = $this->validation($request, 'create');
 
     if ($validator->fails()) {
       return $this->core->setResponse(
@@ -88,56 +90,104 @@ class GetTransactionService
       $start = $request->input('start');
       $end = $request->input('end');
       // get only paid and not yet processed by warehouse
-      $orders = OrderHeader::with('details.productPrice.product.attributes', 'details.group')
+      $orders = OrderHeader::with('details.productPrice.product.attributes')
         ->whereBetween(DB::raw('transaction_date::date'), [$start, $end])
-        ->whereIn('status', ['1'])->lockForUpdate()->get();
-
-      $query = DB::getQueryLog();
-      dd($query);
+        ->whereIn('status', ['1'])->where('date_transfered_to_wms', null)->lockForUpdate()->get();
 
       $newDatas = [];
       $getDate = Carbon::now();
       $stockOut = 0;
+      $headerNo = 0;
+      $detailNo = 0;
       foreach ($orders as $order) {
-        $newDatas = [
-          'uuid' => Str::uuid(),
-          'get_date' => $order->uuid,
-          'transaction_type' => '1',
-          'transaction_date' => $order->transaction_date,
-          'transaction_header_uuid' => $order->uuid,
-        ];
-
+        $headerNo++;
         foreach ($order->details as $detail) {
-          // $isGroupProduct= $detail->productPrice->product->attributes->count();
-          // $isGroupProduct= $detail->group;
-          return($detail->group);
+          $newData = [
+            'uuid' => Str::uuid(),
+            'get_date' => $getDate,
+            'transaction_type' => '1',
+            'transaction_date' => $order->transaction_date,
+            'transaction_header_uuid' => $order->uuid,
+            'transaction_detail_uuid' => $detail->uuid,
+            'warehouse_uuid' => null,
+            'stock_in' => 0,
+            'stock_type' => '2',
+            'created_at' => $getDate,
+            'created_by' => null,
+            'updated_at' => $getDate,
+            'updated_by' => null,
+          ];
 
-          $stockOut = $detail->productPrice->product->status == '1' ? $detail->qty : 0;
-          $indent = $detail->productPrice->product->status == '4' ? $detail->qty : 0;
-          $newDatas['product_uuid'] = $detail->uuid;
-          $newDatas['product_attribute_uuid'] = $detail->uuid;
-          $newDatas['product_header_uuid'] = $detail->uuid;
-          $newDatas['name'] = $detail->productPrice->product->name;
-          // $newDatas['attribute_name'] = $detail->productPrice->product;
-          $newDatas['description'] = $detail->productPrice->product->description;
-          $newDatas['is_register'] = $detail->productPrice->product->is_register;
-          $newDatas['weight'] = $detail->productPrice->product->weight;
-          $newDatas['stock_in'] = 0;
-          $newDatas['stock_out'] = $stockOut;
-          $newDatas['qty_order'] = $detail->qty;
-          $newDatas['qty_indent'] = $indent;
-          $newDatas['product_status'] = $detail->status;
-          $newDatas['stock_type'] = '2';
+          array_push($newDatas, $newData);
+
+          if ($detail->is_product_group == '1') {
+            $groupProducts = $detail->group($detail->product_uuid, $detail->qty);
+            $groupNo = 0;
+            foreach ($groupProducts as $groupProduct) {
+              if ($groupNo > 0) {
+                $newData['uuid'] = Str::uuid();
+                array_push($newDatas, $newData);
+              }
+
+              $stockOut = $groupProduct->status == '1' ? $groupProduct->qty : 0;
+              $indent = $groupProduct->status == '4' ? $groupProduct->qty : 0;
+              $weight = number_format((float)$groupProduct->weight, 2, '.', '') * $stockOut;
+
+              $newDatas[$detailNo]['product_uuid'] = $groupProduct->product_uuid;
+              $newDatas[$detailNo]['product_attribute_uuid'] = null;
+              $newDatas[$detailNo]['product_header_uuid'] = $groupProduct->uuid;
+              $newDatas[$detailNo]['name'] = $groupProduct->name;
+              $newDatas[$detailNo]['attribute_name'] = null; //$groupProduct->productPrice->product;
+              $newDatas[$detailNo]['description'] = $groupProduct->description;
+              $newDatas[$detailNo]['is_register'] = $groupProduct->is_register;
+              $newDatas[$detailNo]['weight'] = number_format((float)$groupProduct->weight, 2, '.', '');
+              $newDatas[$detailNo]['sub_weight'] = $weight;
+              // $newDatas[$detailNo]['stock_in'] = 0;
+              $newDatas[$detailNo]['stock_out'] = (int)$stockOut;
+              $newDatas[$detailNo]['qty_order'] = (int)$groupProduct->qty;
+              $newDatas[$detailNo]['qty_indent'] = (int)$indent;
+              $newDatas[$detailNo]['product_status'] = $groupProduct->status;
+              $detailNo++;
+              $groupNo++;
+            }
+          } else if ($detail->is_product_group != '1') {
+            $stockOut = $detail->productPrice->product->status == '1' ? $detail->qty : 0;
+            $indent = $detail->productPrice->product->status == '4' ? $detail->qty : 0;
+            $weight = number_format((float)$detail->productPrice->product->weight, 2, '.', '') * $stockOut;
+
+            $newDatas[$detailNo]['product_uuid'] = $detail->uuid;
+            $newDatas[$detailNo]['product_attribute_uuid'] = $detail->uuid;
+            $newDatas[$detailNo]['product_header_uuid'] = $detail->uuid;
+            $newDatas[$detailNo]['name'] = $detail->productPrice->product->name;
+            $newDatas[$detailNo]['attribute_name'] = null; //$detail->productPrice->product;
+            $newDatas[$detailNo]['description'] = $detail->productPrice->product->description;
+            $newDatas[$detailNo]['is_register'] = $detail->productPrice->product->is_register;
+            $newDatas[$detailNo]['weight'] = number_format((float)$detail->productPrice->product->weight, 2, '.', '');
+              $newDatas[$detailNo]['sub_weight'] = $weight;
+            // $newDatas[$detailNo]['stock_in'] = 0;
+            $newDatas[$detailNo]['stock_out'] = (int)$stockOut;
+            $newDatas[$detailNo]['qty_order'] = (int)$detail->qty;
+            $newDatas[$detailNo]['qty_indent'] = (int)$indent;
+            $newDatas[$detailNo]['product_status'] = $detail->status;
+            $detailNo++;
+          }
         }
-        return $newDatas;
+        $order->transfered_to_wms_by = null;
+        $order->date_transfered_to_wms = $getDate;
+        $order->save();
       }
 
-      // $warehouseList = Warehouse::whereIn(
-      //   'uuid',
-      //   $newWarehouses
-      // )->get();
-
-      $orderList = $orders; //WarehouseResource::collection($warehouseList);
+      $result = array_reduce($newDatas, function($carry, $item){
+        if(!isset($carry[$item['product_uuid']])){
+            $carry[$item['product_uuid']] = ['product_uuid'=>$item['product_uuid'],'qty_order'=>$item['qty_order']]; 
+        } else {
+            $carry[$item['product_uuid']]['qty_order'] += $item['qty_order'];
+        }
+        return $carry;
+      });
+      // return $result;
+      
+      GetTransaction::insert($newDatas);
 
       DB::commit();
     } catch (\Exception $e) {
@@ -153,200 +203,60 @@ class GetTransactionService
 
     return $this->core->setResponse(
       'success',
-      'Order created',
-      $orderList,
+      "Get transaction from date $start to $end",
+      $orders->count() . " record(s)",
       false,
       201
     );
   }
 
-  // //Get Warehouse by ids
-  // public function show(Request $request, $uuid)
-  // {
-  //   if (!Str::isUuid($uuid)) {
-  //     return $this->core->setResponse(
-  //       'error',
-  //       'Invalid UUID format',
-  //       NULL,
-  //       FALSE,
-  //       400
-  //     );
-  //   }
-
-  //   $status = $request->input('status', "1");
-
-  //   $warehouse = Warehouse::where(['uuid' => $uuid, 'status' => $status])->get();
-
-  //   if (!isset($warehouse)) {
-  //     return $this->core->setResponse(
-  //       'error',
-  //       'Warehouse Not Found',
-  //       NULL,
-  //       FALSE,
-  //       400
-  //     );
-  //   }
-
-  //   $warehouseList = WarehouseResource::collection($warehouse);
-
-  //   return $this->core->setResponse('success', 'Warehouse Found', $warehouseList);
-  // }
-
-  // //UpdateBulk Warehouse
-  // public function updateBulk(Request $request)
-  // {
-  //   $warehouses = $request->all();
-
-  //   $validator = $this->validation('update', $request);
-
-  //   if ($validator->fails()) {
-  //     return $this->core->setResponse(
-  //       'error',
-  //       $validator->messages()->first(),
-  //       NULL,
-  //       false,
-  //       422
-  //     );
-  //   }
-
-  //   $status = "1";
-
-  //   try {
-  //     DB::beginTransaction();
-
-  //     // Check Auth & update user uuid to deleted_by
-  //     if (Auth::check()) {
-  //       $user = Auth::user();
-  //     }
-
-  //     foreach ($warehouses as $warehouseData) {
-  //       if (isset($warehouseData['status'])) {
-  //         $status = $warehouseData['status'];
-  //       }
-
-  //       $warehouse = Warehouse::lockForUpdate()
-  //         ->where('uuid', $warehouseData['uuid'])->firstOrFail();
-
-  //       $warehouse->update([
-  //         'name' => $warehouseData['name'],
-  //         'phone' => $warehouseData['phone'],
-  //         'mobile_phone' => $warehouseData['mobile_phone'],
-  //         'email' => $warehouseData['email'],
-  //         'province' => $warehouseData['province'],
-  //         'city' => $warehouseData['city'],
-  //         'district' => $warehouseData['district'],
-  //         'village' => $warehouseData['village'],
-  //         'zip_code' => $warehouseData['zip_code'],
-  //         'details' => $warehouseData['details'],
-  //         'description' => $warehouseData['description'],
-  //         'remarks' => $warehouseData['remarks'],
-  //         'status' => $status,
-  //         // 'updated_by' => $user->uuid,
-  //       ]);
-
-  //       $updatedCountries[] = $warehouse->toArray();
-  //     }
-
-  //     $warehouseList = Warehouse::whereIn(
-  //       'uuid',
-  //       array_column($updatedCountries, 'uuid')
-  //     )->get();
-
-  //     $warehouseList = WarehouseResource::collection($warehouseList);
-
-  //     DB::commit();
-  //   } catch (QueryException $e) {
-  //     DB::rollback();
-  //     return $this->core->setResponse(
-  //       'error',
-  //       'Warehouse fail to updated. ' . $e->getMessage(),
-  //       NULL,
-  //       FALSE,
-  //       500
-  //     );
-  //   } catch (\Exception $ex) {
-  //     DB::rollback();
-  //     return $this->core->setResponse(
-  //       'error',
-  //       "Warehouse fail to updated. " . $ex->getMessage(),
-  //       NULL,
-  //       FALSE,
-  //       500
-  //     );
-  //   }
-
-  //   return $this->core->setResponse(
-  //     'success',
-  //     'Warehouse updated',
-  //     $warehouseList
-  //   );
-  // }
-
-  // //Delete Warehouse by ids
-  // public function destroyBulk(Request $request)
-  // {
-
-  //   $validator = $this->validation(
-  //     'delete',
-  //     $request
-  //   );
-
-  //   if ($validator->fails()) {
-  //     return $this->core->setResponse(
-  //       'error',
-  //       $validator->messages()->first(),
-  //       NULL,
-  //       false,
-  //       422
-  //     );
-  //   }
-
-  //   $uuids = $request->input('uuids');
-  //   $warehouses = null;
-  //   try {
-  //     $warehouses = Warehouse::lockForUpdate()
-  //       ->whereIn(
-  //         'uuid',
-  //         $uuids
-  //       );
-
-  //     // Compare the count of found UUIDs with the count from the request array
-  //     if (
-  //       !$warehouses ||
-  //       (count($warehouses->get()) !== count($uuids))
-  //     ) {
-  //       return response()->json(
-  //         ['message' => 'Warehouses fail to deleted, because invalid uuid(s)'],
-  //         400
-  //       );
-  //     }
-
-  //     //Check Auth & update user uuid to deleted_by
-  //     // if (Auth::check()) {
-  //     //     $user = Auth::user();
-  //     // $warehouses->deleted_by = $user->uuid;
-  //     // $warehouses->save();
-  //     // }
-
-  //     $warehouses->delete();
-  //   } catch (\Exception $e) {
-  //     return response()->json(
-  //       ['message' => 'Error during bulk deletion ' . $e->getMessage()],
-  //       500
-  //     );
-  //   }
-
-  //   return $this->core->setResponse(
-  //     'success',
-  //     "Warehouses deleted",
-  //     null,
-  //     200
-  //   );
-  // }
-
-  private function validation($type = null, $request)
+  //Delete Warehouse by ids
+  public function destroyBulk(Request $request)
   {
+    $validator = $this->validation('delete', $request);
 
+    if ($validator->fails()) {
+      return $this->core->setResponse(
+        'error',
+        $validator->messages()->first(),
+        NULL,
+        false,
+        422
+      );
+    }
+
+    $uuids = $request->input('uuids');
+    $transactions = null;
+    try {
+      $transactions = GetTransaction::lockForUpdate()->whereIn('uuid', $uuids);
+
+      // Compare the count of found UUIDs with the count from the request array
+      if (!$transactions || (count($transactions->get()) !== count($uuids))) {
+        return response()->json(['message' => 'Warehouses fail to deleted, because invalid uuid(s)'], 400);
+      }
+
+      // Check Auth & update user uuid to deleted_by
+      if (Auth::check()) {
+        $user = Auth::user();
+        $transactions->deleted_by = $user->uuid;
+        $transactions->save();
+      }
+
+      $transactions->delete();
+    } catch (\Exception $e) {
+      return response()->json(['message' => 'Error during bulk deletion ' . $e->getMessage()], 500);
+    }
+
+    return $this->core->setResponse(
+      'success',
+      "Warehouses data get transaction deleted",
+      null,
+      200
+    );
+  }
+
+  private function validation($request, $type = null)
+  {
     switch ($type) {
 
       case 'delete':

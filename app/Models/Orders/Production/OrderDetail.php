@@ -9,6 +9,7 @@ use App\Models\Products\ProductPrice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class OrderDetail extends Model
 {
@@ -89,35 +90,12 @@ class OrderDetail extends Model
     );
   }
 
-  public function group()
+  public function group($productUuid, $qty)
   {
-    return $this->belongsToMany(
-      ProductGroupComposition::class,
-      $this::class,
-      'product_uuid',
-      'product_uuid',
-      'product_uuid',
-      'product_uuid',
-    );
+    return DB::table('product_group_compositions')
+      ->selectRaw("product_group_compositions.uuid, product_group_compositions.product_group_header_uuid, product_group_compositions.product_uuid, product_group_compositions.qty * $qty as qty")
+      ->selectRaw("products.product_header_uuid, products.name, products.description, products.is_register, products.status, products.weight * $qty as weight")
+      ->leftJoin('products', 'products.uuid', '=', 'product_group_compositions.product_uuid')
+      ->where('product_group_compositions.product_group_header_uuid', $productUuid)->get();
   }
-
-  // function Model::belongsToMany(
-  //   string $related,
-  //   string|null $table = null,
-  //   string|null $foreignPivotKey = null,
-  //   string|null $relatedPivotKey = null,
-  //   string|null $parentKey = null,
-  //   string|null $relatedKey = null,
-  //   string|null $relation = null
-
-  // public function group()
-  // {
-  //   return $this->belongsToMany(
-  //     Product::class,
-  //     'product_group_compositions',
-  //     'product_group_header_uuid',
-  //     'product_uuid',
-  //     'uuid'
-  //   )->withPivot('qty');
-  // }
 }

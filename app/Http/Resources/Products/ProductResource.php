@@ -46,6 +46,7 @@ class ProductResource extends JsonResource
                 }
             ),
             "is_product_group" => $this->is_product_group,
+            "is_master_product" => $this->is_master_product,
             "composition" => ProductCompositionResource::collection(
                 $this->whenLoaded(
                     'composition_by_header'

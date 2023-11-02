@@ -216,11 +216,11 @@ return new class extends Migration
     Schema::create('wms_get_transactions', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->date('get_date');
+      $table->timestamp('get_date', 0);
       $table->uuid('wms_do_header_uuid')->nullable();
       $table->date('wms_do_date')->nullable();
       $table->enum('transaction_type', [1, 2, 3, 4, 5])->comment('Transaction type : 1 = Sales, 2 = PO')->default(1);
-      $table->date('transaction_date');
+      $table->timestamp('transaction_date', 0);
       $table->uuid('transaction_header_uuid')->nullable(); // could be order_header_uuid or purchasing_order_uuid
       $table->uuid('transaction_detail_uuid')->nullable(); // could be order_header_uuid or purchasing_order_uuid
       $table->uuid('warehouse_uuid')->nullable();
@@ -231,7 +231,8 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->integer('weight')->default(0);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3);
+      $table->decimal('sub_weight', 10, 2)->comment('Total weighr each Product')->default(0.3);
       $table->integer('stock_in')->default(0);
       $table->integer('stock_out')->default(0);
       $table->integer('qty_order')->nullable();
