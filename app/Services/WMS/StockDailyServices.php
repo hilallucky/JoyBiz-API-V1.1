@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class GetTransactionService
+class StockDailyServicesService
 {
   public $core;
 
@@ -22,51 +22,44 @@ class GetTransactionService
   }
 
   //Get all transactions
-  public function index(Request $request)
-  {
-    // DB::enableQueryLog();
+  // public function index(Request $request)
+  // {
+  //   // DB::enableQueryLog();
 
-    $query = new GetTransaction;
-    // Apply filters based on request parameters'transaction_header_uuid',
+  //   $query = new GetTransaction;
+  //   // Apply filters based on request parameters'transaction_header_uuid',
 
-    if ($request->input('start') && $request->input('end')) {
-      $start = $request->input('start');
-      $end = $request->input('end');
+  //   if ($request->input('start') && $request->input('end')) {
+  //     $start = $request->input('start');
+  //     $end = $request->input('end');
 
-      $query = $query->whereBetween(DB::raw('get_date::date'), [$start, $end]);
-    }
+  //     $query = $query->whereBetween(DB::raw('get_date::date'), [$start, $end]);
+  //   }
 
-    if ($request->input('do_no')) {
-      $query->where('wms_do_header_uuid', $request->input('do_no'));
-    }
+  //   if ($request->input('do_no')) {
+  //     $query->where('wms_do_header_uuid', $request->input('do_no'));
+  //   }
 
-    if ($request->has('trx_uuid')) {
-        $query->where(
-            'transaction_header_uuid', 'ilike', '%' . $request->input('trx_uuid') . '%'
-        );
-    }
+  //   $query = $query //->with('doHeader')
+  //     ->select(DB::raw("deleted_at, get_date, transaction_date, transaction_header_uuid, " .
+  //       "product_uuid, product_attribute_uuid, product_header_uuid, name, attribute_name, description, " .
+  //       "is_register, sum(weight) as weight, sum(sub_weight) as sub_weight, sum(stock_in) as stock_in, ".
+  //       "sum(stock_out) as stock_out, sum(qty_order) as qty_order, sum(qty_indent) as qty_indent, ".
+  //       "product_status, stock_type"))
+  //     ->groupBy('deleted_at', 'get_date', 'transaction_date', 'transaction_header_uuid', 'product_uuid',
+  //       'product_attribute_uuid', 'product_header_uuid', 'name', 'attribute_name', 'description',
+  //       'is_register', 'product_status', 'stock_type')
+  //     ->orderBy('get_date', 'asc')
+  //     ->orderBy('transaction_date', 'asc')
+  //     ->get();
 
+  //   $query->setVisible([
+  //     'get_date', 'transaction_date', 'transaction_header_uuid', 'product_uuid', 'product_attribute_uuid',
+  //     'product_header_uuid', 'name', 'attribute_name', 'description', 'is_register', 'weight', 'sub_weight',
+  //     'stock_in', 'stock_out', 'qty_order', 'qty_indent','product_status', 'stock_type']);
 
-    $query = $query //->with('doHeader')
-      ->select(DB::raw("deleted_at, get_date, transaction_date, transaction_header_uuid, " .
-        "product_uuid, product_attribute_uuid, product_header_uuid, name, attribute_name, description, " .
-        "is_register, sum(weight) as weight, sum(sub_weight) as sub_weight, sum(stock_in) as stock_in, ".
-        "sum(stock_out) as stock_out, sum(qty_order) as qty_order, sum(qty_indent) as qty_indent, ".
-        "product_status, stock_type"))
-      ->groupBy('deleted_at', 'get_date', 'transaction_date', 'transaction_header_uuid', 'product_uuid',
-        'product_attribute_uuid', 'product_header_uuid', 'name', 'attribute_name', 'description',
-        'is_register', 'product_status', 'stock_type')
-      ->orderBy('get_date', 'asc')
-      ->orderBy('transaction_date', 'asc')
-      ->get();
-
-    $query->setVisible([
-      'get_date', 'transaction_date', 'transaction_header_uuid', 'product_uuid', 'product_attribute_uuid',
-      'product_header_uuid', 'name', 'attribute_name', 'description', 'is_register', 'weight', 'sub_weight',
-      'stock_in', 'stock_out', 'qty_order', 'qty_indent','product_status', 'stock_type']);
-
-    return $this->core->setResponse('success', 'Get order transactions', $query);
-  }
+  //   return $this->core->setResponse('success', 'Get order transactions', $query);
+  // }
 
   // Get new Transaction
   public function store(Request $request)

@@ -302,6 +302,22 @@ return new class extends Migration
       $table->softDeletes();
       $table->foreign('wms_do_header_uuid')->references('uuid')->on('wms_do_headers')->onDelete('cascade');
     });
+
+    // Table stock_periods
+    Schema::create('stock_periods', function (Blueprint $table) {
+      $table->id();
+      $table->enum('stock_period', ['daily', 'weekly', 'monthly', 'yearly'])->nullable()
+        ->comment('Stock period : daily = every 1 day, weekly = Sunday to Saturday, monthly = date 1 to 31, yearly = 1 jan to 31 dec')->default(1);
+      $table->date('start_date');
+      $table->string('start_day_name');
+      $table->date('end_date');
+      $table->string('end_day_name');
+      $table->integer('interval_days')->default(0);
+      $table->integer('processed_count')->default(0);
+      $table->string('name')->nullable();
+      $table->timestamps();
+      $table->softDeletes();
+    });
   }
 
   /**
@@ -321,5 +337,6 @@ return new class extends Migration
     Schema::dropIfExists('wms_get_transactions');
     Schema::dropIfExists('wms_do_headers');
     Schema::dropIfExists('wms_do_details');
+    Schema::dropIfExists('stock_periods');
   }
 };

@@ -3,7 +3,7 @@
 
 /* Warehouse Transaction group */
 
-$router->group(['prefix' => 'transactions', 'as' => 'wms_transactions'], function () use ($router) {
+$router->group(['prefix' => 'transactions', 'as' => 'price_codes'], function () use ($router) {
   /* All Warehouse can add request param status=0 or 1*/
   $router->get('/', ['as' => 'all', 'uses' => 'WMS\TransactionController@index']);
 
