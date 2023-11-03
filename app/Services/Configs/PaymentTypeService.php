@@ -359,21 +359,15 @@ class PaymentTypeService
 
   private function validation($type = null, $request)
   {
-
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|uuid',
           // 'uuids.*' => 'required|exists:paymentType,uuid',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           '*.ref_uuid' => 'uuid|nullable',
           '*.code' => 'required|string|max:255|min:2',
@@ -386,11 +380,8 @@ class PaymentTypeService
           '*.status' => 'in:0,1,2,3',
           // '*.created_by' => 'required|string|min:4',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

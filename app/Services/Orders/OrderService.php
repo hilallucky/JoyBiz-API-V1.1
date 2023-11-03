@@ -643,21 +643,15 @@ class OrderService
 
   private function validation($type = null, $request)
   {
-
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|uuid',
           // 'uuids.*' => 'required|exists:product_products,uuid',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           '*.price_code_uuid' => 'required|string|max:255|min:2',
           '*.member_uuid' => 'required|max:140|min:5',
@@ -706,14 +700,9 @@ class OrderService
           '*.shipping_info.remarks' => 'string',
           // '*.shipping_info.*.shipping_charge' => 'required|numeric',
           // '*.shipping_info.*.discount_shipping_charge' => 'required|numeric',
-
-
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

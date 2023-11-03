@@ -76,9 +76,12 @@ class PeriodService
     );
   }
 
-  public function getActivePeriod($date)
+  public function getActivePeriod($date = null)
   {
-    $period = Period::where('start_date', '<=', $date)->where('end_date', '>=', $date)->first();
+    $period = Period::query();
+    $period = $date ? $period->where('start_date', '<=', $date)
+      ->where('end_date', '>=', $date)->first() : $period->get();
+
     return $this->core->setResponse(
       'success',
       'Period active.',
@@ -91,29 +94,21 @@ class PeriodService
   private function validation($request, $type = null)
   {
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           'year' => 'required|numeric',
           'days_interval' => 'required|in:7,14,21,28',
           'start_week_day' => 'required|in:0,1,2,3,4,5,6',
           'end_week_day' => 'required|in:0,1,2,3,4,5,6',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

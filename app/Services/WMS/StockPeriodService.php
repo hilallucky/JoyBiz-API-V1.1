@@ -104,12 +104,13 @@ class StockPeriodService
     );
   }
 
-
-  public function getActivePeriod($date, $type)
+  public function getActivePeriod($date = null, $type = null)
   {
-    $period = StockPeriod::where('start_date', '<=', $date)
-      ->where('end_date', '>=', $date)
-      ->where('stock_period', $type)->first();
+    $period = StockPeriod::query();
+    $period = $type && $date ? $period->where('start_date', '<=', $date)
+      ->where('end_date', '>=', $date)->where('stock_period', $type)->first()
+      : $period->get();
+
     return $this->core->setResponse(
       'success',
       'Period active.',
@@ -122,27 +123,19 @@ class StockPeriodService
   private function validation($request, $type = null)
   {
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           'year' => 'required|numeric',
           'period' => 'required|in:daily,weekly,monthly,yearly',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

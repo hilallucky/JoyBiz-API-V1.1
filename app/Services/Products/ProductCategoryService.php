@@ -14,361 +14,351 @@ use Illuminate\Support\Str;
 
 class ProductCategoryService
 {
-    public $core;
+  public $core;
 
-    public function __construct()
-    {
-        $this->core = new Core();
+  public function __construct()
+  {
+    $this->core = new Core();
+  }
+
+  //Get all product informations
+  public function index(Request $request)
+  {
+    $query = ProductCategory::query();
+
+    // Apply filters based on request parameters
+    if ($request->has('status')) {
+      $query->where(
+        'status',
+        $request->input('status')
+      );
+    } else {
+      $query->where('status', "1");
     }
 
-    //Get all product informations
-    public function index(Request $request)
-    {
-        $query = ProductCategory::query();
+    if ($request->has('name')) {
+      $param = $request->input('name');
 
-        // Apply filters based on request parameters
-        if ($request->has('status')) {
-            $query->where(
-                'status',
-                $request->input('status')
-            );
-        } else {
-            $query->where('status', "1");
+      $query = $query->where(
+        function ($q) use ($param) {
+          $q->orWhere(
+            'name',
+            'ilike',
+            '%' . $param . '%'
+          )->orWhere(
+            'description',
+            'ilike',
+            '%' . $param . '%'
+          )->orWhere(
+            'remarks',
+            'ilike',
+            '%' . $param . '%'
+          );
         }
-
-        if ($request->has('name')) {
-            $param = $request->input('name');
-
-            $query = $query->where(
-                function ($q) use ($param) {
-                    $q->orWhere(
-                        'name',
-                        'ilike',
-                        '%' . $param . '%'
-                    )->orWhere(
-                            'description',
-                            'ilike',
-                            '%' . $param . '%'
-                        )->orWhere(
-                            'remarks',
-                            'ilike',
-                            '%' . $param . '%'
-                        );
-                }
-            );
-        }
-
-        if ($request->has('created_at')) {
-            $dateRange = explode(',', $request->input('created_at'));
-            if (count($dateRange) === 2) {
-                $query->whereBetween(
-                    'created_at',
-                    $dateRange
-                );
-            }
-        }
-
-        $categories = $query->get();
-
-        $categoryList = ProductCategoryResource::collection($categories);
-
-        return $this->core->setResponse(
-            'success',
-            'Product Category Found',
-            $categoryList
-        );
+      );
     }
 
-    //Create new product information
-    public function store(Request $request)
-    {
-        $validator = $this->validation(
-            'create',
-            $request
+    if ($request->has('created_at')) {
+      $dateRange = explode(',', $request->input('created_at'));
+      if (count($dateRange) === 2) {
+        $query->whereBetween(
+          'created_at',
+          $dateRange
         );
-
-        if ($validator->fails()) {
-            return $this->core->setResponse(
-                'error',
-                $validator->messages()->first(),
-                NULL,
-                false,
-                422
-            );
-        }
-
-        $status = "1";
-
-        try {
-            DB::beginTransaction();
-
-            // Check Auth & update user uuid to deleted_by
-            if (Auth::check()) {
-                $user = Auth::user();
-            }
-
-            $categories = $request->all();
-            foreach ($categories as $category) {
-                if (isset($category['status'])) {
-                    $status = $category['status'];
-                }
-
-                $newCategory = [
-                    'uuid' => Str::uuid(),
-                    'name' => $category['name'],
-                    'description' => $category['description'],
-                    'status' => $status,
-                    // 'created_by' => $user->uuid,
-                ];
-
-                $newCategoryAdd = new ProductCategory($newCategory);
-                $newCategoryAdd->save();
-
-                $newCategories[] = $newCategoryAdd->uuid;
-            }
-
-            $categoryList = ProductCategory::whereIn(
-                'uuid',
-                $newCategories
-            )->get();
-
-            $categoryList = ProductCategoryResource::collection($categoryList);
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-            return $this->core->setResponse(
-                'error',
-                'Product Category fail to created.',
-                NULL,
-                FALSE,
-                500
-            );
-        }
-
-        return $this->core->setResponse(
-            'success',
-            'Product Category created',
-            $categoryList,
-            false,
-            201
-        );
+      }
     }
 
-    //Get product category information by ids
-    public function show(Request $request, $uuid)
-    {
-        if (!Str::isUuid($uuid)) {
-            return $this->core->setResponse(
-                'error',
-                'Invalid UUID format',
-                NULL,
-                FALSE,
-                400
-            );
-        }
+    $categories = $query->get();
 
-        $status = $request->input('status', "1");
+    $categoryList = ProductCategoryResource::collection($categories);
 
-        $category = ProductCategory::where([
-            'uuid' => $uuid,
-            'status' => $status
-        ])->get();
+    return $this->core->setResponse(
+      'success',
+      'Product Category Found',
+      $categoryList
+    );
+  }
 
-        if (!isset($category)) {
-            return $this->core->setResponse(
-                'error',
-                'Product Category Not Found',
-                NULL,
-                FALSE,
-                400
-            );
-        }
+  //Create new product information
+  public function store(Request $request)
+  {
+    $validator = $this->validation(
+      'create',
+      $request
+    );
 
-        $categoryList = ProductCategoryResource::collection($category);
-
-        return $this->core->setResponse(
-            'success',
-            'Product Category Found',
-            $categoryList
-        );
+    if ($validator->fails()) {
+      return $this->core->setResponse(
+        'error',
+        $validator->messages()->first(),
+        NULL,
+        false,
+        422
+      );
     }
 
-    //UpdateBulk product category information
-    public function updateBulk(Request $request)
-    {
-        $categories = $request->all();
+    $status = "1";
 
-        $validator = $this->validation(
-            'update',
-            $request
-        );
+    try {
+      DB::beginTransaction();
 
-        if ($validator->fails()) {
-            return $this->core->setResponse(
-                'error',
-                $validator->messages()->first(),
-                NULL,
-                false,
-                422
-            );
+      // Check Auth & update user uuid to deleted_by
+      if (Auth::check()) {
+        $user = Auth::user();
+      }
+
+      $categories = $request->all();
+      foreach ($categories as $category) {
+        if (isset($category['status'])) {
+          $status = $category['status'];
         }
 
-        $status = "1";
+        $newCategory = [
+          'uuid' => Str::uuid(),
+          'name' => $category['name'],
+          'description' => $category['description'],
+          'status' => $status,
+          // 'created_by' => $user->uuid,
+        ];
 
-        try {
-            DB::beginTransaction();
+        $newCategoryAdd = new ProductCategory($newCategory);
+        $newCategoryAdd->save();
 
-            // Check Auth & update user uuid to deleted_by
-            if (Auth::check()) {
-                $user = Auth::user();
-            }
+        $newCategories[] = $newCategoryAdd->uuid;
+      }
 
-            foreach ($categories as $categoryData) {
-                if (isset($categoryData['status'])) {
-                    $status = $categoryData['status'];
-                }
+      $categoryList = ProductCategory::whereIn(
+        'uuid',
+        $newCategories
+      )->get();
 
-                $category = ProductCategory::lockForUpdate()
-                    ->where(
-                        'uuid',
-                        $categoryData['uuid']
-                    )->firstOrFail();
-                $category->update([
-                    'name' => $categoryData['name'],
-                    'description' => $categoryData['description'],
-                    'status' => $status,
-                    // 'updated_by' => $user->uuid,
-                ]);
+      $categoryList = ProductCategoryResource::collection($categoryList);
 
-                $updatedCategories[] = $category->toArray();
-            }
-
-            $categoryList = ProductCategory::whereIn(
-                'uuid',
-                array_column($updatedCategories, 'uuid')
-            )->get();
-
-            $categoryList = ProductCategoryResource::collection($categoryList);
-
-            DB::commit();
-        } catch (QueryException $e) {
-            DB::rollback();
-            return $this->core->setResponse(
-                'error',
-                'Product Category fail to updated.',
-                NULL,
-                FALSE,
-                500
-            );
-        } catch (\Exception $ex) {
-            DB::rollback();
-            return $this->core->setResponse(
-                'error',
-                "Product Category fail to updated.",
-                NULL,
-                FALSE,
-                500
-            );
-        }
-
-        return $this->core->setResponse(
-            'success',
-            'Product Category updated',
-            $categoryList
-        );
+      DB::commit();
+    } catch (\Exception $e) {
+      DB::rollback();
+      return $this->core->setResponse(
+        'error',
+        'Product Category fail to created.',
+        NULL,
+        FALSE,
+        500
+      );
     }
 
-    //Delete product information by ids
-    public function destroyBulk(Request $request)
-    {
+    return $this->core->setResponse(
+      'success',
+      'Product Category created',
+      $categoryList,
+      false,
+      201
+    );
+  }
 
-        $validator = $this->validation(
-            'delete',
-            $request
-        );
-
-        if ($validator->fails()) {
-            return $this->core->setResponse(
-                'error',
-                $validator->messages()->first(),
-                NULL,
-                false,
-                422
-            );
-        }
-
-        $uuids = $request->input('uuids');
-        $categories = null;
-        try {
-            $categories = ProductCategory::lockForUpdate()->whereIn('uuid', $uuids);
-
-            // Compare the count of found UUIDs with the count from the request array
-            if (
-                !$categories ||
-                (count($categories->get()) !== count($uuids))
-            ) {
-                return response()->json(
-                    ['message' => 'Product Categories fail to deleted, because invalid uuid(s)'],
-                    400
-                );
-            }
-
-            //Check Auth & update user uuid to deleted_by
-            // if (Auth::check()) {
-            //     $user = Auth::user();
-            // $categories->deleted_by = $user->uuid;
-            // $categories->save();
-            // }
-
-            $categories->delete();
-
-        } catch (\Exception $e) {
-            return response()->json(
-                ['message' => 'Error during bulk deletion ' . $e->getMessage()],
-                500
-            );
-        }
-
-        return $this->core->setResponse(
-            'success',
-            "Product Categories deleted",
-            null,
-            200
-        );
+  //Get product category information by ids
+  public function show(Request $request, $uuid)
+  {
+    if (!Str::isUuid($uuid)) {
+      return $this->core->setResponse(
+        'error',
+        'Invalid UUID format',
+        NULL,
+        FALSE,
+        400
+      );
     }
 
-    private function validation($type = null, $request)
-    {
+    $status = $request->input('status', "1");
 
-        switch ($type) {
+    $category = ProductCategory::where([
+      'uuid' => $uuid,
+      'status' => $status
+    ])->get();
 
-            case 'delete':
+    if (!isset($category)) {
+      return $this->core->setResponse(
+        'error',
+        'Product Category Not Found',
+        NULL,
+        FALSE,
+        400
+      );
+    }
 
-                $validator = [
-                    'uuids' => 'required|array',
-                    'uuids.*' => 'required|uuid',
-                    // 'uuids.*' => 'required|exists:product_categories,uuid',
-                ];
+    $categoryList = ProductCategoryResource::collection($category);
 
-                break;
+    return $this->core->setResponse(
+      'success',
+      'Product Category Found',
+      $categoryList
+    );
+  }
 
-            case 'create' || 'update':
+  //UpdateBulk product category information
+  public function updateBulk(Request $request)
+  {
+    $categories = $request->all();
 
-                $validator = [
-                    '*.name' => 'required|string|max:255|min:2',
-                    '*.description' => 'required|max:140|min:5',
-                    '*.status' => 'in:0,1,2,3',
-                    // '*.created_by' => 'required|string|min:4',
-                ];
+    $validator = $this->validation(
+      'update',
+      $request
+    );
 
-                break;
+    if ($validator->fails()) {
+      return $this->core->setResponse(
+        'error',
+        $validator->messages()->first(),
+        NULL,
+        false,
+        422
+      );
+    }
 
-            default:
+    $status = "1";
 
-                $validator = [];
+    try {
+      DB::beginTransaction();
+
+      // Check Auth & update user uuid to deleted_by
+      if (Auth::check()) {
+        $user = Auth::user();
+      }
+
+      foreach ($categories as $categoryData) {
+        if (isset($categoryData['status'])) {
+          $status = $categoryData['status'];
         }
 
-        return Validator::make($request->all(), $validator);
+        $category = ProductCategory::lockForUpdate()
+          ->where(
+            'uuid',
+            $categoryData['uuid']
+          )->firstOrFail();
+        $category->update([
+          'name' => $categoryData['name'],
+          'description' => $categoryData['description'],
+          'status' => $status,
+          // 'updated_by' => $user->uuid,
+        ]);
+
+        $updatedCategories[] = $category->toArray();
+      }
+
+      $categoryList = ProductCategory::whereIn(
+        'uuid',
+        array_column($updatedCategories, 'uuid')
+      )->get();
+
+      $categoryList = ProductCategoryResource::collection($categoryList);
+
+      DB::commit();
+    } catch (QueryException $e) {
+      DB::rollback();
+      return $this->core->setResponse(
+        'error',
+        'Product Category fail to updated.',
+        NULL,
+        FALSE,
+        500
+      );
+    } catch (\Exception $ex) {
+      DB::rollback();
+      return $this->core->setResponse(
+        'error',
+        "Product Category fail to updated.",
+        NULL,
+        FALSE,
+        500
+      );
     }
+
+    return $this->core->setResponse(
+      'success',
+      'Product Category updated',
+      $categoryList
+    );
+  }
+
+  //Delete product information by ids
+  public function destroyBulk(Request $request)
+  {
+
+    $validator = $this->validation(
+      'delete',
+      $request
+    );
+
+    if ($validator->fails()) {
+      return $this->core->setResponse(
+        'error',
+        $validator->messages()->first(),
+        NULL,
+        false,
+        422
+      );
+    }
+
+    $uuids = $request->input('uuids');
+    $categories = null;
+    try {
+      $categories = ProductCategory::lockForUpdate()->whereIn('uuid', $uuids);
+
+      // Compare the count of found UUIDs with the count from the request array
+      if (
+        !$categories ||
+        (count($categories->get()) !== count($uuids))
+      ) {
+        return response()->json(
+          ['message' => 'Product Categories fail to deleted, because invalid uuid(s)'],
+          400
+        );
+      }
+
+      //Check Auth & update user uuid to deleted_by
+      // if (Auth::check()) {
+      //     $user = Auth::user();
+      // $categories->deleted_by = $user->uuid;
+      // $categories->save();
+      // }
+
+      $categories->delete();
+    } catch (\Exception $e) {
+      return response()->json(
+        ['message' => 'Error during bulk deletion ' . $e->getMessage()],
+        500
+      );
+    }
+
+    return $this->core->setResponse(
+      'success',
+      "Product Categories deleted",
+      null,
+      200
+    );
+  }
+
+  private function validation($type = null, $request)
+  {
+    switch ($type) {
+      case 'delete':
+        $validator = [
+          'uuids' => 'required|array',
+          'uuids.*' => 'required|uuid',
+          // 'uuids.*' => 'required|exists:product_categories,uuid',
+        ];
+        break;
+      case 'create' || 'update':
+        $validator = [
+          '*.name' => 'required|string|max:255|min:2',
+          '*.description' => 'required|max:140|min:5',
+          '*.status' => 'in:0,1,2,3',
+          // '*.created_by' => 'required|string|min:4',
+        ];
+        break;
+      default:
+        $validator = [];
+    }
+
+    return Validator::make($request->all(), $validator);
+  }
 }

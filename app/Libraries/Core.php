@@ -18,9 +18,7 @@ class Core
      */
     public function setResponse($type = 'not_found', $message = "Not Found", $data = [], $is_array = FALSE, $code = null)
     {
-
         switch ($type) {
-
             case 'success':
                 $status = "success";
                 $message = $message;

@@ -240,6 +240,14 @@ return new class extends Migration
       $table->enum('product_status', [0, 1, 2, 3, 4])->nullable()
         ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
       $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, 2 = Stock Out')->default(1);
+      $table->integer('daily_stock')->default(0);
+      $table->timestamp('daily_stock_date', 0);
+      $table->integer('weekly_stock')->default(0);
+      $table->timestamp('weekly_stock_date', 0);
+      $table->integer('monthly_stock')->default(0);
+      $table->timestamp('monthly_stock_date', 0);
+      $table->integer('yearly_stock')->default(0);
+      $table->timestamp('yearly_stock_date', 0);
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
@@ -328,15 +336,15 @@ return new class extends Migration
   public function down()
   {
     Schema::dropIfExists('wms_warehouses');
-    Schema::dropIfExists('wms_stock_processes');
     Schema::dropIfExists('wms_stock_summary_headers');
     Schema::dropIfExists('wms_stock_summary_details');
     Schema::dropIfExists('wms_stock_summary_weekly_headers');
     Schema::dropIfExists('wms_stock_summary_monthly_headers');
     Schema::dropIfExists('wms_stock_summary_yearly_headers');
     Schema::dropIfExists('wms_get_transactions');
-    Schema::dropIfExists('wms_do_headers');
     Schema::dropIfExists('wms_do_details');
+    Schema::dropIfExists('wms_do_headers');
+    Schema::dropIfExists('wms_stock_processes');
     Schema::dropIfExists('stock_periods');
   }
 };

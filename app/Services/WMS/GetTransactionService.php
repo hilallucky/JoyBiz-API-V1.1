@@ -41,21 +41,35 @@ class GetTransactionService
     }
 
     if ($request->has('trx_uuid')) {
-        $query->where(
-            'transaction_header_uuid', 'ilike', '%' . $request->input('trx_uuid') . '%'
-        );
+      $query->where(
+        'transaction_header_uuid',
+        'ilike',
+        '%' . $request->input('trx_uuid') . '%'
+      );
     }
 
 
     $query = $query //->with('doHeader')
       ->select(DB::raw("deleted_at, get_date, transaction_date, transaction_header_uuid, " .
         "product_uuid, product_attribute_uuid, product_header_uuid, name, attribute_name, description, " .
-        "is_register, sum(weight) as weight, sum(sub_weight) as sub_weight, sum(stock_in) as stock_in, ".
-        "sum(stock_out) as stock_out, sum(qty_order) as qty_order, sum(qty_indent) as qty_indent, ".
+        "is_register, sum(weight) as weight, sum(sub_weight) as sub_weight, sum(stock_in) as stock_in, " .
+        "sum(stock_out) as stock_out, sum(qty_order) as qty_order, sum(qty_indent) as qty_indent, " .
         "product_status, stock_type"))
-      ->groupBy('deleted_at', 'get_date', 'transaction_date', 'transaction_header_uuid', 'product_uuid',
-        'product_attribute_uuid', 'product_header_uuid', 'name', 'attribute_name', 'description',
-        'is_register', 'product_status', 'stock_type')
+      ->groupBy(
+        'deleted_at',
+        'get_date',
+        'transaction_date',
+        'transaction_header_uuid',
+        'product_uuid',
+        'product_attribute_uuid',
+        'product_header_uuid',
+        'name',
+        'attribute_name',
+        'description',
+        'is_register',
+        'product_status',
+        'stock_type'
+      )
       ->orderBy('get_date', 'asc')
       ->orderBy('transaction_date', 'asc')
       ->get();
@@ -63,7 +77,8 @@ class GetTransactionService
     $query->setVisible([
       'get_date', 'transaction_date', 'transaction_header_uuid', 'product_uuid', 'product_attribute_uuid',
       'product_header_uuid', 'name', 'attribute_name', 'description', 'is_register', 'weight', 'sub_weight',
-      'stock_in', 'stock_out', 'qty_order', 'qty_indent','product_status', 'stock_type']);
+      'stock_in', 'stock_out', 'qty_order', 'qty_indent', 'product_status', 'stock_type'
+    ]);
 
     return $this->core->setResponse('success', 'Get order transactions', $query);
   }
@@ -170,7 +185,7 @@ class GetTransactionService
             $newDatas[$detailNo]['description'] = $detail->productPrice->product->description;
             $newDatas[$detailNo]['is_register'] = $detail->productPrice->product->is_register;
             $newDatas[$detailNo]['weight'] = number_format((float)$detail->productPrice->product->weight, 2, '.', '');
-              $newDatas[$detailNo]['sub_weight'] = $weight;
+            $newDatas[$detailNo]['sub_weight'] = $weight;
             // $newDatas[$detailNo]['stock_in'] = 0;
             $newDatas[$detailNo]['stock_out'] = (int)$stockOut;
             $newDatas[$detailNo]['qty_order'] = (int)$detail->qty;
@@ -184,16 +199,16 @@ class GetTransactionService
         $order->save();
       }
 
-      $result = array_reduce($newDatas, function($carry, $item){
-        if(!isset($carry[$item['product_uuid']])){
-            $carry[$item['product_uuid']] = ['product_uuid'=>$item['product_uuid'],'qty_order'=>$item['qty_order']]; 
+      $result = array_reduce($newDatas, function ($carry, $item) {
+        if (!isset($carry[$item['product_uuid']])) {
+          $carry[$item['product_uuid']] = ['product_uuid' => $item['product_uuid'], 'qty_order' => $item['qty_order']];
         } else {
-            $carry[$item['product_uuid']]['qty_order'] += $item['qty_order'];
+          $carry[$item['product_uuid']]['qty_order'] += $item['qty_order'];
         }
         return $carry;
       });
       // return $result;
-      
+
       GetTransaction::insert($newDatas);
 
       DB::commit();
@@ -265,27 +280,19 @@ class GetTransactionService
   private function validation($request, $type = null)
   {
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|uuid',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           'start' => 'required|date_format:Y-m-d',
           'end' => 'required|date_format:Y-m-d',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

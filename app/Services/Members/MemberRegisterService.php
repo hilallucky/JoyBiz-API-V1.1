@@ -305,28 +305,20 @@ class MemberRegisterService
   private function validation($type = null, $request)
   {
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|in:sponsor,upline',
           // 'uuids.*' => 'required|exists:cities,uuid',
         ];
-
         break;
-
       case 'genealogy':
-
         $validator = [
           'uuid' => 'required',
           'type' => 'required|in:sponsor,upline',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           'first_name' => 'required',
           'last_name' => 'required',
@@ -353,11 +345,8 @@ class MemberRegisterService
           'address.remarks' => 'string',
           // '*.created_by' => 'required|string|min:4',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

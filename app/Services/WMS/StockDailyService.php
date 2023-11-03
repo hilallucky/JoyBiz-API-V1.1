@@ -61,7 +61,7 @@ class StockDailyService
   //   return $this->core->setResponse('success', 'Get order transactions', $query);
   // }
 
-  // Get new Transaction
+  // Create new Period
   public function store(Request $request)
   {
     $validator = $this->validation($request, 'create');
@@ -163,7 +163,7 @@ class StockDailyService
             $newDatas[$detailNo]['description'] = $detail->productPrice->product->description;
             $newDatas[$detailNo]['is_register'] = $detail->productPrice->product->is_register;
             $newDatas[$detailNo]['weight'] = number_format((float)$detail->productPrice->product->weight, 2, '.', '');
-              $newDatas[$detailNo]['sub_weight'] = $weight;
+            $newDatas[$detailNo]['sub_weight'] = $weight;
             // $newDatas[$detailNo]['stock_in'] = 0;
             $newDatas[$detailNo]['stock_out'] = (int)$stockOut;
             $newDatas[$detailNo]['qty_order'] = (int)$detail->qty;
@@ -177,16 +177,16 @@ class StockDailyService
         $order->save();
       }
 
-      $result = array_reduce($newDatas, function($carry, $item){
-        if(!isset($carry[$item['product_uuid']])){
-            $carry[$item['product_uuid']] = ['product_uuid'=>$item['product_uuid'],'qty_order'=>$item['qty_order']]; 
+      $result = array_reduce($newDatas, function ($carry, $item) {
+        if (!isset($carry[$item['product_uuid']])) {
+          $carry[$item['product_uuid']] = ['product_uuid' => $item['product_uuid'], 'qty_order' => $item['qty_order']];
         } else {
-            $carry[$item['product_uuid']]['qty_order'] += $item['qty_order'];
+          $carry[$item['product_uuid']]['qty_order'] += $item['qty_order'];
         }
         return $carry;
       });
       // return $result;
-      
+
       GetTransaction::insert($newDatas);
 
       DB::commit();
@@ -258,27 +258,19 @@ class StockDailyService
   private function validation($request, $type = null)
   {
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|uuid',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           'start' => 'required|date_format:Y-m-d',
           'end' => 'required|date_format:Y-m-d',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

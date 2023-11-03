@@ -88,31 +88,22 @@ class MemberAuthController extends Controller
 
   private function validation($type = null, $request)
   {
-
     switch ($type) {
-
       case 'registration':
-
         $validator = [
           'first_name' => 'required|max:50|min:2',
           'last_name' => 'required|max:100|min:2',
           'email' => 'required|email|unique:users',
           'password' => 'required|min:6|max:100',
         ];
-
         break;
-
       case 'login':
-
         $validator = [
           'email' => 'required|string',
           'password' => 'required|string',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

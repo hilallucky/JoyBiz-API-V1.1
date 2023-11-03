@@ -75,23 +75,17 @@ class VoucherService
   private function validation($type = null, $request)
   {
     switch ($type) {
-
       case 'usedByMember':
         $validator = [
           'member_uuid' => 'required|uuid',
           'amount' => 'required|numeric',
           'order_uuid' => 'required|uuid',
         ];
-
         break;
-
       case 'create' || 'update':
         $validator = [];
-
         break;
-
       default:
-
         $validator = [];
     }
 

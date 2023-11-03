@@ -344,21 +344,15 @@ class WarehouseService
 
   private function validation($type = null, $request)
   {
-
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|uuid',
           // 'uuids.*' => 'required|exists:warehouses,uuid',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           // '*.country_uuid' => 'string|max:255|min:2',
           '*.code' => 'string|max:25|min:2',
@@ -378,11 +372,8 @@ class WarehouseService
           '*.status' => 'in:0,1,2,3',
           // '*.created_by' => 'required|string|min:4',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

@@ -502,19 +502,14 @@ class OrderApprovalService
   private function validation($type = null, $request)
   {
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|uuid',
           // 'uuids.*' => 'required|exists:warehouses,uuid',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

@@ -36,8 +36,8 @@ class StockController extends Controller
   }
 
   //Get Active Period information by date
-  public function getActivePeriod($date, $type)
+  public function getActivePeriod($date = null, $type = null)
   {
-      return $this->periodService->getActivePeriod($date, $type);
+    return $this->periodService->getActivePeriod($date, $type);
   }
 }

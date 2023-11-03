@@ -668,21 +668,15 @@ class ProductService
 
   private function validation($type = null, $request)
   {
-
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|uuid',
           // 'uuids.*' => 'required|exists:product_products,uuid',
         ];
-
         break;
-
       case 'create' || 'update':
-
         $validator = [
           '*.name' => 'required|string|max:255|min:2',
           '*.description' => 'required|max:140|min:5',
@@ -702,11 +696,8 @@ class ProductService
           // '*.created_by' => 'required|string|min:4',
           '*.category_uuid' => 'required|uuid',
         ];
-
         break;
-
       case 'createWithPrices':
-
         $validator = [
           '*.name' => 'required|string|max:255|min:2',
           '*.description' => 'required|max:140|min:5',
@@ -745,11 +736,8 @@ class ProductService
           'prices.bv' => 'required|numeric',
           'prices.rv' => 'required|numeric',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

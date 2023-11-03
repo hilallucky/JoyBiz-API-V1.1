@@ -408,27 +408,19 @@ class MemberShippingAddressService
   private function validation($type = null, $request)
   {
     switch ($type) {
-
       case 'delete':
-
         $validator = [
           'uuids' => 'required|array',
           'uuids.*' => 'required|in:sponsor,upline',
         ];
-
         break;
-
       case 'update':
-
         $validator = [
           'uuid' => 'required|uuid',
           'member_uuid' => 'required|uuid',
         ];
-
         break;
-
       case 'create':
-
         $validator = [
           'member_uuid' => 'required|uuid',
           'city_uuid' => 'required|uuid',
@@ -446,11 +438,8 @@ class MemberShippingAddressService
           'latitude' => 'string',
           'longitude' => 'string',
         ];
-
         break;
-
       default:
-
         $validator = [];
     }
 

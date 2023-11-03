@@ -19,8 +19,7 @@ class PeriodController extends Controller
   {
     return $this->periodService->generateWeekPeriods($request);
   }
-
-  public function getActivePeriod($date)
+  public function getActivePeriod($date = null)
   {
     return $this->periodService->getActivePeriod($date);
   }
