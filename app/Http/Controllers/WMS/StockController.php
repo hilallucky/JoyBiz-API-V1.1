@@ -3,45 +3,41 @@
 namespace App\Http\Controllers\WMS;
 
 use App\Http\Controllers\Controller;
-use App\Services\WMS\StockDailyServicesService;
+use App\Services\WMS\StockDailyService;
+use App\Services\WMS\StockPeriodService;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
-  private StockDailyServicesService $stockDailyService;
+  private StockDailyService $stockDailyService;
+  private StockPeriodService $periodService;
 
-  public function __construct(StockDailyServicesService $stockDailyService)
+  public function __construct(StockDailyService $stockDailyService, StockPeriodService $periodService)
   {
-      $this->stockDailyService = $stockDailyService;
+    $this->stockDailyService = $stockDailyService;
+    $this->periodService = $periodService;
   }
 
-  //Get all product informations
-  public function index(Request $request)
+  public function generatePeriod(Request $request)
   {
-      return $this->stockDailyService->index($request);
+    return $this->periodService->generatePeriod($request);
   }
 
-  //Create new product price information
+  // //Get all product informations
+  // public function index(Request $request)
+  // {
+  //   return $this->stockDailyService->index($request);
+  // }
+
+  //Create new stock period
   public function store(Request $request)
   {
-      return $this->stockDailyService->store($request);
+    return $this->stockDailyService->store($request);
   }
 
-  // //Get product price information by ids
-  // public function show(Request $request, $uuid)
-  // {
-  //     return $this->stockDailyService->show($request, $uuid);
-  // }
-
-  // //UpdateBulk product price information
-  // public function updateBulk(Request $request)
-  // {
-  //     return $this->stockDailyService->updateBulk($request);
-  // }
-
-  // //Delete product price information by ids
-  // public function destroyBulk(Request $request)
-  // {
-  //     return $this->stockDailyService->destroyBulk($request);
-  // }
+  //Get Active Period information by date
+  public function getActivePeriod($date, $type)
+  {
+      return $this->periodService->getActivePeriod($date, $type);
+  }
 }

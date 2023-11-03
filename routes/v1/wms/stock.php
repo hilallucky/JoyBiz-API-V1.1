@@ -3,19 +3,11 @@
 
 /* Warehouse Transaction group */
 
-$router->group(['prefix' => 'transactions', 'as' => 'price_codes'], function () use ($router) {
-  /* All Warehouse can add request param status=0 or 1*/
-  $router->get('/', ['as' => 'all', 'uses' => 'WMS\TransactionController@index']);
-
-  // /* Show Warehouse by uuid can add request param status=0 or 1*/
+$router->group(['prefix' => 'stocks', 'as' => 'stocks'], function () use ($router) {
+  $router->post('/period', ['as' => 'period', 'uses' => 'WMS\StockController@generatePeriod']);
+  $router->get('/period/active/{date}/{type}', ['as' => 'period.active', 'uses' => 'WMS\StockController@getActivePeriod']);
   // $router->get('/{uuid}/details', ['as' => 'show', 'uses' => 'WMS\TransactionController@show']);
-
-  /* create Warehouse */
   $router->post('/', ['as' => 'create', 'uses' => 'WMS\TransactionController@store']);
-
-  // /* Update Bulk Warehouse by uuid */
   // $router->put('/', ['as' => 'update', 'uses' => 'WMS\TransactionController@updateBulk']);
-
-  // /* Bulk delete Warehouse */
   // $router->delete('/', ['as' => 'delete', 'uses' => 'WMS\TransactionController@destroyBulk']);
 });

@@ -8,17 +8,20 @@ use Illuminate\Http\Request;
 
 class PeriodController extends Controller
 {
+  private PeriodService $periodService;
 
+  public function __construct(PeriodService $periodService)
+  {
+    $this->periodService = $periodService;
+  }
 
-    private PeriodService $periodService;
+  public function generateWeekPeriods(Request $request)
+  {
+    return $this->periodService->generateWeekPeriods($request);
+  }
 
-    public function __construct(PeriodService $periodService)
-    {
-        $this->periodService = $periodService;
-    }
-
-    public function generateWeekPeriods(Request $request)
-    {
-        return $this->periodService->generateWeekPeriods($request);
-    }
+  public function getActivePeriod($date)
+  {
+    return $this->periodService->getActivePeriod($date);
+  }
 }

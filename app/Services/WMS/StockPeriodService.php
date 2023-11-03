@@ -17,7 +17,7 @@ class StockPeriodService
     $this->core = new Core();
   }
 
-  public function generateWeekPeriods($request)
+  public function generatePeriod($request)
   {
     $userUuid = null;
 
@@ -26,10 +26,7 @@ class StockPeriodService
       $userUuid = $user->uuid;
     }
 
-    $validator = $this->validation(
-      'create',
-      $request
-    );
+    $validator = $this->validation($request, 'create');
 
     if ($validator->fails()) {
       return $this->core->setResponse(
@@ -42,30 +39,58 @@ class StockPeriodService
     }
 
     $date = Carbon::parse($request->year . '-01-01');
-
-    if ($request->days_interval % 7 !== 0) {
-      return $this->core->setResponse(
-        'error',
-        'Interval should be 7/14/21/28',
-        null,
-        false,
-        422
-      );
+    switch ($request->period) {
+      case 'monthly':
+        $iMin = 0;
+        $iMax = 13;
+        break;
+      case 'yearly':
+        $iMin = 0;
+        $iMax = 1;
+        break;
+      default:
+        $iMin = 0;
+        $iMax = 60;
     }
-
-    for ($i = 0; $i < 60; $i++) {
-      $sDate = $date->weekday($request->start_week_day);
-      $startDate = $sDate->toDateString();
-      $eDate = $sDate->addWeeks($request->days_interval / 7)->weekday($request->end_week_day);
+    for ($i = $iMin; $i < $iMax; $i++) {
+      switch ($request->period) {
+        case 'monthly':
+          $sDate = $date->startOfMonth()->addMonth()->firstOfMonth();
+          $startDate = $sDate->toDateString();
+          $eDate = $sDate->endOfMonth();
+          $interval = $sDate->month($i)->daysInMonth;
+          break;
+        case 'yearly':
+          $startDate = $date->toDateString();
+          $eDate = $date->parse("last day of December $request->year");
+          $interval = $eDate->diffInDays($startDate);
+          break;
+        case 'weekly':
+          $i > 0 ? $date->addDay() : $date;
+          $sDate = $date->weekday(0); //Sunday
+          $startDate = $sDate->toDateString();
+          $eDate = $sDate->weekday(6); // Saturday
+          $interval = 7;
+          break;
+        default:
+          return $this->core->setResponse(
+            'error',
+            'Invalid data',
+            null,
+            false,
+            422
+          );
+      }
 
       StockPeriod::firstOrCreate(
         [
-          'stock_period' => $request->days_interval,
+          'stock_period' => $request->period,
           'start_date' => $startDate,
           'start_day_name' => Carbon::parse($startDate)->dayName,
           'end_date' => $eDate->toDateString(),
           'end_day_name' => Carbon::parse($eDate->toDate())->dayName,
-          'interval_days' => $request->days_interval
+          'interval_days' => $interval,
+          'name' => 'stock',
         ]
       );
     }
@@ -79,7 +104,22 @@ class StockPeriodService
     );
   }
 
-  private function validation($type = null, $request)
+
+  public function getActivePeriod($date, $type)
+  {
+    $period = StockPeriod::where('start_date', '<=', $date)
+      ->where('end_date', '>=', $date)
+      ->where('stock_period', $type)->first();
+    return $this->core->setResponse(
+      'success',
+      'Period active.',
+      $period,
+      false,
+      201
+    );
+  }
+
+  private function validation($request, $type = null)
   {
     switch ($type) {
 
@@ -96,10 +136,7 @@ class StockPeriodService
 
         $validator = [
           'year' => 'required|numeric',
-          'stock_period' => 'required|in:daily,weekly,monthly,yearly',
-          'days_interval' => 'required|in:7,14,21,28',
-          'start_week_day' => 'required|in:0,1,2,3,4,5,6',
-          'end_week_day' => 'required|in:0,1,2,3,4,5,6',
+          'period' => 'required|in:daily,weekly,monthly,yearly',
         ];
 
         break;
