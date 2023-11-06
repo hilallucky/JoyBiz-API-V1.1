@@ -15,38 +15,43 @@ use App\Libraries\Core;
 |
 */
 
+$router->get('/array/sum', ['as' => 'array.sum', 'uses' => 'TestController@arraySum']);
+$router->get('/array/sum2', ['as' => 'array.sum', 'uses' => 'TestController@arraySum2']);
+$router->get('/array/sum/product', ['as' => 'array.sum', 'uses' => 'TestController@arraySumProduct']);
+$router->get('/array/sum/product/multi', ['as' => 'array.sum', 'uses' => 'TestController@arrayMultidimensional']);
+
 /* v1/public group */
 $router->group(['prefix' => 'v1/public', 'as' => 'v1'], function () use ($router) {
-    Core::renderRoutes('v1/public', $router);
+  Core::renderRoutes('v1/public', $router);
 });
 
 /* restrict route */
 // $router->group(['middleware' => ['client']], function () use ($router) {
-    
-    /* v1 auth */
-    $router->group(['prefix' => 'v1', 'as' => 'v1'], function () use ($router) {
-        Core::renderRoutes('v1/auth', $router);
-    });
 
-    // $router->group(['middleware' => ['auth']], function () use ($router) {
-        /* v1 group */
-        $router->group(['prefix' => 'v1', 'as' => 'v1'], function () use ($router) {
-            Core::renderRoutes('v1', $router);
-        });
+/* v1 auth */
+$router->group(['prefix' => 'v1', 'as' => 'v1'], function () use ($router) {
+  Core::renderRoutes('v1/auth', $router);
+});
 
-        /* v1/warehouses group */
-        $router->group(['prefix' => 'v1/wms', 'as' => 'v1'], function () use ($router) {
-            Core::renderRoutes('v1/wms', $router);
-        });
+// $router->group(['middleware' => ['auth']], function () use ($router) {
+/* v1 group */
+$router->group(['prefix' => 'v1', 'as' => 'v1'], function () use ($router) {
+  Core::renderRoutes('v1', $router);
+});
 
-        /* v1/products group */
-        $router->group(['prefix' => 'v1/products', 'as' => 'v1'], function () use ($router) {
-            Core::renderRoutes('v1/products', $router);
-        });
+/* v1/warehouses group */
+$router->group(['prefix' => 'v1/wms', 'as' => 'v1'], function () use ($router) {
+  Core::renderRoutes('v1/wms', $router);
+});
 
-        /* v1/calculation */
-        $router->group(['prefix' => 'v1/calculations', 'as' => 'v1'], function () use ($router) {
-            Core::renderRoutes('v1/calculations', $router);
-        });
+/* v1/products group */
+$router->group(['prefix' => 'v1/products', 'as' => 'v1'], function () use ($router) {
+  Core::renderRoutes('v1/products', $router);
+});
+
+/* v1/calculation */
+$router->group(['prefix' => 'v1/calculations', 'as' => 'v1'], function () use ($router) {
+  Core::renderRoutes('v1/calculations', $router);
+});
     // });
 // });
