@@ -48,34 +48,31 @@ class TestController extends Controller
       ['orderno' => 'o004', 'product_code' => 'p2', 'name' => 'product 002', 'qty' => '3'],
       ['orderno' => 'o005', 'product_code' => 'p2', 'name' => 'product 002', 'qty' => '7'],
       ['orderno' => 'o006', 'product_code' => 'p1', 'name' => 'product 001', 'qty' => '4'],
+      ['orderno' => 'o007', 'product_code' => 'p4', 'name' => 'product 004', 'qty' => '3'],
+      ['orderno' => 'o008', 'product_code' => 'p5', 'name' => 'product 005', 'qty' => '3'],
     ];
 
     $newProduct = [];
     foreach ($products as $product) {
-      if (!empty($newProduct)) {
-        $data = Arr::where($newProduct, function ($filter, $newProduct) use ($product) {
-          return ($filter['product_code'] == $product['product_code']);
-        });
+      $index = array_search($product['product_code'], array_column($newProduct, 'product_code'));
 
-        if ($data) {
-          $index = array_search($product['product_code'], array_column($newProduct, 'product_code'));
-          $newProduct[$index]['qty'] = $newProduct[$index]['qty'] + $product['qty'];
-        } else {
-          array_push($newProduct, [
-            'product_code' => $product['product_code'],
-            'name' => $product['name'],
-            'qty' => $product['qty'],
-          ]);
-        }
+      if ($index !== false) {
+        $newProduct[$index]['qty'] += $product['qty'];
       } else {
-        array_push($newProduct, [
+        $newProduct[] = [
           'product_code' => $product['product_code'],
           'name' => $product['name'],
           'qty' => $product['qty'],
-        ]);
+        ];
       }
     }
-    return ($newProduct);
+
+    // Custom comparison function to sort based on "product_code"
+    usort($newProduct, function ($a, $b) {
+      return $a['product_code'] <=> $b['product_code'];
+    });
+    
+    return $newProduct;
   }
 
   public function arrayMultidimensional()

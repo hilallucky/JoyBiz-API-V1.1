@@ -29,15 +29,15 @@ class StockController extends Controller
   //   return $this->stockDailyService->index($request);
   // }
 
-  //Create new stock period
-  public function store(Request $request)
-  {
-    return $this->stockDailyService->store($request);
-  }
-
   //Get Active Period information by date
   public function getActivePeriod($date = null, $type = null)
   {
     return $this->periodService->getActivePeriod($date, $type);
+  }
+
+  //Create new stock period
+  public function store(Request $request)
+  {
+    return $this->stockDailyService->index($request);
   }
 }

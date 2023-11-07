@@ -52,13 +52,13 @@ class StockSummaryHeader extends Model
     'deleted_by',
   ];
 
-  public function process()
-  {
-    return $this->hasOne(StockProcesses::class, 'stock_process_uuid', 'uuid');
-  }
+  // public function process()
+  // {
+  //   return $this->hasOne(StockProcesses::class, 'stock_process_uuid', 'uuid');
+  // }
 
-  public function detail()
-  {
-    return $this->hasMany(StockSummaryDetail::class, 'stock_process_uuid', 'uuid');
-  }
+  // public function detail()
+  // {
+  //   return $this->hasMany(StockSummaryDetail::class, 'stock_process_uuid', 'uuid');
+  // }
 }

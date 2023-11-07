@@ -5,6 +5,8 @@ namespace App\Services\WMS;
 use app\Libraries\Core;
 use App\Models\Orders\Production\OrderHeader;
 use App\Models\WMS\GetTransaction;
+use App\Models\WMS\StockProcesses;
+use App\Models\WMS\StockSummaryHeader;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,8 +60,100 @@ class StockDailyService
   //     'product_header_uuid', 'name', 'attribute_name', 'description', 'is_register', 'weight', 'sub_weight',
   //     'stock_in', 'stock_out', 'qty_order', 'qty_indent','product_status', 'stock_type']);
 
+
+  // $query = DB::getQueryLog();
+  // dd($query);
+
+  // dd($data);
+
   //   return $this->core->setResponse('success', 'Get order transactions', $query);
   // }
+
+  public function index(Request $request)
+  {
+    return $this->getData($request->start, $request->end, $request->type);
+  }
+
+  public function stockProcess($processedDate, $userUuid)
+  {
+    return StockProcesses::create([
+      'uuid' => Str::uuid(),
+      'processed_date' => $processedDate,
+      'processed_by_uuid' => $userUuid,
+      'created_by' => $userUuid,
+      'updated_by' => $userUuid,
+    ]);
+  }
+
+  public function getData($start, $end, $periodType = 'daily_stock')
+  {
+    try {
+      DB::beginTransaction();
+      DB::enableQueryLog();
+      $now = Carbon::now();
+
+      $datas = GetTransaction::whereBetween(DB::raw('wms_do_date::date'), [$start, $end])
+        ->whereNull('wms_do_header_uuid')->get();
+      // return $datas;
+
+      $process = $this->stockProcess($now, null);
+      $newData = [];
+
+      foreach ($datas as $data) {
+        $index = array_search($data['product_uuid'], array_column($newData, 'product_uuid'));
+        // print_r('hellooooo = ' . $index);
+        // $prevStock = StockSummaryHeader::where('product_uuid', $data->product_uuid)
+        //   ->orderBy('created_at', 'desc')->first();
+
+        if ($index !== false) {
+          $newData[$index]['stock_out'] += $data->stock_out;
+        } else {
+          $newData[] = [
+            'uuid' => Str::uuid(),
+            'stock_process_uuid' => $process->uuid,
+            'warehouse_uuid' => null,
+            'stock_date' => $now,
+            'product_uuid' => $data->product_uuid,
+            'product_attribute_uuid' => $data->product_attribute_uuid,
+            'product_header_uuid' => $data->product_header_uuid,
+            'name' => $data->name,
+            'attribute_name' => $data->attribute_name,
+            'description' => $data->description,
+            'is_register' => $data->is_register,
+            'weight' => $data->weight,
+            // 'stock_in'=>$data->stock_in,
+            'stock_out' => $data->stock_out,
+            'stock_previous' => $data->stock_previous,
+            'stock_current' => $data->stock_current,
+            'stock_to_sale' => $data->stock_to_sale,
+            'indent' => $data->indent,
+            'stock_type' => $data->stock_type,
+            // 'created_by'=>$data->,
+            // 'updated_by'=>$data->,
+          ];
+        }
+      }
+
+      // return $newData;
+      $newStock = StockSummaryHeader::insert($newData);
+      // $newStock->save();
+
+      $query = DB::getQueryLog();
+      // dd($query);
+
+      // $prevStock = StockSummaryHeader::where('product_uuid', $data->product_uuid)
+      // ->orderBy('created_at', 'desc')->first();
+
+      DB::commit();
+      return $newStock;
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return response()->json(
+        ['message' => 'Error during bulk create ' . $e->getMessage()],
+        500
+      );
+    }
+  }
 
   // Create new Period
   public function store(Request $request)
