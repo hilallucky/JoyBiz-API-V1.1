@@ -68,7 +68,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3)->nullable();
       $table->integer('stock_in')->default(0)->nullable();
       $table->integer('stock_out')->default(0)->nullable();
       $table->integer('stock_previous')->default(0)->nullable();
@@ -98,7 +98,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3)->nullable();
       $table->integer('stock_in')->default(0)->nullable();
       $table->integer('stock_out')->default(0)->nullable();
       $table->integer('stock_previous')->default(0)->nullable();
@@ -130,7 +130,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->integer('weight')->default(0);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3)->nullable();
       $table->integer('stock_in')->default(0)->nullable();
       $table->integer('stock_out')->default(0)->nullable();
       $table->integer('stock_previous')->default(0)->nullable();
@@ -163,7 +163,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3)->nullable();
       $table->integer('stock_in')->default(0)->nullable();
       $table->integer('stock_out')->default(0)->nullable();
       $table->integer('stock_previous')->default(0)->nullable();
@@ -198,7 +198,7 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3)->nullable();
       $table->integer('stock_in')->default(0)->nullable();
       $table->integer('stock_out')->default(0)->nullable();
       $table->integer('stock_previous')->default(0)->nullable();
@@ -232,8 +232,8 @@ return new class extends Migration
       $table->string('attribute_name')->nullable();
       $table->text('description')->nullable();
       $table->enum('is_register', [0, 1]);
-      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3);
-      $table->decimal('sub_weight', 10, 2)->comment('Total weighr each Product')->default(0.3);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3)->nullable();
+      $table->decimal('sub_weight', 10, 2)->comment('Total weight each Product')->default(0.3)->nullable();
       $table->integer('stock_in')->default(0)->nullable();
       $table->integer('stock_out')->default(0)->nullable();
       $table->integer('qty_order')->nullable()->nullable();
@@ -262,17 +262,18 @@ return new class extends Migration
       $table->uuid('uuid')->unique();
       $table->timestamp('do_date');
       $table->uuid('warehouse_uuid')->nullable();
-      $table->enum('sent_to', [1, 2, 3, 4, 5])->comment('Sent to : 1 = Warehouse, 2 = Member, 3 = PUC')->default(2);
+      $table->enum('sent_to', [1, 2, 3, 4, 5])->comment('Sent to : 1 = Warehouse, 2 = Member, 3 = PUC')->default(2)->nullable();
       $table->uuid('to_uuid')->nullable(); // could be member/PUC/warehouse
       $table->string('name')->nullable();
       $table->text('remarks')->nullable();
       $table->text('notes')->nullable();
       $table->text('description')->nullable();
-      $table->integer('total_weight')->default(0)->nullable();
-      $table->integer('stock_in')->default(0)->nullable();
-      $table->integer('stock_out')->default(0)->nullable();
+      $table->decimal('total_weight', 10, 2)->comment('Product weight')->default(0.3)->nullable();
+      $table->integer('total_stock_in')->default(0)->nullable();
+      $table->integer('total_stock_out')->default(0)->nullable();
       $table->integer('total_transaction')->default(0)->nullable(); // total transaction count
-      $table->integer('total_qty')->default(0)->nullable(); // total product fr->nullable()om transaction by do number
+      $table->text('transaction_uuids')->nullable();
+      $table->integer('total_qty_order')->default(0)->nullable(); // total product fr->nullable()om transaction by do number
       $table->integer('total_qty_sent')->default(0)->nullable();
       $table->integer('total_qty_indent')->default(0)->nullable();
       $table->integer('total_qty_remain')->default(0)->nullable();
@@ -298,7 +299,7 @@ return new class extends Migration
       $table->enum('is_register', [0, 1]);
       $table->enum('product_status', [0, 1, 2, 3, 4])->nullable()
         ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Disabled, 3 = Terminated, 4 = Indent')->default(1);
-      $table->integer('weight')->default(0);
+      $table->decimal('weight', 10, 2)->comment('Product weight')->default(0.3)->nullable();
       $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, 2 = Stock Out')->default(1);
       $table->integer('qty_order')->default(0)->nullable();
       $table->integer('qty_sent')->default(0)->nullable();

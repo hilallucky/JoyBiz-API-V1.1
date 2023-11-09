@@ -134,12 +134,7 @@ class StockDailyService
         }
       }
 
-      // return $newData;
       $newStock = StockSummaryHeader::insert($newData);
-      // $newStock->save();
-
-      $query = DB::getQueryLog();
-      // dd($query);
 
       // $prevStock = StockSummaryHeader::where('product_uuid', $data->product_uuid)
       // ->orderBy('created_at', 'desc')->first();
