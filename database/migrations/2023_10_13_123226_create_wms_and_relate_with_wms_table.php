@@ -58,7 +58,7 @@ return new class extends Migration
     Schema::create('wms_stock_summary_headers', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('stock_process_uuid')->nullable();
+      $table->integer('stock_process_uuid')->nullable();
       $table->uuid('warehouse_uuid')->nullable();
       $table->timestamp('stock_date');
       $table->uuid('product_uuid');
@@ -81,14 +81,14 @@ return new class extends Migration
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
       $table->timestamps();
       $table->softDeletes();
-      $table->foreign('stock_process_uuid')->references('uuid')->on('wms_stock_processes')->onDelete('cascade');
+      //$table->foreign('stock_process_uuid')->references('id')->on('wms_stock_processes')->onDelete('cascade');
     });
 
     Schema::create('wms_stock_summary_details', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
       $table->uuid('wms_stock_summary_header_uuid')->nullable();
-      $table->uuid('stock_process_uuid')->nullable();
+      $table->integer('stock_process_uuid')->nullable();
       $table->uuid('warehouse_uuid')->nullable();
       $table->timestamp('stock_date');
       $table->uuid('product_uuid');
@@ -111,14 +111,14 @@ return new class extends Migration
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
       $table->timestamps();
       $table->softDeletes();
-      $table->foreign('stock_process_uuid')->references('uuid')->on('wms_stock_processes')->onDelete('cascade');
+      //$table->foreign('stock_process_uuid')->references('id')->on('wms_stock_processes')->onDelete('cascade');
     });
 
     // Table weekly stocks
     Schema::create('wms_stock_summary_weekly_headers', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('stock_process_uuid')->nullable();
+      $table->integer('stock_process_uuid')->nullable();
       $table->uuid('warehouse_uuid')->nullable();
       $table->timestamp('stock_date');
       $table->timestamp('date_from')->nullable();
@@ -142,14 +142,14 @@ return new class extends Migration
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
       $table->timestamps();
       $table->softDeletes();
-      $table->foreign('stock_process_uuid')->references('uuid')->on('wms_stock_processes')->onDelete('cascade');
+      //$table->foreign('stock_process_uuid')->references('id')->on('wms_stock_processes')->onDelete('cascade');
     });
 
     // Table monthly stocks
     Schema::create('wms_stock_summary_monthly_headers', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('stock_process_uuid')->nullable();
+      $table->integer('stock_process_uuid')->nullable();
       $table->uuid('warehouse_uuid')->nullable();
       $table->timestamp('stock_date');
       $table->timestamp('date_from')->nullable();
@@ -175,14 +175,14 @@ return new class extends Migration
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
       $table->timestamps();
       $table->softDeletes();
-      $table->foreign('stock_process_uuid')->references('uuid')->on('wms_stock_processes')->onDelete('cascade');
+      //$table->foreign('stock_process_uuid')->references('id')->on('wms_stock_processes')->onDelete('cascade');
     });
 
     // Table yearly stocks
     Schema::create('wms_stock_summary_yearly_headers', function (Blueprint $table) {
       $table->id();
       $table->uuid('uuid')->unique();
-      $table->uuid('stock_process_uuid')->nullable();
+      $table->integer('stock_process_uuid')->nullable();
       $table->uuid('warehouse_uuid')->nullable();
       $table->timestamp('stock_date');
       $table->timestamp('date_from')->nullable();
@@ -210,7 +210,7 @@ return new class extends Migration
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
       $table->timestamps();
       $table->softDeletes();
-      $table->foreign('stock_process_uuid')->references('uuid')->on('wms_stock_processes')->onDelete('cascade');
+      //$table->foreign('stock_process_uuid')->references('id')->on('wms_stock_processes')->onDelete('cascade');
     });
 
     // Table wms_transactions

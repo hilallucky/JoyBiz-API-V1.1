@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Repositories\WMS;
+
+use app\Libraries\Core;
+use App\Models\WMS\DODetail;
+use App\Models\WMS\DOHeader;
+use App\Models\WMS\GetTransaction;
+use App\Models\WMS\StockPeriod;
+use App\Models\WMS\StockSummaryHeader;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+class StockSummaryRepository
+{
+  public $core;
+
+  public function __construct()
+  {
+    $this->core = new Core();
+  }
+
+  public function createStock($start, $end)
+  {
+    try {
+      $userLogin = null;
+      // Check Auth & update user uuid to deleted_by
+      if (Auth::check()) {
+        $user = Auth::user();
+        $userLogin = $user->uuid;
+      }
+
+      DB::beginTransaction();
+      DB::enableQueryLog();
+      $now = Carbon::now();
+      // return $stock;
+
+      // $columnsToCheck = ['wms_do_date', 'wms_do_header_uuid'];
+      $datas = DB::table('wms_do_headers')
+        ->join('wms_do_details', 'wms_do_headers.uuid', '=', 'wms_do_details.wms_do_header_uuid')
+        ->selectRaw(
+          "wms_do_details.product_uuid, wms_do_details.product_attribute_uuid, wms_do_details.product_header_uuid,
+          wms_do_details.name, wms_do_details.attribute_name, wms_do_details.description, wms_do_details.is_register,
+          wms_do_details.product_status, wms_do_details.weight, wms_do_details.stock_type,
+          SUM(wms_do_details.qty_order) AS qty_order, SUM(wms_do_details.qty_sent) AS qty_sent,
+          SUM(wms_do_details.qty_indent) AS qty_indent, SUM(wms_do_details.qty_remain) AS qty_remain"
+        )
+        ->whereBetween('wms_do_headers.do_date', [$start, $end])
+        ->groupBy(
+          'wms_do_details.product_uuid',
+          'wms_do_details.product_attribute_uuid',
+          'wms_do_details.product_header_uuid',
+          'wms_do_details.name',
+          'wms_do_details.attribute_name',
+          'wms_do_details.description',
+          'wms_do_details.is_register',
+          'wms_do_details.product_status',
+          'wms_do_details.weight',
+          'wms_do_details.stock_type',
+        )->get();
+
+      $startDate = Carbon::parse($start);
+      $endDate = Carbon::parse($start);
+      $startDay = $startDate->dayName;
+      $endDay = $endDate->dayName;
+      
+      $periodId = null;
+      $period = StockPeriod::where('start_date', '>=', $startDate)->where('end_date', '<=', $endDate)->first();
+      
+      if (empty($period)) {
+        $stockPeriod = StockPeriod::create([
+          'stock_period' => 'daily',
+          'start_date' => $startDate->format('Y-m-d'),
+          'end_date' => $endDate->format('Y-m-d'),
+          'start_day_name' => $startDay,
+          'end_day_name' => $endDay
+        ]);
+        $periodId = $stockPeriod->id;
+      } else {
+        $periodId = $period->id;
+      }
+
+      foreach ($datas as $data) {
+        // dd($data->product_uuid);
+        $stock = StockSummaryHeader::create(
+          [
+            'uuid' => Str::uuid(),
+            'stock_process_uuid' => $periodId,
+            'warehouse_uuid' => null,
+            'stock_date' => Carbon::now(),
+            'product_uuid' => $data->product_uuid,
+            'product_attribute_uuid' => $data->product_attribute_uuid,
+            'product_header_uuid' => $data->product_header_uuid,
+            'name' => $data->name,
+            'attribute_name' => $data->attribute_name,
+            'description' => $data->description,
+            'is_register' => $data->is_register,
+            'weight' => $data->weight,
+            'stock_in' => 0,
+            'stock_out' => $data->qty_order,
+            'stock_previous' => 0,
+            'stock_current' => $data->qty_order,
+            'stock_to_sale' => $data->qty_order * 100,
+            'indent' => $data->qty_indent,
+            'stock_type' => $data->stock_type,
+            'created_by' => $userLogin,
+            'updated_by' => $userLogin
+          ]
+        );
+      }
+      // return $stock;
+      // dd(DB::getQueryLog());
+      DB::commit();
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return response()->json(['message' => 'Error during Stock create ' . $e->getMessage()], 500);
+    }
+
+    return $this->core->setResponse(
+      'success',
+      "Create DO from date $start to $end",
+      (!empty($datas) ? count($datas) + 1 : 0) . " record(s)",
+      false,
+      201
+    );
+  }
+
+  public function groupArray($data)
+  {
+    $summary = array_reduce($data, function ($carry, $item) {
+      $productUuid = $item['product_uuid'];
+      $attributeUuid = $item['product_attribute_uuid'];
+
+      $groupKey = $productUuid . '-' . $attributeUuid;
+
+      // Initialize the group if it doesn't exist
+      if (!array_key_exists($groupKey, $carry)) {
+        $carry[$groupKey] = [
+          'total_qty' => 0,
+          'total_weight' => 0,
+          'total_qty_indent' => 0,
+        ];
+      }
+
+      // Update the summarized data
+      $carry[$groupKey]['product_attribute_uuid'] = $item['product_attribute_uuid'];
+      $carry[$groupKey]['warehouse_uuid'] = $item['warehouse_uuid'];
+      $carry[$groupKey]['name'] = $item['name'];
+      $carry[$groupKey]['total_qty'] += $item['total_qty'];
+      $carry[$groupKey]['total_weight'] += $item['total_weight'];
+      $carry[$groupKey]['total_qty_indent'] += $item['total_qty_indent'];
+
+      return $carry;
+    }, []);
+
+    // Print the summarized data
+    return array_values($summary);
+  }
+}

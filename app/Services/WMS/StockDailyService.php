@@ -7,6 +7,7 @@ use App\Models\Orders\Production\OrderHeader;
 use App\Models\WMS\GetTransaction;
 use App\Models\WMS\StockProcesses;
 use App\Models\WMS\StockSummaryHeader;
+use App\Repositories\WMS\StockSummaryRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,11 +17,13 @@ use Illuminate\Support\Str;
 
 class StockDailyService
 {
+  private StockSummaryRepository $ssRepo;
   public $core;
 
-  public function __construct()
+  public function __construct(StockSummaryRepository $ssRepo)
   {
     $this->core = new Core();
+    $this->ssRepo = $ssRepo;
   }
 
   //Get all transactions
@@ -165,138 +168,7 @@ class StockDailyService
       );
     }
 
-    $userLogin = null;
-    // Check Auth & update user uuid to deleted_by
-    if (Auth::check()) {
-      $user = Auth::user();
-      $userLogin = $user->uuid;
-    }
-
-    try {
-      DB::enableQueryLog();
-      DB::beginTransaction();
-
-      $start = $request->input('start');
-      $end = $request->input('end');
-      // get only paid and not yet processed by warehouse
-      $orders = OrderHeader::with('details.productPrice.product.attributes')
-        ->whereBetween(DB::raw('transaction_date::date'), [$start, $end])
-        ->whereIn('status', ['1'])->where('date_transfered_to_wms', null)->lockForUpdate()->get();
-
-      $newDatas = [];
-      $getDate = Carbon::now();
-      $stockOut = 0;
-      $headerNo = 0;
-      $detailNo = 0;
-      foreach ($orders as $order) {
-        $headerNo++;
-        foreach ($order->details as $detail) {
-          $newData = [
-            'uuid' => Str::uuid(),
-            'get_date' => $getDate,
-            'transaction_type' => '1',
-            'transaction_date' => $order->transaction_date,
-            'transaction_header_uuid' => $order->uuid,
-            'transaction_detail_uuid' => $detail->uuid,
-            'warehouse_uuid' => null,
-            'stock_in' => 0,
-            'stock_type' => '2',
-            'created_at' => $getDate,
-            'created_by' => null,
-            'updated_at' => $getDate,
-            'updated_by' => null,
-          ];
-
-          array_push($newDatas, $newData);
-
-          if ($detail->is_product_group == '1') {
-            $groupProducts = $detail->group($detail->product_uuid, $detail->qty);
-            $groupNo = 0;
-            foreach ($groupProducts as $groupProduct) {
-              if ($groupNo > 0) {
-                $newData['uuid'] = Str::uuid();
-                array_push($newDatas, $newData);
-              }
-
-              $stockOut = $groupProduct->status == '1' ? $groupProduct->qty : 0;
-              $indent = $groupProduct->status == '4' ? $groupProduct->qty : 0;
-              $weight = number_format((float)$groupProduct->weight, 2, '.', '') * $stockOut;
-
-              $newDatas[$detailNo]['product_uuid'] = $groupProduct->product_uuid;
-              $newDatas[$detailNo]['product_attribute_uuid'] = null;
-              $newDatas[$detailNo]['product_header_uuid'] = $groupProduct->uuid;
-              $newDatas[$detailNo]['name'] = $groupProduct->name;
-              $newDatas[$detailNo]['attribute_name'] = null; //$groupProduct->productPrice->product;
-              $newDatas[$detailNo]['description'] = $groupProduct->description;
-              $newDatas[$detailNo]['is_register'] = $groupProduct->is_register;
-              $newDatas[$detailNo]['weight'] = number_format((float)$groupProduct->weight, 2, '.', '');
-              $newDatas[$detailNo]['sub_weight'] = $weight;
-              // $newDatas[$detailNo]['stock_in'] = 0;
-              $newDatas[$detailNo]['stock_out'] = (int)$stockOut;
-              $newDatas[$detailNo]['qty_order'] = (int)$groupProduct->qty;
-              $newDatas[$detailNo]['qty_indent'] = (int)$indent;
-              $newDatas[$detailNo]['product_status'] = $groupProduct->status;
-              $detailNo++;
-              $groupNo++;
-            }
-          } else if ($detail->is_product_group != '1') {
-            $stockOut = $detail->productPrice->product->status == '1' ? $detail->qty : 0;
-            $indent = $detail->productPrice->product->status == '4' ? $detail->qty : 0;
-            $weight = number_format((float)$detail->productPrice->product->weight, 2, '.', '') * $stockOut;
-
-            $newDatas[$detailNo]['product_uuid'] = $detail->uuid;
-            $newDatas[$detailNo]['product_attribute_uuid'] = $detail->uuid;
-            $newDatas[$detailNo]['product_header_uuid'] = $detail->uuid;
-            $newDatas[$detailNo]['name'] = $detail->productPrice->product->name;
-            $newDatas[$detailNo]['attribute_name'] = null; //$detail->productPrice->product;
-            $newDatas[$detailNo]['description'] = $detail->productPrice->product->description;
-            $newDatas[$detailNo]['is_register'] = $detail->productPrice->product->is_register;
-            $newDatas[$detailNo]['weight'] = number_format((float)$detail->productPrice->product->weight, 2, '.', '');
-            $newDatas[$detailNo]['sub_weight'] = $weight;
-            // $newDatas[$detailNo]['stock_in'] = 0;
-            $newDatas[$detailNo]['stock_out'] = (int)$stockOut;
-            $newDatas[$detailNo]['qty_order'] = (int)$detail->qty;
-            $newDatas[$detailNo]['qty_indent'] = (int)$indent;
-            $newDatas[$detailNo]['product_status'] = $detail->status;
-            $detailNo++;
-          }
-        }
-        $order->transfered_to_wms_by = null;
-        $order->date_transfered_to_wms = $getDate;
-        $order->save();
-      }
-
-      $result = array_reduce($newDatas, function ($carry, $item) {
-        if (!isset($carry[$item['product_uuid']])) {
-          $carry[$item['product_uuid']] = ['product_uuid' => $item['product_uuid'], 'qty_order' => $item['qty_order']];
-        } else {
-          $carry[$item['product_uuid']]['qty_order'] += $item['qty_order'];
-        }
-        return $carry;
-      });
-      // return $result;
-
-      GetTransaction::insert($newDatas);
-
-      DB::commit();
-    } catch (\Exception $e) {
-      DB::rollback();
-      return $this->core->setResponse(
-        'error',
-        'Warehouse fail to created. ' . $e->getMessage(),
-        NULL,
-        FALSE,
-        500
-      );
-    }
-
-    return $this->core->setResponse(
-      'success',
-      "Get transaction from date $start to $end",
-      $orders->count() . " record(s)",
-      false,
-      201
-    );
+    return $this->ssRepo->createStock($request->start, $request->end);
   }
 
   //Delete Warehouse by ids
