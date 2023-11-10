@@ -112,7 +112,7 @@ class GetTransactionService
       $start = $request->input('start');
       $end = $request->input('end');
       // get only paid and not yet processed by warehouse
-      $orders = OrderHeader::with('details.productPrice.product.attributes')
+      $orders = OrderHeader::with('details.productPrice.product.attributes', 'details.attribute')
         ->whereBetween(DB::raw('transaction_date::date'), [$start, $end])
         ->whereIn('status', ['1'])->where('date_transfered_to_wms', null)->lockForUpdate()->get();
 
@@ -157,9 +157,9 @@ class GetTransactionService
 
               $newDatas[$detailNo]['product_uuid'] = $groupProduct->product_uuid;
               $newDatas[$detailNo]['product_attribute_uuid'] = null;
-              $newDatas[$detailNo]['product_header_uuid'] = $groupProduct->uuid;
+              $newDatas[$detailNo]['product_header_uuid'] = $groupProduct->product_group_header_uuid;
               $newDatas[$detailNo]['name'] = $groupProduct->name;
-              $newDatas[$detailNo]['attribute_name'] = null; //$groupProduct->productPrice->product;
+              $newDatas[$detailNo]['attribute_name'] = $detail->product_attribute_uuid ? $detail->attribute[0]->name . ' - ' . $detail->attribute[0]->description : null;
               $newDatas[$detailNo]['description'] = $groupProduct->description;
               $newDatas[$detailNo]['is_register'] = $groupProduct->is_register;
               $newDatas[$detailNo]['weight'] = number_format((float)$groupProduct->weight, 2, '.', '');
@@ -178,10 +178,10 @@ class GetTransactionService
             $weight = number_format((float)$detail->productPrice->product->weight, 2, '.', '') * $stockOut;
 
             $newDatas[$detailNo]['product_uuid'] = $detail->uuid;
-            $newDatas[$detailNo]['product_attribute_uuid'] = $detail->uuid;
-            $newDatas[$detailNo]['product_header_uuid'] = $detail->uuid;
+            $newDatas[$detailNo]['product_attribute_uuid'] = $detail->product_attribute_uuid;
+            $newDatas[$detailNo]['product_header_uuid'] = $detail->product_group_header_uuid;
             $newDatas[$detailNo]['name'] = $detail->productPrice->product->name;
-            $newDatas[$detailNo]['attribute_name'] = null; //$detail->productPrice->product;
+            $newDatas[$detailNo]['attribute_name'] = $detail->product_attribute_uuid ? $detail->attribute[0]->name . ' - ' . $detail->attribute[0]->description  : null;
             $newDatas[$detailNo]['description'] = $detail->productPrice->product->description;
             $newDatas[$detailNo]['is_register'] = $detail->productPrice->product->is_register;
             $newDatas[$detailNo]['weight'] = number_format((float)$detail->productPrice->product->weight, 2, '.', '');
@@ -207,7 +207,6 @@ class GetTransactionService
         }
         return $carry;
       });
-      // return $result;
 
       GetTransaction::insert($newDatas);
 
@@ -226,7 +225,7 @@ class GetTransactionService
     return $this->core->setResponse(
       'success',
       "Get transaction from date $start to $end",
-      $orders->count() . " record(s)",
+      (count($orders) > 0 ? count($orders) + 1 : 0) . " record(s)",
       false,
       201
     );

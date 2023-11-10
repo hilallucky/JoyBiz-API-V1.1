@@ -63,6 +63,15 @@ class OrderDetail extends Model
     );
   }
 
+  public function attribute()
+  {
+    return $this->hasMany(
+      ProductAttribute::class,
+      'uuid',
+      'product_attribute_uuid'
+    );
+  }
+
   public function attributes()
   {
     return $this->hasMany(
