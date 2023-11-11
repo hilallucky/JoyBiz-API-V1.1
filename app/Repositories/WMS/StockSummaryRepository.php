@@ -22,6 +22,52 @@ class StockSummaryRepository
     $this->core = new Core();
   }
 
+  public function checkStock($periodId, $data, $userLogin)
+  {
+    $check = StockSummaryHeader::where('product_uuid', $data->product_uuid)
+      ->where('product_attribute_uuid', $data->product_attribute_uuid)
+      ->where('product_header_uuid', $data->product_header_uuid)
+      ->whereRaw("stock_date::date = '" . Carbon::now()->format('Y-m-d') . "'")
+      // ->where('warehouse_uuid', $data->warehouse_uuid)
+      ->orderBy('id', 'desc')
+      ->first();
+
+    if (!$check) {
+      StockSummaryHeader::create(
+        [
+          'uuid' => Str::uuid(),
+          'stock_process_uuid' => $periodId,
+          'warehouse_uuid' => null,
+          'stock_date' => Carbon::now(),
+          'product_uuid' => $data->product_uuid,
+          'product_attribute_uuid' => $data->product_attribute_uuid,
+          'product_header_uuid' => $data->product_header_uuid,
+          'name' => $data->name,
+          'attribute_name' => $data->attribute_name,
+          'description' => $data->description,
+          'is_register' => $data->is_register,
+          'weight' => $data->weight,
+          'stock_in' => 0,
+          'stock_out' => $data->qty_order,
+          'stock_previous' => 0,
+          'stock_current' => 0 - ($data->qty_order - $data->qty_indent),
+          'stock_to_sale' => $data->qty_order * 100,
+          'indent' => $data->qty_indent,
+          'stock_type' => $data->stock_type,
+          'created_by' => $userLogin,
+          'updated_by' => $userLogin
+        ]
+      );
+    } else {
+      $check->stock_out += $data->qty_order;
+      $check->stock_previous = $check->stock_current;
+      $check->stock_current -= ($data->qty_order - $data->qty_indent);
+      $check->stock_to_sale = ($data->qty_order - $data->qty_indent) * 10;
+      $check->indent += $data->qty_indent;
+      $check->save();
+    }
+  }
+
   public function createStock($start, $end)
   {
     try {
@@ -34,10 +80,7 @@ class StockSummaryRepository
 
       DB::beginTransaction();
       DB::enableQueryLog();
-      $now = Carbon::now();
-      // return $stock;
 
-      // $columnsToCheck = ['wms_do_date', 'wms_do_header_uuid'];
       $datas = DB::table('wms_do_headers')
         ->join('wms_do_details', 'wms_do_headers.uuid', '=', 'wms_do_details.wms_do_header_uuid')
         ->selectRaw(
@@ -45,8 +88,13 @@ class StockSummaryRepository
           wms_do_details.name, wms_do_details.attribute_name, wms_do_details.description, wms_do_details.is_register,
           wms_do_details.product_status, wms_do_details.weight, wms_do_details.stock_type,
           SUM(wms_do_details.qty_order) AS qty_order, SUM(wms_do_details.qty_sent) AS qty_sent,
-          SUM(wms_do_details.qty_indent) AS qty_indent, SUM(wms_do_details.qty_remain) AS qty_remain"
+          SUM(wms_do_details.qty_indent) AS qty_indent, SUM(wms_do_details.qty_remain) AS qty_remain,
+          array_to_string(array_agg(wms_do_headers.uuid), ', ') as \"uuids\""
         )
+        ->where(function ($q) {
+          $q->orWhere('wms_do_headers.daily_stock', null)
+            ->orWhere('wms_do_headers.daily_stock', 0);
+        })
         ->whereBetween('wms_do_headers.do_date', [$start, $end])
         ->groupBy(
           'wms_do_details.product_uuid',
@@ -65,10 +113,10 @@ class StockSummaryRepository
       $endDate = Carbon::parse($start);
       $startDay = $startDate->dayName;
       $endDay = $endDate->dayName;
-      
+
       $periodId = null;
       $period = StockPeriod::where('start_date', '>=', $startDate)->where('end_date', '<=', $endDate)->first();
-      
+
       if (empty($period)) {
         $stockPeriod = StockPeriod::create([
           'stock_period' => 'daily',
@@ -83,35 +131,14 @@ class StockSummaryRepository
       }
 
       foreach ($datas as $data) {
-        // dd($data->product_uuid);
-        $stock = StockSummaryHeader::create(
-          [
-            'uuid' => Str::uuid(),
-            'stock_process_uuid' => $periodId,
-            'warehouse_uuid' => null,
-            'stock_date' => Carbon::now(),
-            'product_uuid' => $data->product_uuid,
-            'product_attribute_uuid' => $data->product_attribute_uuid,
-            'product_header_uuid' => $data->product_header_uuid,
-            'name' => $data->name,
-            'attribute_name' => $data->attribute_name,
-            'description' => $data->description,
-            'is_register' => $data->is_register,
-            'weight' => $data->weight,
-            'stock_in' => 0,
-            'stock_out' => $data->qty_order,
-            'stock_previous' => 0,
-            'stock_current' => $data->qty_order,
-            'stock_to_sale' => $data->qty_order * 100,
-            'indent' => $data->qty_indent,
-            'stock_type' => $data->stock_type,
-            'created_by' => $userLogin,
-            'updated_by' => $userLogin
-          ]
-        );
+        $this->checkStock($periodId, $data, $userLogin);
       }
-      // return $stock;
-      // dd(DB::getQueryLog());
+
+      DOHeader::whereIn('uuid', explode(',', $datas['uuids']))->update([
+        'daily_stock' => 1,
+        'daily_stock_date' => Carbon::now()
+      ]);
+
       DB::commit();
     } catch (\Exception $e) {
       DB::rollBack();

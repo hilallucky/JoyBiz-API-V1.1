@@ -241,14 +241,6 @@ return new class extends Migration
       $table->enum('product_status', [0, 1, 2, 3, 4])->nullable()
         ->comment('Status product : 0 = Inactive, 1 = Active, 2 = Dis->nullable()abled, 3 = Terminated, 4 = Indent')->default(1);
       $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, 2 = Stock Out')->default(1);
-      $table->integer('daily_stock')->default(0);
-      $table->timestamp('daily_stock_date')->nullable();
-      $table->integer('weekly_stock')->default(0);
-      $table->timestamp('weekly_stock_date')->nullable();
-      $table->integer('monthly_stock')->default(0);
-      $table->timestamp('monthly_stock_date')->nullable();
-      $table->integer('yearly_stock')->default(0);
-      $table->timestamp('yearly_stock_date')->nullable();
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();
@@ -278,6 +270,14 @@ return new class extends Migration
       $table->integer('total_qty_indent')->default(0)->nullable();
       $table->integer('total_qty_remain')->default(0)->nullable();
       $table->enum('stock_type', [1, 2])->comment('Status type : 1 = Stock In, 2 = Stock Out')->default(1);
+      $table->integer('daily_stock')->default(0);
+      $table->timestamp('daily_stock_date')->nullable();
+      $table->integer('weekly_stock')->default(0);
+      $table->timestamp('weekly_stock_date')->nullable();
+      $table->integer('monthly_stock')->default(0);
+      $table->timestamp('monthly_stock_date')->nullable();
+      $table->integer('yearly_stock')->default(0);
+      $table->timestamp('yearly_stock_date')->nullable();
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->string('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

@@ -1,8 +1,16 @@
 <?php
 
 /* test response */
+
+use Illuminate\Support\Facades\Hash;
+
 $router->get('/ping', ['as' => 'ping', function () use ($router) {
   return 'pong';
+}]);
+
+/* Hash password */
+$router->get('/hash/{password}', ['as' => 'ping', function (string $password) use ($router) {
+  return Hash::make($password);
 }]);
 
 /* lumen version */
