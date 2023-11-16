@@ -22,6 +22,32 @@ class StockSummaryRepository
     $this->core = new Core();
   }
 
+  public function checkPeriod($start, $end)
+  {
+    $startDate = Carbon::parse($start);
+    $endDate = Carbon::parse($end);
+    $startDay = $startDate->dayName;
+    $endDay = $endDate->dayName;
+
+    $periodId = null;
+    $period = StockPeriod::where('start_date', '>=', $startDate)->where('end_date', '<=', $endDate)->first();
+
+    if (empty($period)) {
+      $stockPeriod = StockPeriod::create([
+        'stock_period' => 'daily',
+        'start_date' => $startDate->format('Y-m-d'),
+        'end_date' => $endDate->format('Y-m-d'),
+        'start_day_name' => $startDay,
+        'end_day_name' => $endDay
+      ]);
+      $periodId = $stockPeriod->id;
+    } else {
+      $periodId = $period->id;
+    }
+
+    return $periodId;
+  }
+
   public function checkStock($periodId, $data, $userLogin)
   {
     $check = StockSummaryHeader::where('product_uuid', $data->product_uuid)
@@ -89,7 +115,7 @@ class StockSummaryRepository
           wms_do_details.product_status, wms_do_details.weight, wms_do_details.stock_type,
           SUM(wms_do_details.qty_order) AS qty_order, SUM(wms_do_details.qty_sent) AS qty_sent,
           SUM(wms_do_details.qty_indent) AS qty_indent, SUM(wms_do_details.qty_remain) AS qty_remain,
-          array_to_string(array_agg(wms_do_headers.uuid), ', ') as \"uuids\""
+          array_to_string(array_agg(wms_do_headers.uuid), ',') as \"uuids\""
         )
         ->where(function ($q) {
           $q->orWhere('wms_do_headers.daily_stock', null)
@@ -109,36 +135,18 @@ class StockSummaryRepository
           'wms_do_details.stock_type',
         )->get();
 
-      $startDate = Carbon::parse($start);
-      $endDate = Carbon::parse($start);
-      $startDay = $startDate->dayName;
-      $endDay = $endDate->dayName;
-
-      $periodId = null;
-      $period = StockPeriod::where('start_date', '>=', $startDate)->where('end_date', '<=', $endDate)->first();
-
-      if (empty($period)) {
-        $stockPeriod = StockPeriod::create([
-          'stock_period' => 'daily',
-          'start_date' => $startDate->format('Y-m-d'),
-          'end_date' => $endDate->format('Y-m-d'),
-          'start_day_name' => $startDay,
-          'end_day_name' => $endDay
-        ]);
-        $periodId = $stockPeriod->id;
-      } else {
-        $periodId = $period->id;
-      }
+      $periodId = $this->checkPeriod($start, $end);
 
       foreach ($datas as $data) {
         $this->checkStock($periodId, $data, $userLogin);
       }
 
-      DOHeader::whereIn('uuid', explode(',', $datas['uuids']))->update([
-        'daily_stock' => 1,
-        'daily_stock_date' => Carbon::now()
-      ]);
-
+      if (count($datas) > 0) {
+        DOHeader::whereIn('uuid', array_unique(explode(',', $datas->pluck('uuids')->implode(','))))->update([
+          'daily_stock' => 1,
+          'daily_stock_date' => Carbon::now()
+        ]);
+      }
       DB::commit();
     } catch (\Exception $e) {
       DB::rollBack();
@@ -147,11 +155,26 @@ class StockSummaryRepository
 
     return $this->core->setResponse(
       'success',
-      "Create DO from date $start to $end",
-      (!empty($datas) ? count($datas) + 1 : 0) . " record(s)",
+      "Create Stock from date $start to $end",
+      (count($datas) > 0 ? count($datas) + 1 : 0) . " record(s)",
       false,
       201
     );
+  }
+
+  public function updateStockSale($productUuid, $warehouseUuid, $qty, $effect)
+  {
+    $stock = StockSummaryHeader::where('product_uuid', $productUuid)
+      ->where('warehouse_uuid', $warehouseUuid)
+      ->orderBy('id', 'desc')
+      ->first()->lockForUpdate();
+
+    if ($effect == '-') {
+      $stock->stock_to_sale -= $qty;
+    } elseif ($effect == '+') {
+      $stock->stock_to_sale += $qty;
+    }
+    $stock->save();
   }
 
   public function groupArray($data)

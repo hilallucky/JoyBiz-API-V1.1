@@ -85,6 +85,7 @@ class OrderHeader extends Model
     'ship_type',
     'status',
     'airway_bill_no',
+    'warehouse_uuid',
     'calculation_point_members_uuid',
     'calculation_date',
     'created_by',

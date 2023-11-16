@@ -123,7 +123,7 @@ class DORepository
     return $this->core->setResponse(
       'success',
       "Create DO from date $start to $end",
-      (!empty($newHeaders) ? count($newHeaders) + 1 : 0) . " record(s)",
+      (count($newHeaders) > 0 ? count($newHeaders) + 1 : 0) . " record(s)",
       false,
       201
     );
@@ -342,33 +342,33 @@ class DORepository
       ]
     ];
 
-      $summary = array_reduce($data, function ($carry, $item) {
-        $productUuid = $item['product_uuid'];
-        $attributeUuid = $item['product_attribute_uuid'];
-    
-        $groupKey = $productUuid . '-' . $attributeUuid;
+    $summary = array_reduce($data, function ($carry, $item) {
+      $productUuid = $item['product_uuid'];
+      $attributeUuid = $item['product_attribute_uuid'];
 
-        // Initialize the group if it doesn't exist
-        if (!array_key_exists($groupKey, $carry)) {
-            $carry[$groupKey] = [
-                'total_qty' => 0,
-                'total_weight' => 0,
-                'total_qty_indent' => 0,
-            ];
-        }
-    
-        // Update the summarized data
-        $carry[$groupKey]['product_attribute_uuid'] = $item['product_attribute_uuid'];
-        $carry[$groupKey]['warehouse_uuid'] = $item['warehouse_uuid'];
-        $carry[$groupKey]['name'] = $item['name'];
-        $carry[$groupKey]['total_qty'] += $item['total_qty'];
-        $carry[$groupKey]['total_weight'] += $item['total_weight'];
-        $carry[$groupKey]['total_qty_indent'] += $item['total_qty_indent'];
-    
-        return $carry;
+      $groupKey = $productUuid . '-' . $attributeUuid;
+
+      // Initialize the group if it doesn't exist
+      if (!array_key_exists($groupKey, $carry)) {
+        $carry[$groupKey] = [
+          'total_qty' => 0,
+          'total_weight' => 0,
+          'total_qty_indent' => 0,
+        ];
+      }
+
+      // Update the summarized data
+      $carry[$groupKey]['product_attribute_uuid'] = $item['product_attribute_uuid'];
+      $carry[$groupKey]['warehouse_uuid'] = $item['warehouse_uuid'];
+      $carry[$groupKey]['name'] = $item['name'];
+      $carry[$groupKey]['total_qty'] += $item['total_qty'];
+      $carry[$groupKey]['total_weight'] += $item['total_weight'];
+      $carry[$groupKey]['total_qty_indent'] += $item['total_qty_indent'];
+
+      return $carry;
     }, []);
-    
+
     // Print the summarized data
-      return array_values($summary);
+    return array_values($summary);
   }
 }

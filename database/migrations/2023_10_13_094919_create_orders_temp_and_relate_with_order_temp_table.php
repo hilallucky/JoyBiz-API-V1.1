@@ -113,6 +113,7 @@ return new class extends Migration
       $table->enum('ship_type', [0, 1, 2])->nullable()->comment('Shipping Type : 0 = Hold, 1 = Pickup, 2 = Ship To Address')->default(1);
       $table->enum('status', [0, 1, 2, 3])->nullable()->comment('Status : 0 = Pending, 1 = Paid, 2 = Posted, 3 = Rejected')->default(0);
       $table->string('airway_bill_no')->comment('AWB/Resi No, only if ship_type = 2')->nullable();
+      $table->string('warehouse_uuid')->comment('warehouse_uuid')->nullable();
       $table->string('created_by')->comment('Created By (User ID from table user')->nullable();
       $table->string('updated_by')->comment('Updated By (User ID from table user')->nullable();
       $table->uuid('deleted_by')->comment('Deleted By (User ID from table user')->nullable();

@@ -177,6 +177,7 @@ class OrderService
           'ship_type' => $orderHeader['ship_type'],
           'status' => "0",
           'airway_bill_no' => $orderHeader['airway_bill_no'],
+          'warehouse_uuid' => $orderHeader['warehouse_uuid'],
           'transaction_date' => Carbon::now(),
           'created_by' => $userlogin ? $userlogin : $orderHeader['member_uuid'],
         ];

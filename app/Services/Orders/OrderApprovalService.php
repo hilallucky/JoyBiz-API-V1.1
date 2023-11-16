@@ -22,6 +22,7 @@ use App\Models\Orders\Production\OrderShipping;
 use App\Models\Orders\Temporary\OrderGroupHeaderTemp;
 use App\Models\Orders\Temporary\OrderHeaderTemp;
 use App\Models\Users\User;
+use App\Repositories\WMS\StockSummaryRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -174,6 +175,7 @@ class OrderApprovalService
             'ship_type' => $order->ship_type,
             'status' => 1,
             'airway_bill_no' => $order->airway_bill_no,
+            'warehouse_uuid' => $order->warehouse_uuid,
             'created_by' => $user,
             'transaction_date' => $transactionDate,
           ];
@@ -225,6 +227,12 @@ class OrderApprovalService
             $orderDetails = new OrderDetail($newOrderDetail);
             $orderDetails->save();
             $newOrderDetails[] = $newOrderDetail;
+
+
+            // Stock reduce based on warehouse & product uuid
+            // $newOrderDetail
+            $stock = new StockSummaryRepository;
+            $stock->updateStockSale($orderDetail->product_uuid, $order->warehouse_uuid, $orderDetail->qty, '-');
           }
 
           // New Order Payments

@@ -121,6 +121,7 @@ return new class extends Migration
         ->comment('Status : 0 = Pending, 1 = Paid, 2 = Posted, 3 = Rejected, 4 = Waiting For Prepared, 5 = Prepared From Warehouse, 6 = Picked Up By Courier, 7 = Delivered')
         ->default(0);
       $table->string('airway_bill_no')->comment('AWB/Resi No, only if ship_type = 2')->nullable();
+      $table->string('warehouse_uuid')->comment('warehouse_uuid')->nullable();
       $table->uuid('calculation_point_process_uuid')->nullable()
         ->comment('Fill this field, if transaction already process to table calculation_point_members');
       $table->date('calculation_date')->nullable()->comment('Calculation date');
